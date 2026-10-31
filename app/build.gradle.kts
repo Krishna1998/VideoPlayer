@@ -105,6 +105,8 @@ android {
       useSupportLibrary = true
     }
 
+    resourceConfigurations += "en"
+
     buildConfigField("String", "GIT_SHA", "\"${getCommitSha()}\"")
     buildConfigField("int", "GIT_COUNT", getCommitCount())
 
@@ -243,7 +245,7 @@ android {
 
   @Suppress("UnstableApiUsage")
   androidResources {
-    generateLocaleConfig = true
+    generateLocaleConfig = false
   }
 
   lint {
