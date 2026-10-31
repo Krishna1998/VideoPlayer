@@ -102,10 +102,6 @@ mpvRx pushes the mpv-android experience further with deep customization, thermal
 | **Background Poll Optimization** | Position poll interval doubles when controls are hidden, cutting JNI wake-ups 50% |
 | **Stats Poll Backoff** | Stats page poll loop backs off from 1s to 2s when playback is paused |
 
-</details>
-
-<details close>
-
 <details close>
 <summary><b>💡 Ambient Mode</b></summary>
 
