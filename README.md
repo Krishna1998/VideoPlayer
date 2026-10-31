@@ -105,15 +105,6 @@ mpvRx pushes the mpv-android experience further with deep customization, thermal
 </details>
 
 <details close>
-<summary><b>🧩 Anime4K & Upscaling</b></summary>
-
-| Feature | Description |
-|---|---|
-| **7 Preset Quality Tiers** | Off, A, B, C, A+, B+, C+ with clean switching |
-| **4K/8K Safety Guard** | Auto-disables Anime4K for high-resolution content |
-| **Thermal-Guarded Selection** | Auto-downgrades quality tier under thermal pressure before frame drops |
-
-</details>
 
 <details close>
 <summary><b>💡 Ambient Mode</b></summary>
