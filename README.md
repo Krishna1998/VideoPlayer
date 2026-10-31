@@ -214,55 +214,6 @@ mpvRx pushes the mpv-android experience further with deep customization, thermal
 </details>
 
 <details close>
-<summary><b>🎧 Navidrome / Subsonic Music Streaming</b></summary>
-
-| Feature | Description |
-|---|---|
-| **Subsonic API Integration** | Stream music from Navidrome and compatible Subsonic servers using token/salt authentication |
-| **Multiple Servers** | Save named servers, switch the active server, and manage connections from the app |
-| **Flexible Sign-In** | Connect with a username and password, or a supported app password/token |
-| **Music Discovery** | Quick mixes, recently added albums, artist browsing, and artwork-rich album and playlist detail views |
-| **Library Search** | Search the server for songs, albums, and artists |
-| **Server Playlists & Favorites** | Browse server playlists and sync favorite songs, albums, and artists; starred songs appear in a Favorites collection |
-| **Play All & Shuffle** | Start an album or playlist as a playback queue with track titles, artists, and cover art |
-| **Display Preferences** | Choose grid/list views and track sorting preferences |
-
-> Requires a music-server account and a reachable server. Available functionality depends on the server's Subsonic API and authentication support.
-
-</details>
-
-<details close>
-<summary><b>🍿 Jellyfin Client (Expressive Cinematic UI)</b></summary>
-
-| Feature | Description |
-|---|---|
-| **Native Server Integration** | Direct connection with Jellyfin accounts, fast token authentication, and multi-server management |
-| **Material 3 Expressive UI** | Cinematic interface with artwork-rich browsing, detail sheets, and dedicated music views |
-| **Featured Hero Banner** | Auto-advancing 16:9 backdrop banner with smooth gradient scrims, ratings, badges, and quick play |
-| **Continue Watching & Recently Watched** | Horizontal resume carousels with relative timestamps and progress bars tracking playback progress |
-| **Library Filter Chips** | Instant switching between Movies, TV Shows, Anime, Music, and BoxSets with dynamic item counts |
-| **Poster & Backdrop Cards** | 2:3 vertical posters and 16:9 backdrop cards with community ratings, release years, and unplayed badges |
-| **Cinematic Detail Sheet** | Full-bleed modal sheet with backdrops, floating posters, storyline synopsis, and season/episode picker |
-| **Server-Synced Favorites** | Heart action synced bidirectionally with your Jellyfin server account (`UserData.IsFavorite`) |
-| **Direct & Transcoded Streaming** | High-performance direct stream playback with audio track and subtitle stream switching |
-
-</details>
-
-<details close>
-<summary><b>⚡ Unified Media & Torrent Streaming</b></summary>
-
-| Feature | Description |
-|---|---|
-| **Cinematic Discovery** | Hero banner carousel, Continue Watching row, and 2:3 vertical poster cards for saved media |
-| **Automated TMDB Enrichment** | Fetches posters, backdrops, storyline synopsis, release years, and media types via Wyzie/TMDB |
-| **Cinematic Media Details** | Modal bottom sheet with floating poster, metadata badges, "Watch Now / Resume", and "Copy Magnet" |
-| **Intelligent Episode Parser** | Robust parser supporting anime numbering, season/episode formats (S01E02, 1x02), and quality tags |
-| **Episode Search & Sorting** | Filter and sort episodes within multi-file torrents with watched status checkmarks |
-| **Unified Media Hub** | Save direct streams, YouTube links, and torrents into your collection with one-tap ingestion |
-
-</details>
-
-<details close>
 <summary><b>📜 Config Editor</b></summary>
 
 | Feature | Description |
@@ -292,8 +243,6 @@ mpvRx pushes the mpv-android experience further with deep customization, thermal
 | **Remember Brightness** | Persists brightness level set during playback |
 | **Automatic Local Playlists** | Discover M3U/M3U8 IPTV playlists in readable internal storage, SD cards, and granted local folders; refresh changed sources without duplicate entries |
 | **Playlist Covers** | Show the first entry's IPTV logo or cached media thumbnail in list and grid layouts, with an icon fallback when artwork is unavailable |
-| **yt-dlp Integration** | High-performance streaming support for YouTube, Twitch, Bilibili, and more via a native Python bridge (SDK 29+ bypass) |
-| **yt-dlp Quality Controls** | Independent codec, resolution, FPS, HDR, container, and audio-bitrate preferences |
 | **Dynamic Refresh Rate** | Matches supported display refresh rates to the current video's frame rate for smoother motion |
 | **Secure Folder** | PIN-protected access with optional biometrics, media move/restore actions, and a hideable entry point |
 
@@ -338,12 +287,6 @@ _Tip: If your battery consumption stays within 200 mAh and below 0.9W (see Stats
 - JDK 17
 - Android SDK with modern build tools installed
 - Git
-
-### Debug Build
-
-```powershell
-./gradlew.bat :app:assembleStandardDebug
-```
 
 ### Release Variants
 
