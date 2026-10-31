@@ -59,9 +59,6 @@ import app.gyrolet.mpvrx.presentation.Screen
 import app.gyrolet.mpvrx.presentation.components.ConfirmDialog
 import app.gyrolet.mpvrx.ui.icons.Icon
 import app.gyrolet.mpvrx.ui.icons.Icons
-import app.gyrolet.mpvrx.ui.player.ControlsAnimationStyle
-import app.gyrolet.mpvrx.ui.player.NavigationAnimStyle
-import app.gyrolet.mpvrx.ui.player.VideoOpenAnimation
 import app.gyrolet.mpvrx.ui.preferences.components.SwitchPreference
 import app.gyrolet.mpvrx.ui.preferences.components.RestartRequiredDialog
 import app.gyrolet.mpvrx.ui.preferences.components.ThemePicker
@@ -109,7 +106,6 @@ object AppearancePreferencesScreen : Screen {
     val appTheme by preferences.appTheme.collectAsState()
     val customTheme by preferences.customTheme.collectAsState()
     val selectedCustomThemeName by preferences.selectedCustomThemeName.collectAsState()
-    val customWallpaperUri by preferences.customWallpaperUri.collectAsState()
     var changingThumbnailGenerator by remember { mutableStateOf(false) }
     var pendingThumbnailMode by remember { mutableStateOf<ThumbnailMode?>(null) }
     var pendingAppUiScale by remember { mutableStateOf<Float?>(null) }
@@ -119,7 +115,6 @@ object AppearancePreferencesScreen : Screen {
       if (searchTarget?.screen == AppearancePreferencesScreen) isThemeSectionExpanded = true
     }
     var isAppFontSheetOpen by rememberSaveable { mutableStateOf(false) }
-    val backgroundType by preferences.backgroundType.collectAsState()
     val storedThumbnailMode by browserPreferences.thumbnailMode.collectAsState()
     val thumbnailGenerator by browserPreferences.thumbnailGenerator.collectAsState()
     val thumbnailQuality by browserPreferences.thumbnailQuality.collectAsState()
@@ -356,14 +351,6 @@ object AppearancePreferencesScreen : Screen {
                     modifier = Modifier.padding(vertical = 8.dp),
                   )
 
-                  PreferenceDivider()
-
-                  WallpaperPreferenceCard(
-                    modifier = Modifier.settingsSearchTarget(R.string.pref_appearance_custom_wallpaper_title),
-                    wallpaperUri = customWallpaperUri,
-                    onClick = { backstack.navigateTo(WallpaperEditorScreen()) },
-                  )
-
                   PreferenceCard {
                    DevicePreference(R.string.pref_app_icon_title) {
                      ExpressivePreferenceItem {
@@ -382,22 +369,6 @@ object AppearancePreferencesScreen : Screen {
 
                     PreferenceDivider()
                    }
-
-                  ExpressivePreferenceItem {
-                    Preference(
-                      title = { Text(stringResource(R.string.bg_pref_title)) },
-                      summary = {
-                        Text(
-                          stringResource(backgroundType.labelRes),
-                          color = MaterialTheme.colorScheme.outline,
-                        )
-                      },
-                      modifier = Modifier.settingsSearchTarget(R.string.bg_pref_title),
-                      onClick = { backstack.navigateTo(BackgroundAnimationPreferencesScreen) },
-                    )
-                  }
-
-                  PreferenceDivider()
 
                   SwitchPreference(
                     modifier = Modifier.settingsSearchTarget(R.string.pref_appearance_amoled_mode_title),
@@ -929,7 +900,7 @@ object AppearancePreferencesScreen : Screen {
 
           item {
             PreferenceSectionHeader(
-              position = PreferenceSectionPosition.Middle,
+              position = if (television) PreferenceSectionPosition.Last else PreferenceSectionPosition.Middle,
               title = stringResource(R.string.pref_appearance_category_navigation),
             )
           }
@@ -938,9 +909,8 @@ object AppearancePreferencesScreen : Screen {
             val showMusicTab by preferences.showMusicTab.collectAsState()
             val showProfileTab by preferences.showProfileTab.collectAsState()
             val showNetworkTab by preferences.showNetworkTab.collectAsState()
-            val showJellyfinTab by preferences.showJellyfinTab.collectAsState()
             val savedOrder by preferences.bottomNavigationOrder.collectAsState()
-            val names = listOf("HOME", "MUSIC", "NETWORK", "JELLYFIN", "PROFILE")
+            val names = listOf("HOME", "MUSIC", "NETWORK", "PROFILE")
             val ordered =
               listOf("HOME") +
                 (savedOrder.filter { it in names } + names)
@@ -951,7 +921,6 @@ object AppearancePreferencesScreen : Screen {
                 "HOME" -> ReorderableTabItem(id, stringResource(R.string.pref_nav_home_title), stringResource(R.string.pref_nav_home_summary), true, required = true)
                 "MUSIC" -> ReorderableTabItem(id, stringResource(R.string.pref_nav_music_title), stringResource(R.string.pref_nav_music_summary), showMusicTab, titleRes = R.string.pref_nav_music_title)
                 "NETWORK" -> ReorderableTabItem(id, stringResource(R.string.pref_nav_network_title), stringResource(R.string.pref_nav_network_summary), showNetworkTab, titleRes = R.string.pref_nav_network_title)
-                "JELLYFIN" -> ReorderableTabItem(id, stringResource(R.string.pref_nav_jellyfin_title), stringResource(R.string.pref_nav_jellyfin_summary), showJellyfinTab, titleRes = R.string.pref_nav_jellyfin_title)
                 else -> ReorderableTabItem(id, stringResource(R.string.pref_nav_profile_title), stringResource(R.string.pref_nav_profile_summary), showProfileTab, titleRes = R.string.pref_nav_profile_title)
               }
             }
@@ -962,7 +931,6 @@ object AppearancePreferencesScreen : Screen {
                   when (id) {
                     "MUSIC" -> preferences.showMusicTab.set(enabled)
                     "NETWORK" -> preferences.showNetworkTab.set(enabled)
-                    "JELLYFIN" -> preferences.showJellyfinTab.set(enabled)
                     "PROFILE" -> preferences.showProfileTab.set(enabled)
                   }
                 },
@@ -981,7 +949,7 @@ object AppearancePreferencesScreen : Screen {
           if (!television) {
             item {
               PreferenceSectionHeader(
-                position = PreferenceSectionPosition.Middle,
+                position = PreferenceSectionPosition.Last,
                 title = stringResource(R.string.pref_nav_actions_section),
               )
             }
@@ -1068,97 +1036,6 @@ object AppearancePreferencesScreen : Screen {
                   summary = { Text(stringResource(R.string.connected_mini_player_navigation_summary), color = MaterialTheme.colorScheme.outline) },
                   groupIndex = 5,
                   groupSize = 6,
-                )
-              }
-            }
-          }
-
-          // ── Animations ────────────────────────────────────────
-          item {
-            PreferenceSectionHeader(position = PreferenceSectionPosition.Last, title = stringResource(R.string.pref_section_animations))
-          }
-
-          item {
-            ExpressivePreferenceGroup {
-              val controlsAnimStyle by playerPreferences.controlsAnimStyle.collectAsState()
-              ExpressivePreferenceTile(index = 0, itemCount = 4) {
-                ListPreference(
-                  modifier = Modifier.settingsSearchTarget(R.string.pref_anim_controls_style_title),
-                  value = controlsAnimStyle,
-                  onValueChange = playerPreferences.controlsAnimStyle::set,
-                  values = ControlsAnimationStyle.entries,
-                  valueToText = { AnnotatedString(it.displayName) },
-                  title = { Text(stringResource(R.string.pref_anim_controls_style_title)) },
-                  summary = {
-                    Text(
-                      controlsAnimStyle.displayName,
-                      color = MaterialTheme.colorScheme.outline,
-                    )
-                  },
-                )
-              }
-
-              val videoOpenAnim by playerPreferences.videoOpenAnimation.collectAsState()
-              ExpressivePreferenceTile(index = 1, itemCount = 4) {
-                ListPreference(
-                  modifier = Modifier.settingsSearchTarget(R.string.pref_anim_video_open_title),
-                  value = videoOpenAnim,
-                  onValueChange = playerPreferences.videoOpenAnimation::set,
-                  values = VideoOpenAnimation.entries,
-                  valueToText = { AnnotatedString(it.displayName) },
-                  title = { Text(stringResource(R.string.pref_anim_video_open_title)) },
-                  summary = {
-                    Text(
-                      videoOpenAnim.displayName,
-                      color = MaterialTheme.colorScheme.outline,
-                    )
-                  },
-                )
-              }
-
-              val appNavStyle by playerPreferences.appNavStyle.collectAsState()
-              ExpressivePreferenceTile(index = 2, itemCount = 4) {
-                ListPreference(
-                  modifier = Modifier.settingsSearchTarget(R.string.pref_anim_screen_nav_style_title),
-                  value = appNavStyle,
-                  onValueChange = playerPreferences.appNavStyle::set,
-                  values = NavigationAnimStyle.entries,
-                  valueToText = { AnnotatedString(it.displayName) },
-                  title = { Text(stringResource(R.string.pref_anim_screen_nav_style_title)) },
-                  summary = {
-                    Text(
-                      appNavStyle.displayName,
-                      color = MaterialTheme.colorScheme.outline,
-                    )
-                  },
-                )
-              }
-
-              val animSpeed by playerPreferences.animationSpeed.collectAsState()
-              ExpressivePreferenceTile(index = 3, itemCount = 4) {
-                SliderPreference(
-                  modifier = Modifier.settingsSearchTarget(R.string.pref_anim_speed_title),
-                  value = animSpeed,
-                  onValueChange = { playerPreferences.animationSpeed.set(it) },
-                  title = { Text(stringResource(R.string.pref_anim_speed_title)) },
-                  valueRange = 0.25f..2.5f,
-                  summary = {
-                    val label =
-                      when {
-                        animSpeed < 0.6f ->
-                          stringResource(
-                            R.string.pref_anim_speed_very_fast,
-                            animSpeed,
-                          )
-                        animSpeed < 0.9f -> stringResource(R.string.pref_anim_speed_fast, animSpeed)
-                        animSpeed < 1.1f -> stringResource(R.string.pref_anim_speed_normal, animSpeed)
-                        animSpeed < 1.6f -> stringResource(R.string.pref_anim_speed_slow, animSpeed)
-                        else -> stringResource(R.string.pref_anim_speed_very_slow, animSpeed)
-                      }
-                    Text(label, color = MaterialTheme.colorScheme.outline)
-                  },
-                  onSliderValueChange = { playerPreferences.animationSpeed.set(it) },
-                  sliderValue = animSpeed,
                 )
               }
             }

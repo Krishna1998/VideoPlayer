@@ -291,7 +291,7 @@ object PreferencesScreen : Screen {
                   stringResource(R.string.pref_section_general),
                   stringResource(R.string.pref_player_seeking_title),
                   stringResource(R.string.pref_section_display_controls),
-                  stringResource(R.string.pref_screenshots_section),
+                  stringResource(R.string.pref_section_overlays),
                 ).joinToString(", "),
               icon = Icons.RoundedFilled.Slideshow,
               screen = PlayerPreferencesScreen,
