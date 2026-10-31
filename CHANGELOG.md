@@ -4,6 +4,13 @@ These notes are written in plain English and focus on what changed for real use.
 
 ## Unreleased
 
+## 1.0.1
+
+- Release version 1.0.1.
+- Optimized app size, enabled full R8 shrinking and AAPT2 resource optimizations.
+- Removed unused product flavors and obsolete dependencies.
+- Updated documentation and author credits.
+
 ## 1.0.0
 
 - Version 1.0.0 release.

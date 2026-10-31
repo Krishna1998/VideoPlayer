@@ -1,4 +1,4 @@
-﻿<?xml version='1.0' encoding='UTF-8'?>
+<?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="pref_liquid_glass_material">玻璃材质</string>
   <string name="pref_liquid_glass_frost">磨砂效果</string>
