@@ -103,8 +103,6 @@ android {
       useSupportLibrary = true
     }
 
-    resourceConfigurations += "en"
-
     buildConfigField("String", "GIT_SHA", "\"${getCommitSha()}\"")
     buildConfigField("int", "GIT_COUNT", getCommitCount())
 
@@ -248,6 +246,7 @@ android {
   @Suppress("UnstableApiUsage")
   androidResources {
     generateLocaleConfig = false
+    localeFilters += "en"
   }
 
   lint {
@@ -408,11 +407,6 @@ dependencies {
   sideloadDistributions.forEach { flavor ->
     "${flavor}Implementation"(libs.libtorrent4j)
     "${flavor}Implementation"(libs.libtorrent4j.android.arm64)
-    "${flavor}Implementation"(libs.libtorrent4j.android.arm)
-    if (enableX86) {
-      "${flavor}Implementation"(libs.libtorrent4j.android.x86)
-      "${flavor}Implementation"(libs.libtorrent4j.android.x8664)
-    }
   }
 }
 
