@@ -26,7 +26,7 @@ import app.gyrolet.mpvrx.BuildConfig
  * dismissed is not repeated on every resume.
  */
 object PermissionRecovery {
-  enum class Kind { STORAGE, NOTIFICATIONS, AUDIO }
+  enum class Kind { STORAGE, NOTIFICATIONS }
 
   private const val PREFS = "permission_recovery"
 
@@ -34,7 +34,6 @@ object PermissionRecovery {
     when (kind) {
       Kind.STORAGE -> isStorageGranted(context)
       Kind.NOTIFICATIONS -> isNotificationGranted(context)
-      Kind.AUDIO -> isAudioGranted(context)
     }
 
   fun isStorageGranted(context: Context): Boolean {
@@ -51,10 +50,6 @@ object PermissionRecovery {
       ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) ==
       PackageManager.PERMISSION_GRANTED
 
-  fun isAudioGranted(context: Context): Boolean =
-    ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) ==
-      PackageManager.PERMISSION_GRANTED
-
   /** Standard builds on Android 11+ use All files access, which is granted only on its settings page. */
   fun usesAllFilesAccess(): Boolean =
     !BuildConfig.SCOPED_STORAGE_ONLY && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
@@ -65,7 +60,6 @@ object PermissionRecovery {
       Kind.STORAGE -> if (usesAllFilesAccess()) null else PermissionUtils.getStoragePermission()
       Kind.NOTIFICATIONS ->
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) Manifest.permission.POST_NOTIFICATIONS else null
-      Kind.AUDIO -> Manifest.permission.RECORD_AUDIO
     }
 
   /**
@@ -98,7 +92,7 @@ object PermissionRecovery {
    * opens its settings page instead, and only when no dialog is launched in the same pass.
    */
   fun requestRevoked(activity: Activity, dialogLauncher: ActivityResultLauncher<Array<String>>) {
-    val pending = pendingRevocations(activity).filterNot { it == Kind.AUDIO }
+    val pending = pendingRevocations(activity)
     if (pending.isEmpty()) return
     val dialogKinds = pending.filter { runtimePermission(it) != null }
     if (dialogKinds.isNotEmpty()) {

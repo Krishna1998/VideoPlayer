@@ -211,7 +211,6 @@ import app.gyrolet.mpvrx.ui.player.controls.components.rememberTvInitialFocusReq
 import app.gyrolet.mpvrx.ui.player.controls.components.tvFocusHighlight
 import app.gyrolet.mpvrx.ui.player.controls.components.tvInitialFocus
 import app.gyrolet.mpvrx.ui.player.visualizer.AudioFeatures
-import app.gyrolet.mpvrx.ui.player.visualizer.AudioSpectrumAnalyzer
 import app.gyrolet.mpvrx.ui.player.visualizer.BlobOverlay
 import app.gyrolet.mpvrx.ui.player.visualizer.CuboidOverlay
 import app.gyrolet.mpvrx.ui.player.visualizer.GalaxyOverlay
@@ -560,51 +559,7 @@ private fun AudioSpectrumCaptureEffect(
   requestPermission: Boolean,
   features: AudioFeatures,
 ) {
-  val context = LocalContext.current
-  val scope = rememberCoroutineScope()
-  val analyzerActive = remember(features) { AtomicBoolean(false) }
-  var hasRecordPermission by remember(context) {
-    mutableStateOf(
-      ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) ==
-        PackageManager.PERMISSION_GRANTED,
-    )
-  }
-  val recordPermissionLauncher =
-    rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-      hasRecordPermission = granted
-    }
-
-  androidx.lifecycle.compose.LifecycleEventEffect(androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
-    hasRecordPermission = ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) ==
-      PackageManager.PERMISSION_GRANTED
-  }
-
-  LaunchedEffect(requestPermission) {
-    hasRecordPermission = ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) ==
-      PackageManager.PERMISSION_GRANTED
-    if (requestPermission && !hasRecordPermission) {
-      recordPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
-    }
-  }
-
-  DisposableEffect(enabled, hasRecordPermission, features) {
-    val analyzer = if (enabled && hasRecordPermission) AudioSpectrumAnalyzer(features) else null
-    val job =
-      scope.launch(Dispatchers.Default) {
-        while (isActive && analyzer != null) {
-          val captureFresh = features.active && features.hasRecentCapture(1_500_000_000L)
-          if (!analyzerActive.get() || !captureFresh) {
-            analyzerActive.set(analyzer.start(0).isSuccess)
-          }
-          kotlinx.coroutines.delay(if (analyzerActive.get()) 1_500L else 400L)
-        }
-      }
-    onDispose {
-      job.cancel()
-      analyzerActive.set(false)
-      analyzer?.stop(resetFeatures = false)
-    }
-  }
+  // RECORD_AUDIO permission is removed; live audio capture is disabled.
 }
 
 @Composable

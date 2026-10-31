@@ -123,12 +123,10 @@ private fun checkFilePermission(context: Context): Boolean = PermissionRecovery.
 private fun checkNotificationPermission(context: Context): Boolean =
   PermissionRecovery.isNotificationGranted(context)
 
-private fun checkAudioPermission(context: Context): Boolean = PermissionRecovery.isAudioGranted(context)
-
 private fun openStoragePermissionSettings(context: Context): Boolean =
   PermissionRecovery.openAllFilesAccessSettings(context)
 
-private enum class OnboardingStep { STORAGE, CONFIGURATION, NOTIFICATIONS, AUDIO, FINISH }
+private enum class OnboardingStep { STORAGE, CONFIGURATION, NOTIFICATIONS, FINISH }
 
 @SuppressLint("UseKtx")
 @Composable
@@ -147,13 +145,11 @@ fun PermissionDeniedState(
 
   var isFileGranted by remember { mutableStateOf(checkFilePermission(context)) }
   var isNotificationGranted by remember { mutableStateOf(checkNotificationPermission(context)) }
-  var isAudioGranted by remember { mutableStateOf(checkAudioPermission(context)) }
 
   // Initial check on composition
   LaunchedEffect(Unit) {
     isFileGranted = checkFilePermission(context)
     isNotificationGranted = checkNotificationPermission(context)
-    isAudioGranted = checkAudioPermission(context)
   }
 
   // Re-check permissions whenever activity resumes from system settings or permission dialogs
@@ -162,7 +158,6 @@ fun PermissionDeniedState(
       if (event == Lifecycle.Event.ON_RESUME) {
         isFileGranted = checkFilePermission(context)
         isNotificationGranted = checkNotificationPermission(context)
-        isAudioGranted = checkAudioPermission(context)
       }
     }
     lifecycleOwner.lifecycle.addObserver(observer)
@@ -181,22 +176,6 @@ fun PermissionDeniedState(
       if (activity != null && !activity.shouldShowRequestPermissionRationale(android.Manifest.permission.POST_NOTIFICATIONS)) {
         val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
           putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
-        }
-        runCatching { context.startActivity(intent) }
-      }
-    }
-  }
-
-  // Launcher for audio permission prompt
-  val audioLauncher = rememberLauncherForActivityResult(
-    contract = ActivityResultContracts.RequestPermission(),
-  ) { granted ->
-    isAudioGranted = granted || checkAudioPermission(context)
-    if (!granted) {
-      val activity = context as? Activity
-      if (activity != null && !activity.shouldShowRequestPermissionRationale(android.Manifest.permission.RECORD_AUDIO)) {
-        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-          data = Uri.parse("package:${context.packageName}")
         }
         runCatching { context.startActivity(intent) }
       }
@@ -293,7 +272,6 @@ fun PermissionDeniedState(
         add(OnboardingStep.STORAGE)
         add(OnboardingStep.CONFIGURATION)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) add(OnboardingStep.NOTIFICATIONS)
-        if (!BuildConfig.IS_PLAY_STORE_BUILD) add(OnboardingStep.AUDIO)
         add(OnboardingStep.FINISH)
       }
     }
@@ -304,7 +282,6 @@ fun PermissionDeniedState(
       OnboardingStep.STORAGE -> isFileGranted
       OnboardingStep.CONFIGURATION -> configurationFolderUri.isNotBlank() && !configuringFolder
       OnboardingStep.NOTIFICATIONS -> isNotificationGranted
-      OnboardingStep.AUDIO -> isAudioGranted
       OnboardingStep.FINISH -> true
     }
   val reduceMotion = AppMotion.shouldReduceMotion()
@@ -436,7 +413,6 @@ fun PermissionDeniedState(
                   OnboardingStep.STORAGE -> Icons.RoundedFilled.Folder
                   OnboardingStep.CONFIGURATION -> Icons.RoundedFilled.Settings
                   OnboardingStep.NOTIFICATIONS -> Icons.RoundedFilled.Notifications
-                  OnboardingStep.AUDIO -> Icons.RoundedFilled.Mic
                   OnboardingStep.FINISH -> Icons.RoundedFilled.CheckCircle
                 }
 
@@ -572,33 +548,11 @@ fun PermissionDeniedState(
                       },
                     )
 
-                  OnboardingStep.AUDIO ->
-                    PermissionSectionCard(
-                      title = stringResource(R.string.ui_audio_record_permission_title),
-                      description = stringResource(R.string.ui_audio_record_permission_desc),
-                      isGranted = isAudioGranted,
-                      icon = Icons.RoundedFilled.Mic,
-                      modifier =
-                        if (!isAudioGranted) {
-                          Modifier.tvInitialFocus(stepFocusRequester)
-                        } else {
-                          Modifier
-                        },
-                      onClick = {
-                        if (!isAudioGranted) {
-                          audioLauncher.launch(android.Manifest.permission.RECORD_AUDIO)
-                        }
-                      },
-                    )
-
                   OnboardingStep.FINISH -> {
                     val missingPermissions = buildList {
                       if (!isFileGranted) add(stringResource(R.string.ui_file_permission_title))
                       if (!isNotificationGranted && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                         add(stringResource(R.string.ui_notification_permission_title))
-                      }
-                      if (!BuildConfig.IS_PLAY_STORE_BUILD && !isAudioGranted) {
-                        add(stringResource(R.string.ui_audio_record_permission_title))
                       }
                     }
                     if (missingPermissions.isNotEmpty()) {
