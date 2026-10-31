@@ -45,10 +45,8 @@ val activeAbis =
   } else {
     listOf("arm64-v8a", "armeabi-v7a") + x86Abis
   }
-val universalOnlyDistributions = setOf("noVulkan", "fongmi", "playstore")
-// Distributions outside Google Play. Play forbids downloaded executable code (yt-dlp) and torrent
-// streaming, so only these flavors enable yt-dlp and ship yt-dlp and libtorrent native payloads.
-val sideloadDistributions = setOf("standard", "noVulkan", "fongmi")
+val universalOnlyDistributions = emptySet<String>()
+val sideloadDistributions = setOf("standard")
 // AGP cannot build an app bundle while ABI splits produce multiple APKs (issuetracker 402800800).
 val isBundleBuild =
   gradle.startParameter.taskNames.any { it.substringAfterLast(':').startsWith("bundle") }
@@ -137,36 +135,6 @@ android {
       buildConfigField("boolean", "MPV_SUPPORTS_MEDIACODEC_VULKAN", "false")
     }
 
-    create("playstore") {
-      dimension = "distribution"
-      buildConfigField("boolean", "IS_PLAY_STORE_BUILD", "true")
-      buildConfigField("boolean", "ENABLE_UPDATE_FEATURE", "false")
-      buildConfigField("String", "UPDATE_APK_VARIANT", "\"standard\"")
-      buildConfigField("boolean", "SCOPED_STORAGE_ONLY", "true")
-      buildConfigField("boolean", "MPV_SUPPORTS_VULKAN", "true")
-      buildConfigField("boolean", "MPV_SUPPORTS_MEDIACODEC_VULKAN", "false")
-    }
-
-    create("noVulkan") {
-      dimension = "distribution"
-      buildConfigField("boolean", "IS_PLAY_STORE_BUILD", "false")
-      buildConfigField("boolean", "ENABLE_UPDATE_FEATURE", "true")
-      buildConfigField("String", "UPDATE_APK_VARIANT", "\"no-vulkan\"")
-      buildConfigField("boolean", "SCOPED_STORAGE_ONLY", "false")
-      buildConfigField("boolean", "MPV_SUPPORTS_VULKAN", "false")
-      buildConfigField("boolean", "MPV_SUPPORTS_MEDIACODEC_VULKAN", "false")
-    }
-
-    create("fongmi") {
-      dimension = "distribution"
-      buildConfigField("boolean", "IS_PLAY_STORE_BUILD", "false")
-      buildConfigField("boolean", "ENABLE_UPDATE_FEATURE", "true")
-      buildConfigField("String", "UPDATE_APK_VARIANT", "\"fongmi\"")
-      buildConfigField("boolean", "SCOPED_STORAGE_ONLY", "false")
-      buildConfigField("boolean", "MPV_SUPPORTS_VULKAN", "true")
-      buildConfigField("boolean", "MPV_SUPPORTS_MEDIACODEC_VULKAN", "true")
-    }
-
     configureEach {
       val enableYtdlp = name in sideloadDistributions
       buildConfigField("boolean", "ENABLE_YTDLP", enableYtdlp.toString())
@@ -218,9 +186,8 @@ android {
         "proguard-rules.pro",
       )
       ndk {
-        // Include native symbol tables in Play Store app bundles for crash/ANR diagnosis.
-        // Keep the smaller symbol-table level instead of bundling full DWARF info.
-        debugSymbolLevel = "symbol_table"
+        // Strip native debug symbols for minimum release package size.
+        debugSymbolLevel = "none"
       }
     }
 
@@ -261,7 +228,12 @@ android {
       excludes += "META-INF/LICENSE*"
       excludes += "META-INF/NOTICE*"
       excludes += "META-INF/*.kotlin_module"
+      excludes += "META-INF/*.version"
+      excludes += "META-INF/INDEX.LIST"
+      excludes += "META-INF/io.netty.versions.properties"
       excludes += "META-INF/versions/9/OSGI-INF/MANIFEST.MF"
+      excludes += "DebugProbesKt.bin"
+      excludes += "**/*.proto"
     }
     jniLibs {
       useLegacyPackaging = true
@@ -297,15 +269,6 @@ androidComponents {
         dimension == "distribution" && flavor in universalOnlyDistributions
       }
 
-    // Play Console requires a fresh code for each uploaded commit. Both the APK and AAB
-    // use the same history-derived code; rebuilding a commit keeps its identity stable.
-    val isPlayStoreRelease =
-      variant.buildType == "release" &&
-        !isExperimentalBuild &&
-        variant.productFlavors.any { (dimension, flavor) ->
-          dimension == "distribution" && flavor == "playstore"
-        }
-
     variant.outputs.forEach { output ->
       val abi =
         output.filters
@@ -322,24 +285,7 @@ androidComponents {
         } else {
           output.versionCode.orNull ?: stableVersionCode
         }
-      if (isPlayStoreRelease) {
-        output.versionCode.set(providers.provider {
-          check(runCommand("git rev-parse --is-shallow-repository") == "false") {
-            "Play Store release builds require full Git history (fetch-depth: 0)."
-          }
-          val commitCount = getCommitCount().toIntOrNull()
-          check(commitCount != null && commitCount > 0) {
-            "Cannot determine the Play Store version code without a Git commit count."
-          }
-          val playStoreVersionCode = stableVersionCode.toLong() * 10 + commitCount
-          check(playStoreVersionCode <= 2_100_000_000L) {
-            "Play Store version code exceeds Google Play's limit."
-          }
-          playStoreVersionCode.toInt()
-        })
-      } else {
-        output.versionCode.set(channelVersionCode * 10 + (abiCodes[abi] ?: 0))
-      }
+      output.versionCode.set(channelVersionCode * 10 + (abiCodes[abi] ?: 0))
     }
   }
 }
@@ -434,9 +380,6 @@ dependencies {
   implementation(libs.google.cast.framework)
 
   "standardImplementation"(variantOf(libs.mpvlib.standard) { artifactType("aar") })
-  "playstoreImplementation"(variantOf(libs.mpvlib.standard) { artifactType("aar") })
-  "noVulkanImplementation"(variantOf(libs.mpvlib.no.vulkan) { artifactType("aar") })
-  "fongmiImplementation"(variantOf(libs.mpvlib.fongmi) { artifactType("aar") })
 
   // Network protocol libraries
   implementation(libs.smbj)

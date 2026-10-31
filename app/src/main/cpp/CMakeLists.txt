@@ -9,6 +9,7 @@ set(MPVRX_NATIVE_RELEASE_COMPILE_OPTIONS
     "$<$<CONFIG:Release>:-ffunction-sections>"
     "$<$<CONFIG:Release>:-fdata-sections>"
     "$<$<CONFIG:Release>:-fvisibility=hidden>"
+    "$<$<CONFIG:Release>:-Oz>"
 )
 
 set(MPVRX_NATIVE_LINK_OPTIONS
@@ -16,6 +17,7 @@ set(MPVRX_NATIVE_LINK_OPTIONS
     "$<$<CONFIG:Release>:-Wl,-O1>"
     "$<$<CONFIG:Release>:-Wl,--gc-sections>"
     "$<$<CONFIG:Release>:-Wl,--icf=safe>"
+    "$<$<CONFIG:Release>:-Wl,-s>"
 )
 
 function(mpvrx_optimize_native_target target)

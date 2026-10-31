@@ -97,8 +97,6 @@ markdown-renderer-m3 = { module = "com.mikepenz:multiplatform-markdown-renderer-
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlinTest" }
 mediainfo-lib = { module = "com.github.marlboro-advance:mediainfoAndroid", version.ref = "mediainfo" }
 mpvlib-standard = { module = "app.gyrolet.mpvlib:mpvlib", version.ref = "mpvlib" }
-mpvlib-no-vulkan = { module = "app.gyrolet.mpvlib:mpvlib-no-vulkan", version.ref = "mpvlib" }
-mpvlib-fongmi = { module = "app.gyrolet.mpvlib:mpvlib-fongmi", version.ref = "mpvlib" }
 
 google-material = { module = "com.google.android.material:material", version.ref = "googleMaterial" }
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidxCore" }

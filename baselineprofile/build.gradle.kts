@@ -19,9 +19,7 @@ android {
   experimentalProperties["android.experimental.self-instrumenting"] = true
   flavorDimensions += "distribution"
   productFlavors {
-    listOf("standard", "noVulkan", "fongmi", "playstore").forEach { flavor ->
-      create(flavor) { dimension = "distribution" }
-    }
+    create("standard") { dimension = "distribution" }
   }
   compileOptions {
     sourceCompatibility = JavaVersion.VERSION_17

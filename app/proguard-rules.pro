@@ -19,6 +19,13 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+# Strip verbose and debug logging calls to reduce dex size
+-assumenosideeffects class android.util.Log {
+    public static boolean isLoggable(java.lang.String, int);
+    public static int v(...);
+    public static int d(...);
+}
+
 # Keep the #708 verifier workaround scoped to the affected types. Global -dontoptimize and
 # -dontobfuscate disable those R8 passes for the entire app and produce 0% Android vitals scores.
 # These rules intentionally prohibit optimization and renaming of the jsoup/AndroidX types involved
