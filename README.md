@@ -60,7 +60,6 @@ mpvRx pushes the mpv-android experience further with deep customization, thermal
 |---|---|
 | **25+ Color Themes** | Default, Dynamic (Material You), Catppuccin, Nord, Tokyo Night, Rose Pine, Gruvbox, Dracula, and many more |
 | **AMOLED Pure Black Mode** | Every theme has a dedicated variant with pure black backgrounds |
-| **Player Controls Animation** | 5 animation styles: Default, Elastic Bounce, Cinematic Scale, Slide Up, Minimal Fade |
 | **Always Dark Mode** | Option to keep player controls in dark theme regardless of app theme |
 | **Themed Player Controls** | Adaptive controls that match your app theme or system accent |
 | **Material 3 Expressive UI** | Expressive components, spring-based navigation, responsive grids, and polished predictive-back motion |
@@ -84,7 +83,7 @@ mpvRx pushes the mpv-android experience further with deep customization, thermal
 
 </details>
 
-<details>
+<details close>
 <summary><b>📺 HDR & Video Pipeline</b></summary>
 
 | Feature | Description |
@@ -117,7 +116,6 @@ mpvRx pushes the mpv-android experience further with deep customization, thermal
 | Feature | Description |
 |---|---|
 | **7 Preset Quality Tiers** | Off, A, B, C, A+, B+, C+ with clean switching |
-| **Quality Tiers in Decoder Settings** | Fast / Balanced / High quality choices |
 | **4K/8K Safety Guard** | Auto-disables Anime4K for high-resolution content |
 | **Thermal-Guarded Selection** | Auto-downgrades quality tier under thermal pressure before frame drops |
 
@@ -142,10 +140,7 @@ mpvRx pushes the mpv-android experience further with deep customization, thermal
 | **Dual Subtitle Support** | Primary + secondary with auto-offset to prevent overlap |
 | **ASS Override Modes** | Smart force/scale handling for secondary subtitles |
 | **Comprehensive Styling** | Font, size, bold, italic, border, shadow, colors, justification, scale by window |
-| **Three Online Search Modes** | Wyzie, SubtitleHub (6 aggregated sources), and Hybrid (both merged) |
-| **TMDB Integration** | Full media search with season/episode browsing for subtitles |
 | **Subtitle Font Manager** | Choose a font directory, reload fonts, clear the cache, and select a default subtitle font |
-| **Speech-to-Subtitle Generation** | Experimental subtitle generation from the active audio using supported cloud or offline Whisper providers |
 | **Explicit Subtitle Off** | Disable subtitles directly without cycling through every available track |
 
 </details>
@@ -275,28 +270,12 @@ mpvRx pushes the mpv-android experience further with deep customization, thermal
 
 | Feature | Description |
 |---|---|
-| **Sequential Torrent Engine** | Powered by high-speed native Go bridge (`anacrolix/torrent`) with sequential piece prioritization |
-| **Instant Streaming** | Stream magnet links, `.torrent` files, direct web streams (HLS, MP4), and YouTube URLs |
 | **Cinematic Discovery** | Hero banner carousel, Continue Watching row, and 2:3 vertical poster cards for saved media |
 | **Automated TMDB Enrichment** | Fetches posters, backdrops, storyline synopsis, release years, and media types via Wyzie/TMDB |
 | **Cinematic Media Details** | Modal bottom sheet with floating poster, metadata badges, "Watch Now / Resume", and "Copy Magnet" |
 | **Intelligent Episode Parser** | Robust parser supporting anime numbering, season/episode formats (S01E02, 1x02), and quality tags |
 | **Episode Search & Sorting** | Filter and sort episodes within multi-file torrents with watched status checkmarks |
 | **Unified Media Hub** | Save direct streams, YouTube links, and torrents into your collection with one-tap ingestion |
-
-</details>
-
-<details close>
-<summary><b>🤖 AI Integration</b></summary>
-
-| Feature | Description |
-|---|---|
-| **Provider Support** | OpenAI, Anthropic, Groq, OpenRouter, Together, and OpenCode Zen with provider-specific models and API protocols |
-| **AI Subtitle Translation** | Translate subtitles with custom prompts |
-| **AI Subtitle Formatting** | Reformat subtitle styling with custom prompts |
-| **AI File Renaming** | Bulk rename video files with custom rename prompts |
-| **Reasoning-Safe Parsing** | Removes reasoning blocks and code fences while accepting structured provider responses and citations |
-| **Speech Providers** | Cloud transcription plus experimental offline Whisper subtitle generation |
 
 </details>
 
@@ -337,7 +316,6 @@ mpvRx pushes the mpv-android experience further with deep customization, thermal
 | **yt-dlp Quality Controls** | Independent codec, resolution, FPS, HDR, container, and audio-bitrate preferences |
 | **Dynamic Refresh Rate** | Matches supported display refresh rates to the current video's frame rate for smoother motion |
 | **Secure Folder** | PIN-protected access with optional biometrics, media move/restore actions, and a hideable entry point |
-| **Screenshot Templates** | Filename placeholders for source name, playback position, and millisecond-accurate timestamps |
 
 Local playlist discovery runs when the Playlists page is first loaded and after media-index or storage-mount changes. Pull to refresh to rescan manually, or use **Playlist options > Add local playlist folder** to grant access to a folder. Android's restrictions on protected directories such as `Android/data` and `Android/obb` still apply; discovery cannot bypass them. HLS segment manifests are not imported as channel lists. Removing a discovered playlist does not delete its source file, and that source stays hidden until explicitly imported again. Remote video thumbnails respect the existing network-thumbnail setting.
 
@@ -345,19 +323,19 @@ Local playlist discovery runs when the Playlists page is first loaded and after 
 
 ---
 
-## 🔋 Battery Optimization guide for Mpv
+## 🔋 Battery Optimization Guide for mpv
 
-First Pro Tip Keep Mpv Conf empty if you are newbie
+**Pro Tip:** Keep `mpv.conf` empty if you are new to mpv.
 
-- **Use `gpu` not `gpu-next`** — gpu-next is a Vulkan-based renderer that keeps the GPU awake for no reason when playing normal video. The classic `gpu` backend is lighter and uses the OpenGL driver stack, which on most Android devices has better power characteristics.
-- **Disable Vulkan entirely.** Vulkan is great for Video Playback but also Heavy.
-- **Use the `fast` mpv profile.** It's literally built into mpvRx use that Mpv Profiles and Set it to Default  or in _mpv.conf_ `profile=fast`
-- **Don't use shaders.** That Anime4K preset you using that's what's eating your battery. Shaders run on the GPU every single frame. If you're watching 24fps content and you have a shader pipeline running, congratulations — you're doing 24 unnecessary GPU compute passes per second for a Minute amount of visible benefit on a phone screen .
-- **Don't use AI-generated configs.** That means you, the person who copied a Reddit config with 200 lines of `scale=ewa_lanczossharp` and `dscale=mitchell` and `cscale=sinc` and a dozen `glsl-shaders` entries. Most  of You have no idea what any of those do. You just made your phone render video like it's preparing for a 4K cinema projection. On a 6-inch screen. Grow some Brains Its your android Phone not some Fuckin.. 4k Television
+- **Use `gpu` not `gpu-next`** — `gpu-next` is a Vulkan-based renderer that keeps the GPU active unnecessarily during regular playback. The classic `gpu` backend is lighter and uses OpenGL, which on most Android devices has better power characteristics.
+- **Disable Vulkan entirely.** Vulkan offers great video playback performance but can be power-intensive on mobile devices.
+- **Use the `fast` mpv profile.** It's built into mpvRx: select MPV Profiles and set it to Default, or add `profile=fast` to `mpv.conf`.
+- **Don't overuse shaders.** Shaders run on the GPU every single frame. Watching 24fps content with complex shader pipelines means 24 heavy compute passes per second for minimal perceptible difference on a phone screen.
+- **Avoid bloated configurations.** Copying complex configs with excessive scalers (`scale=ewa_lanczossharp`, `dscale=mitchell`, `cscale=sinc`) and dozens of shaders forces your mobile device to render like a cinema projector on a small display.
 
-**My POV:** mpv's default config with `profile=fast` and the `gpu` backend plays video with negligible battery impact — often **less** than OEM players because mpv doesn't have a billion proprietary DRM modules, analytics SDKs, and ad frameworks burning CPU in the background. The next time your battery drops more than 20-25% watching a 2-hour movie, don't blame mpv. Blame the 14 shaders you blindly copy-pasted.
+**Summary:** mpv's default config with `profile=fast` and the `gpu` backend plays video with negligible battery impact — often **less** than OEM players because mpv doesn't have proprietary DRM modules, analytics SDKs, and ad frameworks running in the background.
 
-_Just a Pro tip if your battery consumption stays within 200 mAh and belwo 0.9W ( See Page 6 of mpvRx - video player More Settings -> Page6) useage than ur Mpv Conf are Proper for Video watching thats what i have experimented and telling rest all i don't know About in detail technicality's if anyone wanna tell me In depth guide then keep it to yourself i dont wanna listen_
+_Tip: If your battery consumption stays within 200 mAh and below 0.9W (see Stats Page 6: Player More Settings -> Page 6), your mpv configuration is well-optimized for playback._
 
 ---
 
