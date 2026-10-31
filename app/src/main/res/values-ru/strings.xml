@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+﻿<?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="pref_liquid_glass_material">Материал стекла</string>
   <string name="pref_liquid_glass_frost">Эффект матового стекла</string>
@@ -940,51 +940,9 @@
   <string name="hdr_mode_linear_short">Линейный</string>
   <string name="hdr_mode_linear_description">Линейный HDR-конвейер через шейдеры Astra и Bottosson от hdr-toys</string>
   <string name="hdr_mode_output_diagnostic">HDR — вывод в режиме %1$s</string>
-  <string name="pref_section_support">Поддержка</string>
   <string name="pref_section_updates">Обновления</string>
   <string name="pref_section_system">Система</string>
-  <string name="pref_hall_of_fame_title">Зал славы</string>
-  <string name="pref_hall_of_fame_summary">Создатели, участники и сообщество</string>
-  <string name="hall_of_fame_original_developer">Первоначальный разработчик mpvEx</string>
-  <string name="hall_of_fame_maintainer">Разработчик mpvRx</string>
-  <string name="hall_of_fame_featured_contributors">Особая благодарность участникам</string>
-  <string name="hall_of_fame_active_title">Активные участники</string>
-  <string name="hall_of_fame_active_period">Коммиты за последние 90 дней</string>
-  <string name="hall_of_fame_feedback_title">Авторы отчётов и тестировщики</string>
-  <string name="hall_of_fame_feedback_summary">Сообщения о проблемах и отзывы сообщества</string>
-  <string name="hall_of_fame_all_title">Все участники</string>
-  <string name="hall_of_fame_all_period">За всю историю проекта</string>
-  <string name="hall_of_fame_view_profile">Открыть %1$s на GitHub</string>
-  <string name="hall_of_fame_view_github">Открыть на GitHub</string>
-  <plurals name="hall_of_fame_commit_count">
-    <item quantity="one">%1$d коммит</item>
-    <item quantity="few">%1$d коммита</item>
-    <item quantity="many">%1$d коммитов</item>
-    <item quantity="other">%1$d коммита</item>
-  </plurals>
-  <plurals name="hall_of_fame_issue_count">
-    <item quantity="one">%1$d отчёт о проблеме</item>
-    <item quantity="few">%1$d отчёта о проблемах</item>
-    <item quantity="many">%1$d отчётов о проблемах</item>
-    <item quantity="other">%1$d отчёта о проблемах</item>
-  </plurals>
-  <plurals name="hall_of_fame_feedback_count">
-    <item quantity="one">%1$d комментарий</item>
-    <item quantity="few">%1$d комментария</item>
-    <item quantity="many">%1$d комментариев</item>
-    <item quantity="other">%1$d комментария</item>
-  </plurals>
-  <string name="contributors_loading">Загрузка списка участников...</string>
-  <string name="contributors_load_error">Не удалось загрузить список участников</string>
-  <string name="contributors_empty">Участники не найдены.</string>
-  <string name="contributors_retry">Повторить</string>
   <string name="network_connection_invalid_port">Введите порт от 1 до 65535</string>
-  <plurals name="contributors_contribution_count">
-    <item quantity="one">%1$d вклад</item>
-    <item quantity="few">%1$d вклада</item>
-    <item quantity="many">%1$d вкладов</item>
-    <item quantity="other">%1$d вклада</item>
-  </plurals>
   <string name="ytdlp_container">Контейнер</string>
   <string name="ytdlp_subtitles_language">Субтитры и язык</string>
   <string name="ytdlp_playlist_behavior">Поведение плейлиста</string>
@@ -1388,23 +1346,15 @@
   <string name="ui_pan_zoom">Панорамирование и масштаб</string>
   <string name="ui_decrease_zoom">Уменьшить масштаб</string>
   <string name="ui_increase_zoom">Увеличить масштаб</string>
-  <string name="ui_by_ritesh_pandit">Автор: Ritesh Pandit</string>
+  <string name="ui_by_ritesh_pandit">Автор: Krishna</string>
   <string name="ui_github">GitHub</string>
   <string name="ui_privacy_policy">Политика конфиденциальности</string>
   <string name="ui_device_info">Информация об устройстве</string>
-  <string name="ui_buy_me_a_coffee">Угостить кофе</string>
-  <string name="ui_if_you_enjoy_mpvrx_consider_supporting_its_development_every_bit">Если вам нравится mpvRx, поддержите его разработку. Важна любая помощь!</string>
-  <string name="ui_upi_id">Идентификатор UPI</string>
-  <string name="ui_panditritesh2001_okhdfcbank">panditritesh2001@okhdfcbank</string>
-  <string name="ui_send_love">Поддержать</string>
   <string name="ui_auto_check_for_updates">Автоматически проверять обновления</string>
   <string name="ui_check_on_startup">Проверять при запуске</string>
   <string name="ui_check_for_updates_now">Проверить обновления сейчас</string>
   <string name="ui_core_open_source_dependencies_used_by_mpvrx">Основные зависимости с открытым исходным кодом, используемые mpvRx.</string>
-  <string name="ui_copy_upi_id">Копировать идентификатор UPI</string>
   <string name="ui_already_using_latest_version">Уже используется последняя версия</string>
-  <string name="ui_upi_id_copied">Идентификатор UPI скопирован!</string>
-  <string name="ui_no_upi_app_found">Приложение UPI не найдено</string>
   <string name="ui_install_and_update_yt_dlp_for_streaming_support">Установите и обновите yt-dlp для поддержки потокового воспроизведения</string>
   <string name="ui_instructions_for_ai_file_renaming">Инструкции для переименования файлов с помощью ИИ...</string>
   <string name="ui_instructions_for_ai_subtitle_translation">Инструкции для перевода субтитров с помощью ИИ...</string>
@@ -2444,13 +2394,6 @@
   <string name="folder_blacklist_audio">Аудио</string>
   <string name="subtitle_source_search_hint">Поиск источников субтитров</string>
   <string name="subtitle_sources_load_error">Не удалось загрузить источники субтитров</string>
-  <string name="hall_of_fame_subtitle">Отмечаем ведущих участников</string>
-  <string name="hall_of_fame_featured_subtitle">Замечательные люди, улучшающие этот проект</string>
-  <string name="hall_of_fame_view_all">Показать всех</string>
-  <string name="hall_of_fame_contributor_badge">Участник</string>
-  <string name="hall_of_fame_tester_badge">Тестировщик</string>
-  <string name="hall_of_fame_show_section">Показать</string>
-  <string name="hall_of_fame_hide_section">Скрыть</string>
   <string name="media_widget_name">Воспроизведение mpvRx</string>
   <string name="media_widget_description">Управление воспроизведением аудио и видео</string>
   <string name="media_widget_pill_name">Музыкальная панель mpvRx</string>

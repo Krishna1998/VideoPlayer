@@ -4,9 +4,8 @@ type: software
 title: "mpvRx"
 abstract: "An Android video and music player powered by mpv."
 authors:
-  - name: "Ritesh Pandit"
-repository-code: "https://github.com/Riteshp2001/mpvRx"
-url: "https://riteshp2001.github.io/mpvRx"
+  - name: "Krishna"
+repository-code: "https://github.com/DARKNIGHT7473/VideoPlayer"
 license: AGPL-3.0-or-later
 keywords:
   - Android

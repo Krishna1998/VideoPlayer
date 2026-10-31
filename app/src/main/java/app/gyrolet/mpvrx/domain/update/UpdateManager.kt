@@ -442,9 +442,9 @@ class UpdateManager(
   }
 
   private companion object {
-    const val STABLE_RELEASE_URL = "https://api.github.com/repos/Riteshp2001/mpvRx/releases/latest"
-    const val PREVIEW_RELEASE_URL = "https://riteshp2001.github.io/mpvRx/latest.json"
-    const val EXPERIMENTAL_RELEASE_URL = "https://riteshp2001.github.io/mpvRx/experimental.json"
+    const val STABLE_RELEASE_URL = "https://api.github.com/repos/DARKNIGHT7473/VideoPlayer/releases/latest"
+    const val PREVIEW_RELEASE_URL = "https://api.github.com/repos/DARKNIGHT7473/VideoPlayer/releases"
+    const val EXPERIMENTAL_RELEASE_URL = "https://api.github.com/repos/DARKNIGHT7473/VideoPlayer/releases"
     const val LEGACY_IGNORED_VERSION_KEY = "ignored_version"
     const val PART_SUFFIX = ".part"
     const val LOCAL_HASH_LENGTH = 12

@@ -394,7 +394,7 @@ class CrashActivity : AppCompatActivity() {
               }
               if (reportFailed) {
                 Text(stringResource(R.string.crash_screen_report_failed), color = MaterialTheme.colorScheme.error)
-                TextButton(onClick = ::prepareReport) { Text(stringResource(R.string.contributors_retry)) }
+                TextButton(onClick = ::prepareReport) { Text(stringResource(R.string.ui_retry)) }
               }
               HorizontalDivider()
               FilledTonalButton(

@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+﻿<?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="pref_liquid_glass_material">玻璃材质</string>
   <string name="pref_liquid_glass_frost">磨砂效果</string>
@@ -944,39 +944,9 @@
   <string name="hdr_mode_linear_short">线性</string>
   <string name="hdr_mode_linear_description">通过 hdr-toys 的 Astra 和 Bottosson 着色器链实现的线性 HDR</string>
   <string name="hdr_mode_output_diagnostic">HDR - %1$s 模式输出</string>
-  <string name="pref_section_support">支持</string>
   <string name="pref_section_updates">更新</string>
   <string name="pref_section_system">系统</string>
-  <string name="pref_hall_of_fame_title">荣誉堂</string>
-  <string name="pref_hall_of_fame_summary">创作者、贡献者与社区</string>
-  <string name="hall_of_fame_original_developer">mpvEx 原始开发者</string>
-  <string name="hall_of_fame_maintainer">mpvRx 维护者</string>
-  <string name="hall_of_fame_featured_contributors">特别贡献者</string>
-  <string name="hall_of_fame_active_title">活跃贡献者</string>
-  <string name="hall_of_fame_active_period">最近 90 天的提交</string>
-  <string name="hall_of_fame_feedback_title">问题报告者与测试者</string>
-  <string name="hall_of_fame_feedback_summary">问题报告与社区反馈</string>
-  <string name="hall_of_fame_all_title">所有贡献者</string>
-  <string name="hall_of_fame_all_period">项目整个历史中的贡献</string>
-  <string name="hall_of_fame_view_profile">在 GitHub 上查看 %1$s</string>
-  <string name="hall_of_fame_view_github">在 GitHub 上查看</string>
-  <plurals name="hall_of_fame_commit_count">
-    <item quantity="other">%1$d 次提交</item>
-  </plurals>
-  <plurals name="hall_of_fame_issue_count">
-    <item quantity="other">%1$d 个问题报告</item>
-  </plurals>
-  <plurals name="hall_of_fame_feedback_count">
-    <item quantity="other">%1$d 条反馈评论</item>
-  </plurals>
-  <string name="contributors_loading">正在加载贡献者...</string>
-  <string name="contributors_load_error">无法加载贡献者</string>
-  <string name="contributors_empty">未找到贡献者。</string>
-  <string name="contributors_retry">重试</string>
   <string name="network_connection_invalid_port">请输入 1 到 65535 之间的端口号</string>
-  <plurals name="contributors_contribution_count">
-    <item quantity="other">%1$d 次贡献</item>
-  </plurals>
   <string name="ytdlp_container">封装格式</string>
   <string name="ytdlp_subtitles_language">字幕与语言</string>
   <string name="ytdlp_playlist_behavior">播放列表行为</string>
@@ -1394,23 +1364,15 @@
   <string name="ui_pan_zoom">平移与缩放</string>
   <string name="ui_decrease_zoom">缩小</string>
   <string name="ui_increase_zoom">放大</string>
-  <string name="ui_by_ritesh_pandit">作者：Ritesh Pandit</string>
+  <string name="ui_by_ritesh_pandit">作者：Krishna</string>
   <string name="ui_github">GitHub</string>
   <string name="ui_privacy_policy">隐私政策</string>
   <string name="ui_device_info">设备信息</string>
-  <string name="ui_buy_me_a_coffee">请我喝咖啡</string>
-  <string name="ui_if_you_enjoy_mpvrx_consider_supporting_its_development_every_bit">如果您喜欢 mpvRx，请考虑支持其开发。每一份支持都有帮助！</string>
-  <string name="ui_upi_id">UPI ID</string>
-  <string name="ui_panditritesh2001_okhdfcbank">panditritesh2001@okhdfcbank</string>
-  <string name="ui_send_love">送出支持</string>
   <string name="ui_auto_check_for_updates">自动检查更新</string>
   <string name="ui_check_on_startup">启动时检查</string>
   <string name="ui_check_for_updates_now">立即检查更新</string>
   <string name="ui_core_open_source_dependencies_used_by_mpvrx">mpvRx 使用的核心开源依赖项。</string>
-  <string name="ui_copy_upi_id">复制 UPI ID</string>
   <string name="ui_already_using_latest_version">已是最新版本</string>
-  <string name="ui_upi_id_copied">UPI ID 已复制！</string>
-  <string name="ui_no_upi_app_found">未找到 UPI 应用</string>
   <string name="ui_install_and_update_yt_dlp_for_streaming_support">安装并更新 yt-dlp 以支持流媒体</string>
   <string name="ui_instructions_for_ai_file_renaming">AI 文件重命名说明...</string>
   <string name="ui_instructions_for_ai_subtitle_translation">AI 字幕翻译说明...</string>
@@ -2425,13 +2387,6 @@
   <string name="folder_blacklist_audio">音频</string>
   <string name="subtitle_source_search_hint">搜索字幕来源</string>
   <string name="subtitle_sources_load_error">无法加载字幕来源</string>
-  <string name="hall_of_fame_subtitle">致敬杰出贡献者</string>
-  <string name="hall_of_fame_featured_subtitle">让这个项目变得更好的优秀伙伴</string>
-  <string name="hall_of_fame_view_all">查看全部</string>
-  <string name="hall_of_fame_contributor_badge">贡献者</string>
-  <string name="hall_of_fame_tester_badge">测试者</string>
-  <string name="hall_of_fame_show_section">显示</string>
-  <string name="hall_of_fame_hide_section">隐藏</string>
   <string name="media_widget_name">mpvRx 播放</string>
   <string name="media_widget_description">控制音频和视频播放</string>
   <string name="media_widget_pill_name">mpvRx 音乐胶囊</string>

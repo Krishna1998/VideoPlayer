@@ -17,7 +17,6 @@ import app.gyrolet.mpvrx.domain.torrent.TorrentStreamingEngine
 import app.gyrolet.mpvrx.network.AndroidCookieJar
 import app.gyrolet.mpvrx.network.SharedHttpClient
 import app.gyrolet.mpvrx.preferences.AiPreferences
-import app.gyrolet.mpvrx.repository.GitHubContributorsRepository
 import app.gyrolet.mpvrx.repository.IntroDbRepository
 import app.gyrolet.mpvrx.repository.ai.AiClient
 import app.gyrolet.mpvrx.repository.ai.AiService
@@ -63,7 +62,6 @@ val domainModule =
     single { MpvRxSubtitleHubRepository(get(), get(), get(), get()) }
     single { OnlineSubtitleOrchestrator(get<WyzieSearchRepository>(), get<MpvRxSubtitleHubRepository>()) }
     single { IntroDbRepository(get(), get(), androidContext()) }
-    single { GitHubContributorsRepository(get(), get(), androidContext()) }
     single { OpenCodeClient(get(), get()) }
     single { GroqClient(get(), get()) }
     single { OpenAiClient(get(), get()) }

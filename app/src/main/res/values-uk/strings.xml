@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!-- Translated to Ukrainian (Українська) by @WATCHER-00 (https://github.com/WATCHER-00) -->
 <resources>
   <string name="pref_liquid_glass_material">Матеріал скла</string>
@@ -1000,51 +1000,9 @@
   <string name="hdr_mode_linear_short">Лінійний</string>
   <string name="hdr_mode_linear_description">Лінійний конвеєр світла HDR із шейдерами hdr-toys Astra та Bottosson</string>
   <string name="hdr_mode_output_diagnostic">HDR — Режим виводу %1$s</string>
-  <string name="pref_section_support">Підтримка</string>
   <string name="pref_section_updates">Оновлення</string>
   <string name="pref_section_system">Система</string>
-  <string name="pref_hall_of_fame_title">Зала слави</string>
-  <string name="pref_hall_of_fame_summary">Автори, учасники розробки та спільнота</string>
-  <string name="hall_of_fame_original_developer">Оригінальний розробник mpvEx</string>
-  <string name="hall_of_fame_maintainer">Супровідник mpvRx</string>
-  <string name="hall_of_fame_featured_contributors">Визначні учасники</string>
-  <string name="hall_of_fame_active_title">Активні учасники</string>
-  <string name="hall_of_fame_active_period">Коміти за останні 90 днів</string>
-  <string name="hall_of_fame_feedback_title">Тестувальники та автори звітів</string>
-  <string name="hall_of_fame_feedback_summary">Звіти про помилки та відгуки спільноти</string>
-  <string name="hall_of_fame_all_title">Усі учасники</string>
-  <string name="hall_of_fame_all_period">За всю історію проєкту</string>
-  <string name="hall_of_fame_view_profile">Переглянути %1$s на GitHub</string>
-  <string name="hall_of_fame_view_github">Переглянути на GitHub</string>
-  <plurals name="hall_of_fame_commit_count">
-    <item quantity="one">%1$d коміт</item>
-    <item quantity="few">%1$d коміти</item>
-    <item quantity="many">%1$d комітів</item>
-    <item quantity="other">%1$d комітів</item>
-  </plurals>
-  <plurals name="hall_of_fame_issue_count">
-    <item quantity="one">%1$d повідомлення про проблему</item>
-    <item quantity="few">%1$d повідомлення про проблеми</item>
-    <item quantity="many">%1$d повідомлень про проблеми</item>
-    <item quantity="other">%1$d повідомлень про проблеми</item>
-  </plurals>
-  <plurals name="hall_of_fame_feedback_count">
-    <item quantity="one">%1$d звіт</item>
-    <item quantity="few">%1$d звіти</item>
-    <item quantity="many">%1$d звітів</item>
-    <item quantity="other">%1$d звітів</item>
-  </plurals>
-  <string name="contributors_loading">Завантаження списку учасників…</string>
-  <string name="contributors_load_error">Не вдалося завантажити учасників</string>
-  <string name="contributors_empty">Учасників не знайдено.</string>
-  <string name="contributors_retry">Спробувати знову</string>
   <string name="network_connection_invalid_port">Введіть порт від 1 до 65535</string>
-  <plurals name="contributors_contribution_count">
-    <item quantity="one">%1$d внесок</item>
-    <item quantity="few">%1$d внески</item>
-    <item quantity="many">%1$d внесків</item>
-    <item quantity="other">%1$d внесків</item>
-  </plurals>
   <string name="ytdlp_container">Контейнер</string>
   <string name="ytdlp_subtitles_language">Субтитри та мова</string>
   <string name="ytdlp_playlist_behavior">Поведінка списків відтворення</string>
@@ -1554,15 +1512,10 @@
   <string name="ui_pan_zoom">Панорамування та масштаб</string>
   <string name="ui_decrease_zoom">Зменшити масштаб</string>
   <string name="ui_increase_zoom">Збільшити масштаб</string>
-  <string name="ui_by_ritesh_pandit">Автор: Ritesh Pandit</string>
+  <string name="ui_by_ritesh_pandit">Автор: Krishna</string>
   <string name="ui_github">GitHub</string>
   <string name="ui_privacy_policy">Політика конфіденційності</string>
   <string name="ui_device_info">Відомості про пристрій</string>
-  <string name="ui_buy_me_a_coffee">Купити мені каву</string>
-  <string name="ui_if_you_enjoy_mpvrx_consider_supporting_its_development_every_bit">Якщо вам подобається mpvRx, підтримайте його розробку. Кожен внесок має значення!</string>
-  <string name="ui_upi_id">UPI ID</string>
-  <string name="ui_panditritesh2001_okhdfcbank">panditritesh2001@okhdfcbank</string>
-  <string name="ui_send_love">Надіслати підтримку</string>
   <string name="ui_auto_check_for_updates">Автоперевірка оновлень</string>
   <string name="ui_check_on_startup">Перевіряти під час запуску</string>
   <string name="ui_check_for_updates_now">Перевірити наявність оновлень зараз</string>
@@ -1579,10 +1532,7 @@
   <string name="update_beta_build_format">Бета r%1$d</string>
   <string name="ui_beta_badge_suffix"> (Бета)</string>
   <string name="ui_core_open_source_dependencies_used_by_mpvrx">Основні відкриті залежності, що використовуються в mpvRx.</string>
-  <string name="ui_copy_upi_id">Скопіювати UPI ID</string>
   <string name="ui_already_using_latest_version">Уже використовується остання версія</string>
-  <string name="ui_upi_id_copied">UPI ID скопійовано!</string>
-  <string name="ui_no_upi_app_found">Додаток UPI не знайдено</string>
   <string name="ui_install_and_update_yt_dlp_for_streaming_support">Встановіть та оновіть yt-dlp для підтримки потокового відео</string>
   <string name="ui_instructions_for_ai_file_renaming">Інструкції для перейменування файлів за допомогою ШІ…</string>
   <string name="ui_instructions_for_ai_subtitle_translation">Інструкції для перекладу субтитрів за допомогою ШІ…</string>
@@ -2431,13 +2381,6 @@
   <string name="pref_appearance_category_liquid_glass">Рідке скло</string>
   <string name="pref_subtitles_secondary_pinch_zoom">Масштабувати вторинні субтитри жестом</string>
   <string name="pref_subtitles_secondary_pinch_zoom_summary">Під час масштабування основних субтитрів жестом також масштабувати вторинні</string>
-  <string name="hall_of_fame_subtitle">Відзначаємо провідних учасників</string>
-  <string name="hall_of_fame_featured_subtitle">Чудові люди, які роблять цей проєкт кращим</string>
-  <string name="hall_of_fame_view_all">Показати всіх</string>
-  <string name="hall_of_fame_contributor_badge">Учасник</string>
-  <string name="hall_of_fame_tester_badge">Тестувальник</string>
-  <string name="hall_of_fame_show_section">Показати</string>
-  <string name="hall_of_fame_hide_section">Приховати</string>
   <string name="media_widget_pill_name">Музична панель mpvRx</string>
   <string name="media_widget_pill_description">Компактне керування відтворенням музики</string>
   <string name="playlist_open_action">Відкрити список відтворення</string>

@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+﻿<?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="pref_liquid_glass_material">Material do vidro</string>
   <string name="pref_liquid_glass_frost">Efeito fosco</string>
@@ -940,43 +940,9 @@ Reinicie o aplicativo para que todas as alterações entrem em vigor.</string>
   <string name="hdr_mode_linear_short">Linear</string>
   <string name="hdr_mode_linear_description">Pipeline HDR linear através dos shaders Astra e Bottosson do hdr-toys</string>
   <string name="hdr_mode_output_diagnostic">HDR - Saída do modo %1$s</string>
-  <string name="pref_section_support">Suporte</string>
   <string name="pref_section_updates">Atualizações</string>
   <string name="pref_section_system">Sistema</string>
-  <string name="pref_hall_of_fame_title">Galeria da fama</string>
-  <string name="pref_hall_of_fame_summary">Criadores, colaboradores e comunidade</string>
-  <string name="hall_of_fame_original_developer">Desenvolvedor original do mpvEx</string>
-  <string name="hall_of_fame_maintainer">Mantenedor do mpvRx</string>
-  <string name="hall_of_fame_featured_contributors">Colaboradores em destaque</string>
-  <string name="hall_of_fame_active_title">Colaboradores ativos</string>
-  <string name="hall_of_fame_active_period">Commits nos últimos 90 dias</string>
-  <string name="hall_of_fame_feedback_title">Relatores de problemas e testadores</string>
-  <string name="hall_of_fame_feedback_summary">Relatos de problemas e opiniões da comunidade</string>
-  <string name="hall_of_fame_all_title">Todos os colaboradores</string>
-  <string name="hall_of_fame_all_period">Ao longo da história do projeto</string>
-  <string name="hall_of_fame_view_profile">Ver %1$s no GitHub</string>
-  <string name="hall_of_fame_view_github">Ver no GitHub</string>
-  <plurals name="hall_of_fame_commit_count">
-    <item quantity="one">%1$d commit</item>
-    <item quantity="other">%1$d commits</item>
-  </plurals>
-  <plurals name="hall_of_fame_issue_count">
-    <item quantity="one">%1$d problema relatado</item>
-    <item quantity="other">%1$d problemas relatados</item>
-  </plurals>
-  <plurals name="hall_of_fame_feedback_count">
-    <item quantity="one">%1$d comentário</item>
-    <item quantity="other">%1$d comentários</item>
-  </plurals>
-  <string name="contributors_loading">Carregando colaboradores...</string>
-  <string name="contributors_load_error">Não foi possível carregar os colaboradores</string>
-  <string name="contributors_empty">Nenhum colaborador encontrado.</string>
-  <string name="contributors_retry">Tentar novamente</string>
   <string name="network_connection_invalid_port">Insira uma porta entre 1 e 65535</string>
-  <plurals name="contributors_contribution_count">
-    <item quantity="one">%1$d contribuição</item>
-    <item quantity="other">%1$d contribuições</item>
-  </plurals>
   <string name="ytdlp_container">Contêiner</string>
   <string name="ytdlp_subtitles_language">Legendas e idioma</string>
   <string name="ytdlp_playlist_behavior">Comportamento da playlist</string>
@@ -1374,23 +1340,15 @@ Reinicie o aplicativo para que todas as alterações entrem em vigor.</string>
   <string name="ui_pan_zoom">Mover e ampliar</string>
   <string name="ui_decrease_zoom">Diminuir zoom</string>
   <string name="ui_increase_zoom">Aumentar zoom</string>
-  <string name="ui_by_ritesh_pandit">Por Ritesh Pandit</string>
+  <string name="ui_by_ritesh_pandit">Por Krishna</string>
   <string name="ui_github">GitHub</string>
   <string name="ui_privacy_policy">Política de privacidade</string>
   <string name="ui_device_info">Informações do dispositivo</string>
-  <string name="ui_buy_me_a_coffee">Pague-me um café</string>
-  <string name="ui_if_you_enjoy_mpvrx_consider_supporting_its_development_every_bit">Se você gosta do mpvRx, considere apoiar o desenvolvimento. Toda ajuda conta!</string>
-  <string name="ui_upi_id">ID UPI</string>
-  <string name="ui_panditritesh2001_okhdfcbank">panditritesh2001@okhdfcbank</string>
-  <string name="ui_send_love">Enviar carinho</string>
   <string name="ui_auto_check_for_updates">Verificar atualizações automaticamente</string>
   <string name="ui_check_on_startup">Verificar ao iniciar</string>
   <string name="ui_check_for_updates_now">Verificar atualizações agora</string>
   <string name="ui_core_open_source_dependencies_used_by_mpvrx">Principais dependências de código aberto usadas pelo mpvRx.</string>
-  <string name="ui_copy_upi_id">Copiar ID UPI</string>
   <string name="ui_already_using_latest_version">Você já está usando a versão mais recente</string>
-  <string name="ui_upi_id_copied">ID UPI copiado!</string>
-  <string name="ui_no_upi_app_found">Nenhum app UPI encontrado</string>
   <string name="ui_install_and_update_yt_dlp_for_streaming_support">Instale e atualize o yt-dlp para suporte a streaming</string>
   <string name="ui_instructions_for_ai_file_renaming">Instruções para renomear arquivos com IA...</string>
   <string name="ui_instructions_for_ai_subtitle_translation">Instruções para tradução de legendas com IA...</string>
@@ -2426,13 +2384,6 @@ Reinicie o aplicativo para que todas as alterações entrem em vigor.</string>
   <string name="folder_blacklist_audio">Áudio</string>
   <string name="subtitle_source_search_hint">Pesquisar fontes de legendas</string>
   <string name="subtitle_sources_load_error">Não foi possível carregar as fontes de legendas</string>
-  <string name="hall_of_fame_subtitle">Homenageando os principais colaboradores</string>
-  <string name="hall_of_fame_featured_subtitle">Pessoas incríveis que tornam este projeto melhor</string>
-  <string name="hall_of_fame_view_all">Ver todos</string>
-  <string name="hall_of_fame_contributor_badge">Colaborador</string>
-  <string name="hall_of_fame_tester_badge">Testador</string>
-  <string name="hall_of_fame_show_section">Mostrar</string>
-  <string name="hall_of_fame_hide_section">Ocultar</string>
   <string name="media_widget_name">Reprodução do mpvRx</string>
   <string name="media_widget_description">Controlar a reprodução de áudio e vídeo</string>
   <string name="media_widget_pill_name">Barra de música do mpvRx</string>

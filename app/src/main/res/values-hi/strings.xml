@@ -1,4 +1,4 @@
-<resources>
+﻿<resources>
   <string name="pref_liquid_glass_material">कांच की सामग्री</string>
   <string name="pref_liquid_glass_frost">फ्रॉस्ट प्रभाव</string>
   <string name="generic_expand">विस्तृत करें</string>
@@ -854,43 +854,9 @@
   <string name="hdr_mode_linear_short">लीनियर</string>
   <string name="hdr_mode_linear_description">hdr-toys Astra और Bottosson शेडर के साथ लीनियर लाइट HDR पाइपलाइन</string>
   <string name="hdr_mode_output_diagnostic">HDR - %1$s मोड आउटपुट</string>
-  <string name="pref_section_support">सपोर्ट</string>
   <string name="pref_section_updates">अपडेट</string>
   <string name="pref_section_system">सिस्टम</string>
-  <string name="pref_hall_of_fame_title">गौरव दीर्घा</string>
-  <string name="pref_hall_of_fame_summary">निर्माता, योगदानकर्ता और समुदाय</string>
-  <string name="hall_of_fame_original_developer">mpvEx के मूल डेवलपर</string>
-  <string name="hall_of_fame_maintainer">mpvRx के अनुरक्षक</string>
-  <string name="hall_of_fame_featured_contributors">विशेष योगदानकर्ता</string>
-  <string name="hall_of_fame_active_title">सक्रिय योगदानकर्ता</string>
-  <string name="hall_of_fame_active_period">पिछले 90 दिनों के कमिट</string>
-  <string name="hall_of_fame_feedback_title">समस्या रिपोर्टकर्ता और परीक्षक</string>
-  <string name="hall_of_fame_feedback_summary">समस्या रिपोर्ट और समुदाय की प्रतिक्रिया</string>
-  <string name="hall_of_fame_all_title">सभी योगदानकर्ता</string>
-  <string name="hall_of_fame_all_period">परियोजना के पूरे इतिहास में</string>
-  <string name="hall_of_fame_view_profile">GitHub पर %1$s को देखें</string>
-  <string name="hall_of_fame_view_github">GitHub पर देखें</string>
-  <plurals name="hall_of_fame_commit_count">
-    <item quantity="one">%1$d कमिट</item>
-    <item quantity="other">%1$d कमिट</item>
-  </plurals>
-  <plurals name="hall_of_fame_issue_count">
-    <item quantity="one">%1$d समस्या रिपोर्ट की</item>
-    <item quantity="other">%1$d समस्याएँ रिपोर्ट कीं</item>
-  </plurals>
-  <plurals name="hall_of_fame_feedback_count">
-    <item quantity="one">%1$d प्रतिक्रिया टिप्पणी</item>
-    <item quantity="other">%1$d प्रतिक्रिया टिप्पणियाँ</item>
-  </plurals>
-  <string name="contributors_loading">योगदानकर्ताओं को लोड किया जा रहा है...</string>
-  <string name="contributors_load_error">योगदानकर्ताओं को लोड नहीं किया जा सका</string>
-  <string name="contributors_empty">कोई योगदानकर्ता नहीं मिला।</string>
-  <string name="contributors_retry">फिर से प्रयास करें</string>
   <string name="network_connection_invalid_port">1 से 65535 तक का पोर्ट दर्ज करें</string>
-  <plurals name="contributors_contribution_count">
-    <item quantity="one">%1$d योगदान</item>
-    <item quantity="other">%1$d योगदान</item>
-  </plurals>
   <string name="ytdlp_container">कंटेनर</string>
   <string name="ytdlp_subtitles_language">सबटाइटल और भाषा</string>
   <string name="ytdlp_playlist_behavior">प्लेलिस्ट व्यवहार</string>
@@ -1286,23 +1252,15 @@
   <string name="ui_pan_zoom">पैन और ज़ूम</string>
   <string name="ui_decrease_zoom">ज़ूम घटाएं</string>
   <string name="ui_increase_zoom">ज़ूम बढ़ाएं</string>
-  <string name="ui_by_ritesh_pandit">Ritesh Pandit द्वारा</string>
+  <string name="ui_by_ritesh_pandit">Krishna द्वारा</string>
   <string name="ui_github">GitHub</string>
   <string name="ui_privacy_policy">गोपनीयता नीति</string>
   <string name="ui_device_info">डिवाइस जानकारी</string>
-  <string name="ui_buy_me_a_coffee">मुझे कॉफ़ी पिलाएँ</string>
-  <string name="ui_if_you_enjoy_mpvrx_consider_supporting_its_development_every_bit">अगर आपको mpvRx पसंद है, तो इसके डेवलपमेंट को सपोर्ट करने पर विचार करें। हर छोटी मदद मायने रखती है!</string>
-  <string name="ui_upi_id">UPI आईडी</string>
-  <string name="ui_panditritesh2001_okhdfcbank">panditritesh2001@okhdfcbank</string>
-  <string name="ui_send_love">प्यार भेजें</string>
   <string name="ui_auto_check_for_updates">अपडेट के लिए ऑटो जांच करें</string>
   <string name="ui_check_on_startup">शुरू होने पर जांचें</string>
   <string name="ui_check_for_updates_now">अभी अपडेट जांचें</string>
   <string name="ui_core_open_source_dependencies_used_by_mpvrx">mpvRx द्वारा इस्तेमाल की जाने वाली मुख्य ओपन सोर्स डिपेंडेंसी।</string>
-  <string name="ui_copy_upi_id">UPI ID कॉपी करें</string>
   <string name="ui_already_using_latest_version">पहले से ही नवीनतम वर्जन इस्तेमाल हो रहा है</string>
-  <string name="ui_upi_id_copied">UPI ID कॉपी हुई!</string>
-  <string name="ui_no_upi_app_found">कोई UPI ऐप नहीं मिला</string>
   <string name="ui_install_and_update_yt_dlp_for_streaming_support">स्ट्रीमिंग सपोर्ट के लिए yt-dlp इंस्टॉल और अपडेट करें</string>
   <string name="ui_instructions_for_ai_file_renaming">AI फाइल रिनेमिंग के लिए निर्देश...</string>
   <string name="ui_instructions_for_ai_subtitle_translation">AI सबटाइटल ट्रांसलेशन के लिए निर्देश...</string>
@@ -2334,13 +2292,6 @@
   <string name="folder_blacklist_audio">ऑडियो</string>
   <string name="subtitle_source_search_hint">सबटाइटल स्रोत खोजें</string>
   <string name="subtitle_sources_load_error">सबटाइटल स्रोत लोड नहीं हो सके</string>
-  <string name="hall_of_fame_subtitle">प्रमुख योगदानकर्ताओं का सम्मान</string>
-  <string name="hall_of_fame_featured_subtitle">इस परियोजना को बेहतर बनाने वाले शानदार लोग</string>
-  <string name="hall_of_fame_view_all">सभी देखें</string>
-  <string name="hall_of_fame_contributor_badge">योगदानकर्ता</string>
-  <string name="hall_of_fame_tester_badge">परीक्षक</string>
-  <string name="hall_of_fame_show_section">दिखाएँ</string>
-  <string name="hall_of_fame_hide_section">छिपाएँ</string>
   <string name="media_widget_name">mpvRx प्लेबैक</string>
   <string name="media_widget_description">ऑडियो और वीडियो प्लेबैक नियंत्रित करें</string>
   <string name="media_widget_pill_name">mpvRx म्यूज़िक पट्टी</string>

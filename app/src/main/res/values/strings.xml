@@ -603,7 +603,7 @@
   <string name="timer_remaining">%s remaining</string>
   <string name="toast_sleep_timer_ended">Sleep timer ended</string>
   <string name="volume_slider_absolute_value" translatable="false">%d</string>
-  <string name="github_repo_url" translatable="false">https://github.com/Riteshp2001/mpvRx</string>
+  <string name="github_repo_url" translatable="false">https://github.com/DARKNIGHT7473/VideoPlayer</string>
   <string name="swap_the_volume_and_brightness_slider">Swap volume and brightness slider</string>
   <string name="pref_player_display_reduce_player_animation">Reduce player animation</string>
   <!-- Animation settings -->
@@ -1173,50 +1173,9 @@
   <string name="hdr_mode_linear_short">Linear</string>
   <string name="hdr_mode_linear_description">Linear light HDR pipeline with hdr-toys Astra and Bottosson shaders</string>
   <string name="hdr_mode_output_diagnostic">HDR - %1$s Mode Output</string>
-  <string name="pref_section_support">Support</string>
   <string name="pref_section_updates">Updates</string>
   <string name="pref_section_system">System</string>
-  <string name="pref_hall_of_fame_title">Hall of Fame</string>
-  <string name="pref_hall_of_fame_summary">Creators, contributors and community</string>
-  <string name="hall_of_fame_original_developer">mpvEx original developer</string>
-  <string name="hall_of_fame_maintainer">mpvRx maintainer</string>
-  <string name="hall_of_fame_featured_contributors">Featured contributors</string>
-  <string name="hall_of_fame_active_title">Active contributors</string>
-  <string name="hall_of_fame_active_period">Commits in the last 90 days</string>
-  <string name="hall_of_fame_feedback_title">Issue reporters &amp; testers</string>
-  <string name="hall_of_fame_feedback_summary">Issue reports and community feedback</string>
-  <string name="hall_of_fame_all_title">All contributors</string>
-  <string name="hall_of_fame_all_period">Across the project history</string>
-  <string name="hall_of_fame_view_profile">View %1$s on GitHub</string>
-  <string name="hall_of_fame_view_github">View on GitHub</string>
-  <string name="hall_of_fame_subtitle">Celebrating the top contributors</string>
-  <string name="hall_of_fame_featured_subtitle">Amazing people making this project better</string>
-  <string name="hall_of_fame_view_all">View All</string>
-  <string name="hall_of_fame_contributor_badge">Contributor</string>
-  <string name="hall_of_fame_tester_badge">Tester</string>
-  <string name="hall_of_fame_show_section">Show</string>
-  <string name="hall_of_fame_hide_section">Hide</string>
-  <plurals name="hall_of_fame_commit_count">
-    <item quantity="one">%1$d commit</item>
-    <item quantity="other">%1$d commits</item>
-  </plurals>
-  <plurals name="hall_of_fame_issue_count">
-    <item quantity="one">%1$d issue reported</item>
-    <item quantity="other">%1$d issues reported</item>
-  </plurals>
-  <plurals name="hall_of_fame_feedback_count">
-    <item quantity="one">%1$d feedback comment</item>
-    <item quantity="other">%1$d feedback comments</item>
-  </plurals>
-  <string name="contributors_loading">Loading contributors...</string>
-  <string name="contributors_load_error">Couldn\'t load contributors</string>
-  <string name="contributors_empty">No contributors found.</string>
-  <string name="contributors_retry">Retry</string>
   <string name="network_connection_invalid_port">Enter a port from 1 to 65535</string>
-  <plurals name="contributors_contribution_count">
-    <item quantity="one">%1$d contribution</item>
-    <item quantity="other">%1$d contributions</item>
-  </plurals>
   <string name="ytdlp_container">Container</string>
   <string name="ytdlp_subtitles_language">Subtitles &amp; Language</string>
   <string name="ytdlp_playlist_behavior">Playlist Behavior</string>
@@ -1723,16 +1682,11 @@
   <string name="ui_pan_zoom">Pan &amp; Zoom</string>
   <string name="ui_decrease_zoom">Decrease zoom</string>
   <string name="ui_increase_zoom">Increase zoom</string>
-  <string name="ui_by_ritesh_pandit">By Ritesh Pandit</string>
+  <string name="ui_by_ritesh_pandit">By Krishna</string>
   <string name="ui_github">GitHub</string>
   <string name="ui_privacy_policy">Privacy policy</string>
   <string name="privacy_policy_url" translatable="false">https://mpvrx.vercel.app/docs/reference/privacy-and-permissions</string>
   <string name="ui_device_info">Device Info</string>
-  <string name="ui_buy_me_a_coffee">Buy Me a Coffee</string>
-  <string name="ui_if_you_enjoy_mpvrx_consider_supporting_its_development_every_bit">If you enjoy mpvRx, consider supporting its development. Every bit helps!</string>
-  <string name="ui_upi_id">UPI ID</string>
-  <string name="ui_panditritesh2001_okhdfcbank">panditritesh2001@okhdfcbank</string>
-  <string name="ui_send_love">Send Love</string>
   <string name="ui_auto_check_for_updates">Auto Check for Updates</string>
   <string name="ui_check_on_startup">Check on startup</string>
   <string name="ui_check_for_updates_now">Check for Updates Now</string>
@@ -1754,10 +1708,7 @@
   <string name="update_beta_build_format">Beta r%1$d</string>
   <string name="ui_beta_badge_suffix">\u0020(Beta)</string>
   <string name="ui_core_open_source_dependencies_used_by_mpvrx">Core open source dependencies used by mpvRx.</string>
-  <string name="ui_copy_upi_id">Copy UPI ID</string>
   <string name="ui_already_using_latest_version">Already using latest version</string>
-  <string name="ui_upi_id_copied">UPI ID copied!</string>
-  <string name="ui_no_upi_app_found">No UPI app found</string>
   <string name="ui_install_and_update_yt_dlp_for_streaming_support">Install and update yt-dlp for streaming support</string>
   <string name="ui_instructions_for_ai_file_renaming">Instructions for AI file renaming...</string>
   <string name="ui_instructions_for_ai_subtitle_translation">Instructions for AI subtitle translation...</string>

@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+﻿<?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="pref_liquid_glass_material">مادة الزجاج</string>
   <string name="pref_liquid_glass_frost">تأثير الصقيع</string>
@@ -940,55 +940,9 @@
   <string name="hdr_mode_linear_short">خطي</string>
   <string name="hdr_mode_linear_description">إخراج HDR الخطي عبر سلسلة تأثيرات hdr-toys من Astra وBottosson</string>
   <string name="hdr_mode_output_diagnostic">HDR - إخراج وضع %1$s</string>
-  <string name="pref_section_support">الدعم</string>
   <string name="pref_section_updates">التحديثات</string>
   <string name="pref_section_system">النظام</string>
-  <string name="pref_hall_of_fame_title">قاعة المشاهير</string>
-  <string name="pref_hall_of_fame_summary">المطورون والمساهمون والمجتمع</string>
-  <string name="hall_of_fame_original_developer">المطور الأصلي لـ mpvEx</string>
-  <string name="hall_of_fame_maintainer">المشرف على mpvRx</string>
-  <string name="hall_of_fame_featured_contributors">المساهمون المميزون</string>
-  <string name="hall_of_fame_active_title">المساهمون النشطون</string>
-  <string name="hall_of_fame_active_period">التعديلات البرمجية خلال آخر 90 يومًا</string>
-  <string name="hall_of_fame_feedback_title">مبلّغو المشكلات والمختبرون</string>
-  <string name="hall_of_fame_feedback_summary">بلاغات المشكلات وملاحظات المجتمع</string>
-  <string name="hall_of_fame_all_title">جميع المساهمين</string>
-  <string name="hall_of_fame_all_period">على امتداد تاريخ المشروع</string>
-  <string name="hall_of_fame_view_profile">عرض %1$s على GitHub</string>
-  <string name="hall_of_fame_view_github">عرض على GitHub</string>
-  <plurals name="hall_of_fame_commit_count">
-    <item quantity="zero">%1$d تعديل برمجي</item>
-    <item quantity="one">%1$d تعديل برمجي</item>
-    <item quantity="two">%1$d تعديلان برمجيان</item>
-    <item quantity="few">%1$d تعديلات برمجية</item>
-    <item quantity="many">%1$d تعديلًا برمجيًا</item>
-    <item quantity="other">%1$d تعديل برمجي</item>
-  </plurals>
-  <plurals name="hall_of_fame_issue_count">
-    <item quantity="zero">%1$d بلاغ مشكلة</item>
-    <item quantity="one">%1$d بلاغ مشكلة</item>
-    <item quantity="two">%1$d بلاغا مشكلة</item>
-    <item quantity="few">%1$d بلاغات مشكلات</item>
-    <item quantity="many">%1$d بلاغ مشكلة</item>
-    <item quantity="other">%1$d بلاغ مشكلة</item>
-  </plurals>
-  <plurals name="hall_of_fame_feedback_count">
-    <item quantity="zero">%1$d تعليق</item>
-    <item quantity="one">%1$d تعليق</item>
-    <item quantity="two">%1$d تعليقان</item>
-    <item quantity="few">%1$d تعليقات</item>
-    <item quantity="many">%1$d تعليقًا</item>
-    <item quantity="other">%1$d تعليق</item>
-  </plurals>
-  <string name="contributors_loading">جارٍ تحميل المساهمين...</string>
-  <string name="contributors_load_error">تعذر تحميل المساهمين</string>
-  <string name="contributors_empty">لم يتم العثور على مساهمين.</string>
-  <string name="contributors_retry">إعادة المحاولة</string>
   <string name="network_connection_invalid_port">أدخل منفذًا من 1 إلى 65535</string>
-  <plurals name="contributors_contribution_count">
-    <item quantity="one">%1$d مساهمة</item>
-    <item quantity="other">%1$d مساهمة</item>
-  </plurals>
   <string name="ytdlp_container">الحاوية</string>
   <string name="ytdlp_subtitles_language">الترجمة واللغة</string>
   <string name="ytdlp_playlist_behavior">سلوك قائمة التشغيل</string>
@@ -1398,23 +1352,15 @@
   <string name="ui_pan_zoom">التحريك والتكبير</string>
   <string name="ui_decrease_zoom">تصغير</string>
   <string name="ui_increase_zoom">تكبير</string>
-  <string name="ui_by_ritesh_pandit">إعداد Ritesh Pandit</string>
+  <string name="ui_by_ritesh_pandit">إعداد Krishna</string>
   <string name="ui_github">GitHub</string>
   <string name="ui_privacy_policy">سياسة الخصوصية</string>
   <string name="ui_device_info">معلومات الجهاز</string>
-  <string name="ui_buy_me_a_coffee">ادعمني بقهوة</string>
-  <string name="ui_if_you_enjoy_mpvrx_consider_supporting_its_development_every_bit">إذا أعجبك mpvRx، فكّر في دعم تطويره. كل مساهمة تساعد!</string>
-  <string name="ui_upi_id">معرّف UPI</string>
-  <string name="ui_panditritesh2001_okhdfcbank">panditritesh2001@okhdfcbank</string>
-  <string name="ui_send_love">أرسل دعمك</string>
   <string name="ui_auto_check_for_updates">البحث التلقائي عن التحديثات</string>
   <string name="ui_check_on_startup">التحقق عند بدء التشغيل</string>
   <string name="ui_check_for_updates_now">البحث عن تحديثات الآن</string>
   <string name="ui_core_open_source_dependencies_used_by_mpvrx">التبعيات الأساسية مفتوحة المصدر التي يستخدمها mpvRx.</string>
-  <string name="ui_copy_upi_id">نسخ معرّف UPI</string>
   <string name="ui_already_using_latest_version">أنت تستخدم أحدث إصدار بالفعل</string>
-  <string name="ui_upi_id_copied">تم نسخ معرّف UPI!</string>
-  <string name="ui_no_upi_app_found">لم يتم العثور على تطبيق UPI</string>
   <string name="ui_install_and_update_yt_dlp_for_streaming_support">ثبّت yt-dlp وحدّثه لدعم البث</string>
   <string name="ui_instructions_for_ai_file_renaming">تعليمات لإعادة تسمية الملفات بالذكاء الاصطناعي...</string>
   <string name="ui_instructions_for_ai_subtitle_translation">تعليمات لترجمة الترجمة بالذكاء الاصطناعي...</string>
@@ -2460,13 +2406,6 @@
   <string name="folder_blacklist_audio">الصوت</string>
   <string name="subtitle_source_search_hint">ابحث عن مصادر الترجمة</string>
   <string name="subtitle_sources_load_error">تعذر تحميل مصادر الترجمة</string>
-  <string name="hall_of_fame_subtitle">نحتفي بأبرز المساهمين</string>
-  <string name="hall_of_fame_featured_subtitle">أشخاص رائعون يجعلون هذا المشروع أفضل</string>
-  <string name="hall_of_fame_view_all">عرض الكل</string>
-  <string name="hall_of_fame_contributor_badge">مساهم</string>
-  <string name="hall_of_fame_tester_badge">مختبِر</string>
-  <string name="hall_of_fame_show_section">إظهار</string>
-  <string name="hall_of_fame_hide_section">إخفاء</string>
   <string name="media_widget_name">تشغيل mpvRx</string>
   <string name="media_widget_description">تحكم في تشغيل الصوت والفيديو</string>
   <string name="media_widget_pill_name">شريط موسيقى mpvRx</string>

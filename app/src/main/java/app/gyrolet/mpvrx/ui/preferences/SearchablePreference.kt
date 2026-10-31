@@ -2089,15 +2089,6 @@ object SearchablePreferences {
           screen = AboutScreen,
         ),
       )
-      add(
-        SearchablePreference(
-          titleRes = R.string.pref_hall_of_fame_title,
-          summaryRes = R.string.pref_hall_of_fame_summary,
-          keywords = listOf("hall of fame", "contributors", "credits", "developers", "testers", "issues", "community"),
-          category = "About",
-          screen = HallOfFameScreen,
-        ),
-      )
     }.distinctBy { Triple(it.screen, it.titleRes, it.title) }
 
   /**
