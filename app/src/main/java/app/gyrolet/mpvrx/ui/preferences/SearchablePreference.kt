@@ -1027,26 +1027,6 @@ object SearchablePreferences {
       )
       add(
         SearchablePreference(
-          titleRes = R.string.pref_audio_visualizer_style_title,
-          keywords =
-            listOf(
-              "music",
-              "audio",
-              "visualizer",
-              "visualiser",
-              "reactive",
-              "blob",
-              "galaxy",
-              "spectrum",
-              "codepen",
-              "zain raza",
-            ),
-          category = "Audio",
-          screen = AudioPreferencesScreen,
-        ),
-      )
-      add(
-        SearchablePreference(
           titleRes = R.string.pref_audio_orientation_title,
           keywords = listOf("audio", "music", "orientation", "portrait", "landscape", "auto", "rotate"),
           category = "Audio",
@@ -1220,24 +1200,6 @@ object SearchablePreferences {
           screen = AdvancedPreferencesScreen,
         ),
       )
-      add(
-        SearchablePreference(
-          titleRes = R.string.pref_enable_lua_scripts_title,
-          summaryRes = R.string.pref_enable_lua_scripts_summary,
-          keywords = listOf("scripts", "lua", "js", "javascript", "enable", "load", "plugin"),
-          category = "Advanced",
-          screen = AdvancedPreferencesScreen,
-        ),
-      )
-      add(
-        SearchablePreference(
-          titleRes = R.string.pref_manage_lua_scripts_title,
-          summaryRes = R.string.pref_manage_lua_scripts_summary,
-          keywords = listOf("scripts", "lua", "js", "javascript", "manage", "select", "plugin"),
-          category = "Advanced",
-          screen = AdvancedPreferencesScreen,
-        ),
-      )
       if (app.gyrolet.mpvrx.BuildConfig.ENABLE_YTDLP) {
         add(
           SearchablePreference(
@@ -1308,24 +1270,6 @@ object SearchablePreferences {
             ),
           category = "Player",
           screen = PlayerPreferencesScreen,
-        ),
-      )
-      add(
-        SearchablePreference(
-          titleRes = R.string.pref_advanced_verbose_logging_title,
-          summaryRes = R.string.pref_advanced_verbose_logging_summary,
-          keywords = listOf("verbose", "logging", "debug", "output"),
-          category = "Advanced",
-          screen = AdvancedPreferencesScreen,
-        ),
-      )
-      add(
-        SearchablePreference(
-          titleRes = R.string.pref_advanced_dump_logs_title,
-          summaryRes = R.string.pref_advanced_dump_logs_summary,
-          keywords = listOf("logs", "debug", "dump", "share", "export"),
-          category = "Advanced",
-          screen = AdvancedPreferencesScreen,
         ),
       )
       add(
@@ -1862,7 +1806,6 @@ object SearchablePreferences {
         anchorItemIndex = 1,
         SearchEntrySpec(R.string.pref_advanced_notification_style, listOf("notification", "style", "media", "compact")),
         SearchEntrySpec(R.string.pref_auto_backup_title, listOf("automatic", "backup", "settings", "restore", "folder")),
-        SearchEntrySpec(R.string.pref_debug_log_size_title, listOf("debug", "log", "size", "limit", "storage")),
       )
       addSearchEntries(
         category = "Folders",
@@ -1911,24 +1854,6 @@ object SearchablePreferences {
           SearchEntrySpec(R.string.ytdlp_subtitles_language, listOf("yt-dlp", "subtitles", "language")),
         )
       }
-      if (app.gyrolet.mpvrx.BuildConfig.ENABLE_UPDATE_FEATURE) {
-        addSearchEntries(
-          category = "About",
-          screen = AboutScreen,
-          anchorItemIndex = 0,
-          SearchEntrySpec(R.string.ui_auto_check_for_updates, listOf("update", "automatic", "startup")),
-          SearchEntrySpec(R.string.ui_update_channel, listOf("update", "channel", "stable", "preview", "experimental")),
-        )
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-          addSearchEntries(
-            category = "About",
-            screen = AboutScreen,
-            anchorItemIndex = 0,
-            SearchEntrySpec(R.string.update_auto_install, listOf("update", "automatic", "install", "download", "unmetered")),
-          )
-        }
-      }
-
       // About
       add(
         SearchablePreference(

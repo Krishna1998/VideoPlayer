@@ -47,7 +47,6 @@ import app.gyrolet.mpvrx.preferences.LyricsTranslationDisplayMode
 import app.gyrolet.mpvrx.preferences.MediaServerPreferences
 import app.gyrolet.mpvrx.preferences.MusicSourceProvider
 import app.gyrolet.mpvrx.data.lyrics.LyricsLanguageOptions
-import app.gyrolet.mpvrx.preferences.AudioVisualizerStyle
 import app.gyrolet.mpvrx.preferences.BrowserPreferences
 import app.gyrolet.mpvrx.preferences.MediaLibraryType
 import app.gyrolet.mpvrx.preferences.PlayerPreferences
@@ -285,57 +284,6 @@ object AudioPreferencesScreen : Screen {
 
           item {
             PreferenceCard {
-              val audioVisualizerStyle by preferences.audioVisualizerStyle.collectAsState()
-              ExpressivePreferenceItem {
-              ListPreference(
-                modifier = Modifier.settingsSearchTarget(R.string.pref_audio_visualizer_style_title),
-                value = audioVisualizerStyle,
-                onValueChange = { preferences.audioVisualizerStyle.set(it) },
-                values = AudioVisualizerStyle.entries,
-                valueToText = { AnnotatedString(resources.getString(it.title)) },
-                title = { Text(stringResource(R.string.pref_audio_visualizer_style_title)) },
-                summary = {
-                  Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Text(
-                      stringResource(audioVisualizerStyle.title),
-                      color = MaterialTheme.colorScheme.outline,
-                    )
-                    if (audioVisualizerStyle == AudioVisualizerStyle.Galaxy ||
-                      audioVisualizerStyle == AudioVisualizerStyle.Cuboid
-                    ) {
-                      Text(
-                        text =
-                          if (audioVisualizerStyle == AudioVisualizerStyle.Cuboid) {
-                            "Inspired by the Cuboid Warptunnel concept by Niklas Knaack"
-                          } else {
-                            stringResource(R.string.pref_audio_visualizer_galaxy_credit)
-                          },
-                        color = MaterialTheme.colorScheme.primary,
-                        style = MaterialTheme.typography.bodySmall,
-                        textDecoration = TextDecoration.Underline,
-                        modifier =
-                          Modifier.clickable {
-                            context.startActivity(
-                              Intent(
-                                Intent.ACTION_VIEW,
-                                Uri.parse(
-                                  if (audioVisualizerStyle == AudioVisualizerStyle.Cuboid) {
-                                    "https://codepen.io/NiklasKnaack/pen/WyWqja"
-                                  } else {
-                                    "https://codepen.io/Zain-Raza-the-sasster/pen/ByBeKqa"
-                                  },
-                                ),
-                              ),
-                            )
-                          },
-                      )
-                    }
-                  }
-                },
-              )
-              }
-
-              PreferenceDivider()
               DevicePreference(R.string.pref_audio_orientation_title) {
                 val audioOrientation by preferences.audioOrientation.collectAsState()
                 ExpressivePreferenceItem {

@@ -137,8 +137,8 @@ internal const val APK_VARIANT_FONGMI = "fongmi"
 internal const val APK_VARIANT_NO_VULKAN = "no-vulkan"
 internal const val APK_VARIANT_PLAYSTORE = "playstore"
 
-/** ABI splits published next to the universal APK, matching the Android ABI names. */
-internal val APK_ABIS = listOf("arm64-v8a", "armeabi-v7a", "x86", "x86_64")
+/** ABI splits published matching the Android ABI names. */
+internal val APK_ABIS = listOf("arm64-v8a")
 
 /** Matches a dash-separated token in an asset name such as `mpvRx-preview-r1969-arm64-v8a.apk`. */
 internal fun String.hasApkAssetToken(token: String): Boolean =

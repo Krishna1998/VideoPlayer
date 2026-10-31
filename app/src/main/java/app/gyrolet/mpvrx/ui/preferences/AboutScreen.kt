@@ -43,9 +43,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -67,17 +64,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.net.toUri
-import androidx.lifecycle.viewmodel.compose.viewModel
 import app.gyrolet.mpvrx.BuildConfig
 import app.gyrolet.mpvrx.R
-import app.gyrolet.mpvrx.domain.update.AppUpdateChannel
 import app.gyrolet.mpvrx.presentation.Screen
 import app.gyrolet.mpvrx.presentation.crash.CrashActivity.Companion.collectDeviceInfo
-import app.gyrolet.mpvrx.ui.components.IconSwitch
-import app.gyrolet.mpvrx.ui.components.themedSegmentedButtonColors
 import app.gyrolet.mpvrx.ui.icons.Icon
 import app.gyrolet.mpvrx.ui.icons.Icons
-import app.gyrolet.mpvrx.ui.update.UpdateViewModel
 import app.gyrolet.mpvrx.ui.utils.LocalBackStack
 import app.gyrolet.mpvrx.ui.utils.navigateTo
 import app.gyrolet.mpvrx.ui.utils.popSafely
@@ -106,13 +98,6 @@ object AboutScreen : Screen {
     val privacyPolicyUrl = stringResource(R.string.privacy_policy_url)
     val settingsScrollState = rememberScrollState()
 
-    // Conditionally initialize update feature based on build config
-    val updateViewModel: UpdateViewModel? =
-      if (BuildConfig.ENABLE_UPDATE_FEATURE) {
-        viewModel(context as androidx.activity.ComponentActivity)
-      } else {
-        null
-      }
     Scaffold(
       topBar = {
         SettingsTopAppBar(
@@ -358,144 +343,8 @@ object AboutScreen : Screen {
 
         Spacer(Modifier.height(8.dp))
 
-        // Updates Section (only show if update feature is enabled)
-        if (BuildConfig.ENABLE_UPDATE_FEATURE && updateViewModel != null) {
-          PreferenceSectionHeader(position = PreferenceSectionPosition.First, title = stringResource(R.string.pref_section_updates))
-          PreferenceCard {
-            val isAutoUpdateEnabled by updateViewModel.isAutoUpdateEnabled.collectAsState()
-            val isAutoInstallEnabled by updateViewModel.isAutoInstallEnabled.collectAsState()
-            val updateChannel by updateViewModel.updateChannel.collectAsState()
-            Row(
-                modifier =
-                  Modifier
-                    .fillMaxWidth()
-                    .settingsSearchTarget(R.string.ui_auto_check_for_updates)
-                    .clickable { updateViewModel.toggleAutoUpdate(!isAutoUpdateEnabled) }
-                    .padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-              ) {
-                Column(
-                  modifier = Modifier.weight(1f),
-                ) {
-                  Text(
-                    text =
-                      androidx.compose.ui.res.stringResource(
-                        app.gyrolet.mpvrx.R.string.ui_auto_check_for_updates,
-                      ),
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    color = cs.onSurface,
-                  )
-                  Spacer(modifier = Modifier.height(2.dp))
-                  Text(
-                    text =
-                      androidx.compose.ui.res.stringResource(
-                        app.gyrolet.mpvrx.R.string.ui_check_on_startup,
-                      ),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = cs.outline,
-                  )
-                }
-                IconSwitch(
-                  checked = isAutoUpdateEnabled,
-                  onCheckedChange = { updateViewModel.toggleAutoUpdate(it) },
-                )
-              }
-
-
-              if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-                Row(
-                  modifier = Modifier.fillMaxWidth()
-                    .settingsSearchTarget(R.string.update_auto_install)
-                    .clickable { updateViewModel.toggleAutoInstall(!isAutoInstallEnabled) }.padding(16.dp),
-                  verticalAlignment = Alignment.CenterVertically,
-                  horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
-                  Column(modifier = Modifier.weight(1f)) {
-                    Text(stringResource(R.string.update_auto_install), style = MaterialTheme.typography.titleMedium,
-                      fontWeight = FontWeight.SemiBold, color = cs.onSurface)
-                    Spacer(Modifier.height(2.dp))
-                    Text(stringResource(R.string.update_auto_install_summary), style = MaterialTheme.typography.bodyMedium, color = cs.outline)
-                  }
-                  IconSwitch(checked = isAutoInstallEnabled, onCheckedChange = { updateViewModel.toggleAutoInstall(it) })
-                }
-              }
-
-              Column(
-                modifier = Modifier.fillMaxWidth().settingsSearchTarget(R.string.ui_update_channel).padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-              ) {
-                Text(
-                  text = stringResource(R.string.ui_update_channel),
-                  style = MaterialTheme.typography.titleMedium,
-                  fontWeight = FontWeight.SemiBold,
-                  color = cs.onSurface,
-                )
-                Text(
-                  text = stringResource(R.string.ui_update_channels_summary),
-                  style = MaterialTheme.typography.bodyMedium,
-                  color = cs.outline,
-                )
-                SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
-                  AppUpdateChannel.entries.forEachIndexed { index, channel ->
-                    SegmentedButton(
-                      modifier = Modifier.weight(1f),
-                      selected = updateChannel == channel,
-                      onClick = { updateViewModel.setUpdateChannel(channel) },
-                      shape = SegmentedButtonDefaults.itemShape(index, AppUpdateChannel.entries.size),
-                      colors = themedSegmentedButtonColors(),
-                      contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
-                      icon = {},
-                      label = {
-                        Text(
-                          stringResource(
-                            when (channel) {
-                              AppUpdateChannel.STABLE -> R.string.ui_update_channel_stable_short
-                              AppUpdateChannel.PREVIEW -> R.string.ui_update_channel_preview_short
-                              AppUpdateChannel.EXPERIMENTAL -> R.string.ui_update_channel_experimental_short
-                            },
-                          ),
-                          maxLines = 1,
-                          overflow = TextOverflow.Ellipsis,
-                          style = MaterialTheme.typography.labelMedium,
-                        )
-                      },
-                    )
-                  }
-                }
-              }
-
-
-              Column(modifier = Modifier.padding(16.dp)) {
-                Button(
-                  onClick = { updateViewModel.checkForUpdate(manual = true) },
-                  modifier = Modifier.fillMaxWidth().height(50.dp),
-                  shape = RoundedCornerShape(12.dp),
-                  colors =
-                    ButtonDefaults.buttonColors(
-                      containerColor = cs.secondaryContainer,
-                      contentColor = cs.onSecondaryContainer,
-                    ),
-                  elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp),
-                ) {
-                  Icon(Icons.RoundedFilled.Update, null, modifier = Modifier.size(18.dp))
-                  Spacer(Modifier.width(8.dp))
-                  Text(
-                    androidx.compose.ui.res.stringResource(
-                      app.gyrolet.mpvrx.R.string.ui_check_for_updates_now,
-                    ),
-                    fontWeight = FontWeight.SemiBold,
-                  )
-                }
-              }
-          }
-
-          Spacer(Modifier.height(8.dp))
-        }
-
         // System Stats Section
-        PreferenceSectionHeader(position = PreferenceSectionPosition.Last, title = stringResource(R.string.pref_section_system))
+        PreferenceSectionHeader(position = PreferenceSectionPosition.Single, title = stringResource(R.string.pref_section_system))
 
         val systemStats = remember { collectSystemStats(context) }
         PreferenceCard {

@@ -220,7 +220,7 @@ mpvRx pushes the mpv-android experience further with deep customization, thermal
 | **Library Filters** | Exclude selected audio folders and set a minimum track duration |
 | **Dedicated Now Playing View** | Artwork, track metadata, playback controls, and an up-next queue in a music-focused layout |
 | **Lyrics** | View local or embedded lyrics, fetch online lyrics from LRCLIB, and switch between available sources |
-| **Four Audio Visualizers** | Choose Blob, Galaxy, Cuboid, or Particle visualizations, with an optional audio-reactive wavy seekbar |
+| **Audio Visualizer** | Ambient visualization with an optional audio-reactive wavy seekbar |
 | **Audio Playlists & Favorites** | Create local audio playlists, keep favorite tracks together, and start normal or shuffled playback |
 | **Audiobook Library** | Open the book icon in Music to import a file, selected files, or one book folder including disc subfolders; M4B is recognized |
 | **Book Metadata** | Covers, author, narrator, series and edition details from embedded tags or optional metadata.json/OPF sidecars, with editable book details |
@@ -280,14 +280,11 @@ mpvRx pushes the mpv-android experience further with deep customization, thermal
 </details>
 
 <details close>
-<summary><b>📜 Scripting & Editor</b></summary>
+<summary><b>📜 Config Editor</b></summary>
 
 | Feature | Description |
 |---|---|
-| **Dual Language** | Lua (.lua) and JavaScript (.js) script support |
 | **Sora Code Editor** | Built-in editor with TextMate syntax highlighting |
-| **Runtime Script Loading** | Enable/disable scripts without restarting |
-| **Lua Module Support** | Recursive `script-modules/` synchronization enables custom scripts to use `require()` helpers |
 | **Config Editor** | Built-in editor for mpv.conf and input.conf |
 
 </details>
@@ -375,11 +372,7 @@ _Tip: If your battery consumption stays within 200 mAh and below 0.9W (see Stats
 
 | Variant | Description |
 |---|---|
-| `universal` | Works on all supported devices |
-| `arm64-v8a` | Recommended for most current Android devices |
-| `armeabi-v7a` | For older 32-bit ARM devices |
-| `x86` | For 32-bit Intel and AMD Android devices |
-| `x86_64` | For 64-bit Intel and AMD Android devices |
+| `arm64-v8a` | Optimized for modern 64-bit ARM Android devices |
 
 ---
 

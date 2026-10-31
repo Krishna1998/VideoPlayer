@@ -13,11 +13,9 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import app.gyrolet.mpvrx.BuildConfig
-import app.gyrolet.mpvrx.utils.telemetry.MeasureTelemetry
 import android.os.Build
 import android.os.Environment
 import app.gyrolet.mpvrx.ui.components.AppToast as Toast
-import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
@@ -64,8 +62,6 @@ import app.gyrolet.mpvrx.preferences.SubtitlesPreferences
 import app.gyrolet.mpvrx.preferences.preference.collectAsState
 import app.gyrolet.mpvrx.presentation.Screen
 import app.gyrolet.mpvrx.presentation.components.ConfirmDialog
-import app.gyrolet.mpvrx.presentation.crash.CrashActivity
-import app.gyrolet.mpvrx.presentation.crash.DebugLogReader
 import app.gyrolet.mpvrx.ui.icons.Icon
 import app.gyrolet.mpvrx.ui.icons.Icons
 import app.gyrolet.mpvrx.ui.player.NotificationStyle
@@ -75,7 +71,6 @@ import app.gyrolet.mpvrx.ui.preferences.components.RestartRequiredDialog
 import app.gyrolet.mpvrx.ui.utils.LocalBackStack
 import app.gyrolet.mpvrx.ui.utils.navigateTo
 import app.gyrolet.mpvrx.ui.utils.popSafely
-import app.gyrolet.mpvrx.utils.clipboard.SafeClipboard
 import app.gyrolet.mpvrx.utils.history.RecentlyPlayedOps
 import app.gyrolet.mpvrx.utils.media.PlaybackStateEvents
 import app.gyrolet.mpvrx.utils.media.findChildIgnoreCase
@@ -85,7 +80,6 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import app.gyrolet.mpvrx.ui.preferences.components.AppListPreference as ListPreference
 import app.gyrolet.mpvrx.ui.preferences.components.AppPreference as Preference
-import app.gyrolet.mpvrx.ui.preferences.components.AppSliderPreference as SliderPreference
 import org.koin.compose.koinInject
 import java.io.File
 import java.util.Locale
@@ -585,87 +579,6 @@ object AdvancedPreferencesScreen : Screen {
             }
           }
 
-          // Scripts Section
-          item {
-            PreferenceSectionHeader(position = PreferenceSectionPosition.Middle, title = stringResource(R.string.pref_section_scripts))
-          }
-
-          item {
-            PreferenceCard {
-              val selectedScripts by preferences.selectedLuaScripts.collectAsState()
-              val enableLuaScripts by preferences.enableLuaScripts.collectAsState()
-
-              SwitchPreference(
-                modifier = Modifier.settingsSearchTarget(R.string.pref_enable_lua_scripts_title),
-                value = enableLuaScripts,
-                onValueChange = preferences.enableLuaScripts::set,
-                title = { Text(stringResource(R.string.pref_enable_lua_scripts_title)) },
-                summary = {
-                  Text(
-                    stringResource(R.string.pref_enable_lua_scripts_summary),
-                    color = MaterialTheme.colorScheme.outline,
-                  )
-                },
-              )
-
-              PreferenceDivider()
-
-              ExpressivePreferenceItem {
-              Preference(
-                modifier = Modifier.settingsSearchTarget(R.string.pref_manage_lua_scripts_title),
-                title = { Text(stringResource(R.string.pref_manage_lua_scripts_title)) },
-                summary = {
-                  when {
-                    mpvConfStorageLocation.isBlank() || !enableLuaScripts ->
-                      Text(
-                        stringResource(R.string.pref_manage_scripts_summary_disabled),
-                        color = MaterialTheme.colorScheme.outline,
-                      )
-                    selectedScripts.isEmpty() ->
-                      Text(
-                        stringResource(R.string.pref_manage_scripts_summary_none),
-                        color = MaterialTheme.colorScheme.outline,
-                      )
-                    selectedScripts.size == 1 ->
-                      Text(
-                        stringResource(R.string.pref_manage_scripts_summary_singular),
-                        color = MaterialTheme.colorScheme.outline,
-                      )
-                    else ->
-                      Text(
-                        stringResource(R.string.pref_manage_scripts_summary_plural, selectedScripts.size),
-                        color = MaterialTheme.colorScheme.outline,
-                      )
-                  }
-                },
-                onClick = {
-                  backStack.navigateTo(LuaScriptsScreen)
-                },
-                enabled = mpvConfStorageLocation.isNotBlank() && enableLuaScripts,
-              )
-              }
-
-              PreferenceDivider()
-
-              DevicePreference(R.string.pref_custom_buttons_title) {
-                ExpressivePreferenceItem {
-                Preference(
-                  title = { Text(stringResource(R.string.pref_custom_buttons_title)) },
-                  summary = {
-                    Text(
-                      stringResource(R.string.pref_custom_buttons_summary),
-                      color = MaterialTheme.colorScheme.outline,
-                    )
-                  },
-                  onClick = {
-                    backStack.navigateTo(app.gyrolet.mpvrx.ui.preferences.CustomButtonScreen)
-                  },
-                )
-                }
-              }
-            }
-          }
-
           // Language and notification style share one connected Advanced group.
           item {
             PreferenceSectionHeader(
@@ -726,7 +639,7 @@ object AdvancedPreferencesScreen : Screen {
 
           // Data & Cache Section
           item {
-            PreferenceSectionHeader(position = PreferenceSectionPosition.Middle, title = stringResource(R.string.pref_section_data_cache))
+            PreferenceSectionHeader(position = PreferenceSectionPosition.Last, title = stringResource(R.string.pref_section_data_cache))
           }
 
           item {
@@ -1050,108 +963,6 @@ object AdvancedPreferencesScreen : Screen {
                           ).show()
                       }
                     }
-                  }
-                },
-              )
-              }
-            }
-          }
-
-          // Logging, diagnostics & privacy Section
-          item {
-            PreferenceSectionHeader(position = PreferenceSectionPosition.Last, title = stringResource(R.string.pref_section_logging))
-          }
-
-          item {
-            PreferenceCard {
-              val activity = LocalActivity.current!!
-              val verboseLogging by preferences.verboseLogging.collectAsState()
-              val debugLogSizeMb by preferences.debugLogSizeMb.collectAsState()
-
-              val measureEnabled by preferences.measureEnabled.collectAsState()
-
-              SwitchPreference(
-                modifier = Modifier.settingsSearchTarget(R.string.pref_measure_enabled_title),
-                value = measureEnabled && BuildConfig.MEASURE_CONFIGURED,
-                enabled = BuildConfig.MEASURE_CONFIGURED,
-                onValueChange = { enabled ->
-                  if (MeasureTelemetry.setEnabled(enabled)) preferences.measureEnabled.set(enabled)
-                },
-                title = { Text(stringResource(R.string.pref_measure_enabled_title)) },
-                summary = {
-                  Text(
-                    stringResource(
-                      if (BuildConfig.MEASURE_CONFIGURED) R.string.pref_measure_enabled_summary
-                      else R.string.pref_measure_not_configured,
-                    ),
-                    color = MaterialTheme.colorScheme.outline,
-                  )
-                },
-              )
-
-              PreferenceDivider()
-
-              SwitchPreference(
-                modifier = Modifier.settingsSearchTarget(R.string.pref_advanced_verbose_logging_title),
-                value = verboseLogging,
-                onValueChange = preferences.verboseLogging::set,
-                title = { Text(stringResource(R.string.pref_advanced_verbose_logging_title)) },
-                summary = {
-                  Text(
-                    stringResource(R.string.pref_advanced_verbose_logging_summary),
-                    color = MaterialTheme.colorScheme.outline,
-                  )
-                },
-              )
-
-              PreferenceDivider()
-
-              ExpressivePreferenceItem {
-              SliderPreference(
-                modifier = Modifier.settingsSearchTarget(R.string.pref_debug_log_size_title),
-                value = debugLogSizeMb.toFloat(),
-                onValueChange = { value -> preferences.debugLogSizeMb.set(value.toInt().coerceIn(1, 10)) },
-                sliderValue = debugLogSizeMb.toFloat(),
-                onSliderValueChange = { value -> preferences.debugLogSizeMb.set(value.toInt().coerceIn(1, 10)) },
-                title = { Text(stringResource(R.string.pref_debug_log_size_title)) },
-                summary = {
-                  Text(
-                    stringResource(R.string.pref_debug_log_size_summary, debugLogSizeMb),
-                    color = MaterialTheme.colorScheme.outline,
-                  )
-                },
-                valueRange = 1f..10f,
-                valueSteps = 8,
-              )
-              }
-
-              PreferenceDivider()
-
-              ExpressivePreferenceItem {
-              Preference(
-                modifier = Modifier.settingsSearchTarget(R.string.pref_advanced_dump_logs_title),
-                title = { Text(stringResource(R.string.pref_advanced_dump_logs_title)) },
-                summary = {
-                  Text(
-                    stringResource(R.string.pref_advanced_dump_logs_summary),
-                    color = MaterialTheme.colorScheme.outline,
-                  )
-                },
-                onClick = {
-                  scope.launch(Dispatchers.IO) {
-                    val deviceInfo = CrashActivity.collectDeviceInfo()
-                    val deviceInfoBytes = deviceInfo.toByteArray(Charsets.UTF_8).size
-                    val logcat = DebugLogReader.trimTextToByteBudget(
-                      CrashActivity.collectLogcat(),
-                      (debugLogSizeMb.coerceIn(1, 10) * 1024 * 1024 - deviceInfoBytes - 64).coerceAtLeast(0),
-                    )
-
-                    SafeClipboard.copyPlainText(
-                      context = context,
-                      label = "mpvrx_logs",
-                      text = CrashActivity.concatLogs(deviceInfo, null, logcat),
-                    )
-                    CrashActivity.shareLogs(deviceInfo, null, logcat, activity)
                   }
                 },
               )

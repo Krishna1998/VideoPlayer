@@ -1,4 +1,4 @@
-name: Make release
+﻿name: Make release
 
 on:
   push:
@@ -109,7 +109,7 @@ jobs:
             name: Standard
             gradle: Standard
             dir: standard
-            abis: universal arm64-v8a armeabi-v7a x86 x86_64
+            abis: arm64-v8a
             asset: ''
             package: apk
     env:
@@ -250,7 +250,7 @@ jobs:
         run: |
           set -euo pipefail
           : > checksums.txt
-          variants=(universal arm64-v8a armeabi-v7a x86 x86_64)
+          variants=(arm64-v8a)
           for variant in "${variants[@]}"; do
             asset="release-assets/mpvRx-${variant}-${VERSION_TAG}.apk"
             if [[ ! -f "$asset" ]]; then
@@ -288,8 +288,7 @@ jobs:
           variant_guide = """
           ### APK variants
 
-          - **Universal** (`mpvRx-universal-<version>.apk`): Compatible with all supported device architectures.
-          - **Architecture-specific** (`mpvRx-arm64-v8a-<version>.apk`, etc.): Smaller APKs built specifically for target architectures.
+          - **arm64-v8a** (`mpvRx-arm64-v8a-<version>.apk`): Built for 64-bit ARM Android devices.
           """.strip()
           Path('release-notes.md').write_text(
               latest + '\n\n---\n' + variant_guide + '\n\n### SHA-256 checksums\n\n```text\n',

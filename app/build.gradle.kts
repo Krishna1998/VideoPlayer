@@ -36,14 +36,12 @@ val localProperties =
   }
 
 val targetAbiProp = project.findProperty("targetAbi")?.toString() ?: localProperties.getProperty("targetAbi")
-val enableX86 = project.findProperty("enableX86") != "false"
 val isExperimentalBuild = project.findProperty("experimentalBuild")?.toString()?.toBoolean() == true
-val x86Abis = if (enableX86) listOf("x86", "x86_64") else emptyList()
 val activeAbis =
   if (!targetAbiProp.isNullOrBlank()) {
     targetAbiProp.split(",").map { it.trim() }
   } else {
-    listOf("arm64-v8a", "armeabi-v7a") + x86Abis
+    listOf("arm64-v8a")
   }
 val universalOnlyDistributions = emptySet<String>()
 val sideloadDistributions = setOf("standard")
@@ -109,6 +107,10 @@ android {
 
     buildConfigField("String", "GIT_SHA", "\"${getCommitSha()}\"")
     buildConfigField("int", "GIT_COUNT", getCommitCount())
+
+    ndk {
+      abiFilters += activeAbis
+    }
 
     externalNativeBuild {
       cmake {
@@ -257,13 +259,8 @@ android {
 androidComponents {
   val abiCodes =
     mutableMapOf(
-      "armeabi-v7a" to 1,
       "arm64-v8a" to 2,
     )
-  if (enableX86) {
-    abiCodes["x86"] = 3
-    abiCodes["x86_64"] = 4
-  }
 
   onVariants { variant ->
     val isUniversalOnly =
