@@ -106,10 +106,6 @@ android {
     buildConfigField("String", "GIT_SHA", "\"${getCommitSha()}\"")
     buildConfigField("int", "GIT_COUNT", getCommitCount())
 
-    ndk {
-      abiFilters += activeAbis
-    }
-
     externalNativeBuild {
       cmake {
         abiFilters += activeAbis
