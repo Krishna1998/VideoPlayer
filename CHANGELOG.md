@@ -4,6 +4,13 @@ These notes are written in plain English and focus on what changed for real use.
 
 ## Unreleased
 
+## 1.0.3
+
+- Release version 1.0.3.
+- Completely removed yt-dlp, Python runtime, and related native binaries.
+- Refactored package name to `app.video.player`.
+- Fixed compilation and stub implementations for sideload runtime.
+
 ## 1.0.2
 
 - Release version 1.0.2.
