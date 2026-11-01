@@ -188,7 +188,6 @@ import app.gyrolet.mpvrx.ui.player.rememberMotionArtworkDrawable
 import app.gyrolet.mpvrx.presentation.components.RemoteImage
 import app.gyrolet.mpvrx.preferences.AppearancePreferences
 import app.gyrolet.mpvrx.preferences.AudioPreferences
-import app.gyrolet.mpvrx.preferences.AudioVisualizerStyle
 import app.gyrolet.mpvrx.preferences.LyricsTranslationDisplayMode
 import app.gyrolet.mpvrx.preferences.PlayerPreferences
 import app.gyrolet.mpvrx.preferences.preference.collectAsState
@@ -211,10 +210,6 @@ import app.gyrolet.mpvrx.ui.player.controls.components.rememberTvInitialFocusReq
 import app.gyrolet.mpvrx.ui.player.controls.components.tvFocusHighlight
 import app.gyrolet.mpvrx.ui.player.controls.components.tvInitialFocus
 import app.gyrolet.mpvrx.ui.player.visualizer.AudioFeatures
-import app.gyrolet.mpvrx.ui.player.visualizer.BlobOverlay
-import app.gyrolet.mpvrx.ui.player.visualizer.CuboidOverlay
-import app.gyrolet.mpvrx.ui.player.visualizer.GalaxyOverlay
-import app.gyrolet.mpvrx.ui.player.visualizer.ParticleOverlay
 import app.gyrolet.mpvrx.ui.player.visualizer.VisualizerPalette
 import app.gyrolet.mpvrx.ui.player.visualizer.rememberAudioVisualizerFeatures
 import app.gyrolet.mpvrx.ui.theme.fontFamilyForText
@@ -451,7 +446,7 @@ private fun artworkVisualizerPalette(
 }
 
 @Composable
-private fun Modifier.audioPlaybackGestures(viewModel: PlayerViewModel, onTap: () -> Unit, onHold: () -> Unit): Modifier {
+private fun Modifier.audioPlaybackGestures(viewModel: PlayerViewModel, onTap: () -> Unit, onHold: () -> Unit = {}): Modifier {
   val tap by rememberUpdatedState(onTap)
   val hold by rememberUpdatedState(onHold)
   return this
@@ -472,84 +467,6 @@ private fun Modifier.audioPlaybackGestures(viewModel: PlayerViewModel, onTap: ()
         },
       )
     }
-}
-
-@Composable
-private fun AudioVisualizerViewport(
-  viewModel: PlayerViewModel,
-  style: AudioVisualizerStyle,
-  palette: VisualizerPalette,
-  isPlaying: Boolean,
-  isSheetOpen: Boolean,
-  features: AudioFeatures,
-  onClick: () -> Unit,
-  onLongClick: () -> Unit,
-  modifier: Modifier = Modifier,
-) {
-  Box(
-    modifier =
-      modifier.audioPlaybackGestures(viewModel, onClick, onLongClick),
-    contentAlignment = Alignment.Center,
-  ) {
-    val rendererModifier =
-      Modifier
-        .fillMaxSize()
-        .then(
-          if (style == AudioVisualizerStyle.Cuboid) {
-            Modifier
-              .graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }
-              .drawWithCache {
-                val bottomFade =
-                  Brush.verticalGradient(
-                    0f to Color.White,
-                    0.78f to Color.White,
-                    1f to Color.Transparent,
-                    startY = 0f,
-                    endY = size.height,
-                  )
-                onDrawWithContent {
-                  drawContent()
-                  drawRect(brush = bottomFade, blendMode = BlendMode.DstIn)
-                }
-              }
-          } else {
-            Modifier
-          },
-        )
-
-    when (style) {
-      AudioVisualizerStyle.Galaxy ->
-        GalaxyOverlay(
-          palette = palette,
-          isSheetOpen = isSheetOpen,
-          features = features,
-          modifier = rendererModifier,
-        )
-      AudioVisualizerStyle.Blob ->
-        BlobOverlay(
-          palette = palette,
-          isSheetOpen = isSheetOpen,
-          features = features,
-          modifier = rendererModifier,
-        )
-      AudioVisualizerStyle.Cuboid ->
-        CuboidOverlay(
-          isPlaying = isPlaying,
-          palette = palette,
-          isSheetOpen = isSheetOpen,
-          features = features,
-          modifier = rendererModifier,
-        )
-      AudioVisualizerStyle.Particle ->
-        ParticleOverlay(
-          palette = palette,
-          isSheetOpen = isSheetOpen,
-          features = features,
-          modifier = rendererModifier,
-        )
-    }
-
-  }
 }
 
 /** One capture owner feeds the main visualizer and seekbar ribbon. */
@@ -842,7 +759,6 @@ fun AudioPlayerControls(
       null
     }
   val appearancePreferences = koinInject<AppearancePreferences>()
-  val audioVisualizerStyle by audioPreferences.audioVisualizerStyle.collectAsState()
   val audioWavySeekbar by audioPreferences.audioWavySeekbar.collectAsState()
   val backgroundPlaybackEnabled by audioPreferences.audioBackgroundPlayback.collectAsState()
   val colorScheme = MaterialTheme.colorScheme
@@ -898,7 +814,6 @@ fun AudioPlayerControls(
   val repeatMode by viewModel.repeatMode.collectAsState()
   val shuffleEnabled by viewModel.shuffleEnabled.collectAsState()
   val playlistModeEnabled = viewModel.hasPlaylistSupport()
-  val showVisualizer by viewModel.showVisualizerInAudioPlayer.collectAsState()
   var addToPlaylistDialogOpen by rememberSaveable { mutableStateOf(false) }
   val sheetShown by viewModel.sheetShown.collectAsState()
   val isSheetOpen = sheetShown != Sheets.None || (addToPlaylistDialogOpen && !mediaPath.isNullOrBlank())
@@ -909,9 +824,9 @@ fun AudioPlayerControls(
       isPlaying &&
         inAppSheet?.isVisible != false &&
         !isSheetOpen &&
-        ((showVisualizer && !showInPlaceLyrics) ||
-          (audioWavySeekbar && !isLyricsFullscreen)),
-    requestPermission = showVisualizer && !showInPlaceLyrics && !isLyricsFullscreen && !isSheetOpen && inAppSheet?.isSettledOpen != false,
+        audioWavySeekbar &&
+        !isLyricsFullscreen,
+    requestPermission = false,
     features = visualizerFeatures,
   )
 
@@ -1158,11 +1073,10 @@ fun AudioPlayerControls(
         listOf(surface, topBackdrop, bottomBackdrop, ColorUtils.blendARGB(topBackdrop, bottomBackdrop, 0.5f)),
       )
     }
-  val edgeToEdgeVisualizer = showVisualizer && (!showInPlaceLyrics || isTabletLandscape)
   // In-place lyrics run flush against the screen edges, so the root padding moves onto
   // the header and the footer instead of boxing the lyrics in.
   val flushInPlaceLyrics = showInPlaceLyrics && isPortrait
-  val controlsSidePadding = if (edgeToEdgeVisualizer || flushInPlaceLyrics) 16.dp else 0.dp
+  val controlsSidePadding = if (flushInPlaceLyrics) 16.dp else 0.dp
   // The header keeps the side and top padding the root gives up while the lyrics are flush.
   val headerContentPadding =
     if (flushInPlaceLyrics) Modifier.padding(start = 16.dp, top = 6.dp, end = 16.dp) else Modifier
@@ -1223,15 +1137,9 @@ fun AudioPlayerControls(
             onDrawBehind {}
           }
         }
-        .windowInsetsPadding(
-          if (edgeToEdgeVisualizer) {
-            WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom)
-          } else {
-            WindowInsets.safeDrawing
-          },
-        )
-        .padding(horizontal = if (edgeToEdgeVisualizer || flushInPlaceLyrics) 0.dp else 16.dp)
-        .padding(top = if (edgeToEdgeVisualizer || flushInPlaceLyrics) 0.dp else 6.dp, bottom = 12.dp),
+        .windowInsetsPadding(WindowInsets.safeDrawing)
+        .padding(horizontal = if (flushInPlaceLyrics) 0.dp else 16.dp)
+        .padding(top = if (flushInPlaceLyrics) 0.dp else 6.dp, bottom = 12.dp),
   ) {
     val headerBar = @Composable {
       Box(modifier = Modifier.fillMaxWidth()) {
@@ -1318,15 +1226,14 @@ fun AudioPlayerControls(
       BoxWithConstraints(
         modifier =
           visualizerModifier
-            .then(if (showVisualizer) Modifier else Modifier.clipToBounds())
+            .clipToBounds()
             .then(
-              if (showVisualizer || showInPlaceLyrics) {
+              if (showInPlaceLyrics) {
                 Modifier
               } else {
                 Modifier.audioPlaybackGestures(
                   viewModel,
                   onTap = resetInactivityTimer,
-                  onHold = { onOpenSheet(Sheets.VisualizerStyle) },
                 )
               },
             ),
@@ -1343,176 +1250,136 @@ fun AudioPlayerControls(
             onTap = resetInactivityTimer,
           )
         } else {
-          AnimatedContent(
-            targetState = showVisualizer,
-            contentAlignment = Alignment.Center,
-            transitionSpec = {
-              val contentTransform =
-                if (targetState) {
-                  (fadeIn(animationSpec = tween(350, easing = FastOutSlowInEasing)) +
-                    scaleIn(animationSpec = tween(350, easing = FastOutSlowInEasing), initialScale = 0.90f))
-                    .togetherWith(
-                      fadeOut(animationSpec = tween(280)) +
-                        scaleOut(animationSpec = tween(280), targetScale = 1.06f),
-                    )
-                } else {
-                  (fadeIn(animationSpec = tween(350, easing = FastOutSlowInEasing)) +
-                    scaleIn(animationSpec = spring(dampingRatio = 0.72f, stiffness = 400f), initialScale = 0.88f))
-                    .togetherWith(
-                      fadeOut(animationSpec = tween(280)) +
-                        scaleOut(animationSpec = tween(280), targetScale = 1.06f),
-                    )
-                }
-              contentTransform.using(SizeTransform(clip = false))
-            },
-            label = "visualizer_toggle",
-            modifier = Modifier.fillMaxSize(),
-          ) { isVisualizerActive ->
-          if (isVisualizerActive) {
-            AudioVisualizerViewport(
-              viewModel = viewModel,
-              style = audioVisualizerStyle,
-              palette = visualizerPalette,
-              isPlaying = isPlaying,
-              isSheetOpen = isSheetOpen,
-              features = visualizerFeatures,
-              onClick = viewModel::toggleAudioVisualizer,
-              onLongClick = { onOpenSheet(Sheets.VisualizerStyle) },
-              modifier = Modifier.fillMaxSize(),
-            )
-          } else {
-            val coverShape = RoundedCornerShape(32.dp)
-            val density = LocalDensity.current
-            val gap = with(density) { 24.dp.toPx() }
-            val stride = containerWidthPx + gap
+          val coverShape = RoundedCornerShape(32.dp)
+          val density = LocalDensity.current
+          val gap = with(density) { 24.dp.toPx() }
+          val stride = containerWidthPx + gap
 
-            Box(
-              modifier = Modifier
-                .fillMaxHeight()
-                .fillMaxWidth(if (isTabletPortrait) 0.52f else if (isPortrait) 0.88f else 1f)
-                .pointerInput(viewModel, mediaPath, showVisualizer, containerWidthPx, isAudiobook) {
-                  if (showVisualizer || isAudiobook || containerWidthPx <= 0f) return@pointerInput
-                  detectHorizontalDragGestures(
-                    onDragStart = {
-                      coroutineScope.launch { animatableOffsetX.snapTo(0f) }
-                    },
-                    onDragEnd = {
-                      val threshold = containerWidthPx * 0.25f
-                      val dragVal = animatableOffsetX.value
-                      coroutineScope.launch {
-                        if (dragVal < -threshold) {
-                          haptic.pickup()
-                          animatableOffsetX.animateTo(
-                            targetValue = -stride,
-                            animationSpec = spring(stiffness = Spring.StiffnessMediumLow, dampingRatio = 0.85f),
-                          )
-                          activeCoverOverride = swipeNextCoverBitmap
-                          animatableOffsetX.snapTo(0f)
-                          if (viewModel.hasPlaylistSupport()) {
-                            viewModel.playNext()
-                          } else {
-                            runCatching { PlaybackSession.command("playlist-next") }
-                          }
-                        } else if (dragVal > threshold) {
-                          haptic.pickup()
-                          animatableOffsetX.animateTo(
-                            targetValue = stride,
-                            animationSpec = spring(stiffness = Spring.StiffnessMediumLow, dampingRatio = 0.85f),
-                          )
-                          activeCoverOverride = swipePrevCoverBitmap
-                          animatableOffsetX.snapTo(0f)
-                          if (viewModel.hasPlaylistSupport()) {
-                            viewModel.playPrevious()
-                          } else {
-                            runCatching { PlaybackSession.command("playlist-prev") }
-                          }
+          Box(
+            modifier = Modifier
+              .fillMaxHeight()
+              .fillMaxWidth(if (isTabletPortrait) 0.52f else if (isPortrait) 0.88f else 1f)
+              .pointerInput(viewModel, mediaPath, containerWidthPx, isAudiobook) {
+                if (isAudiobook || containerWidthPx <= 0f) return@pointerInput
+                detectHorizontalDragGestures(
+                  onDragStart = {
+                    coroutineScope.launch { animatableOffsetX.snapTo(0f) }
+                  },
+                  onDragEnd = {
+                    val threshold = containerWidthPx * 0.25f
+                    val dragVal = animatableOffsetX.value
+                    coroutineScope.launch {
+                      if (dragVal < -threshold) {
+                        haptic.pickup()
+                        animatableOffsetX.animateTo(
+                          targetValue = -stride,
+                          animationSpec = spring(stiffness = Spring.StiffnessMediumLow, dampingRatio = 0.85f),
+                        )
+                        activeCoverOverride = swipeNextCoverBitmap
+                        animatableOffsetX.snapTo(0f)
+                        if (viewModel.hasPlaylistSupport()) {
+                          viewModel.playNext()
                         } else {
-                          animatableOffsetX.animateTo(
-                            targetValue = 0f,
-                            animationSpec = spring(stiffness = Spring.StiffnessMediumLow, dampingRatio = 0.85f),
-                          )
+                          runCatching { PlaybackSession.command("playlist-next") }
                         }
-                      }
-                    },
-                    onDragCancel = {
-                      coroutineScope.launch {
-                        animatableOffsetX.animateTo(0f, spring(stiffness = Spring.StiffnessMediumLow, dampingRatio = 0.85f))
-                      }
-                    },
-                    onHorizontalDrag = { change, dragAmount ->
-                      change.consume()
-                      coroutineScope.launch {
-                        animatableOffsetX.snapTo(animatableOffsetX.value + dragAmount)
+                      } else if (dragVal > threshold) {
+                        haptic.pickup()
+                        animatableOffsetX.animateTo(
+                          targetValue = stride,
+                          animationSpec = spring(stiffness = Spring.StiffnessMediumLow, dampingRatio = 0.85f),
+                        )
+                        activeCoverOverride = swipePrevCoverBitmap
+                        animatableOffsetX.snapTo(0f)
+                        if (viewModel.hasPlaylistSupport()) {
+                          viewModel.playPrevious()
+                        } else {
+                          runCatching { PlaybackSession.command("playlist-prev") }
+                        }
+                      } else {
+                        animatableOffsetX.animateTo(
+                          targetValue = 0f,
+                          animationSpec = spring(stiffness = Spring.StiffnessMediumLow, dampingRatio = 0.85f),
+                        )
                       }
                     }
-                  )
-                },
-              contentAlignment = Alignment.Center,
-            ) {
-              // 1. Previous Cover Art Card (Visible when dragging right -> currentOffset > 0)
-              if (currentOffset > 0f) {
-                Surface(
-                  modifier = Modifier
-                    .aspectRatio(1f)
-                    .offset { IntOffset((-stride + currentOffset).roundToInt(), 0) }
-                    .clip(coverShape),
-                  shape = coverShape,
-                  color = Color.Transparent,
-                ) {
-                  CoverArtCardImage(
-                    bitmap = prevCoverBitmap,
-                    artworkUrl = prevItem?.tvgLogo?.takeIf { it.isNotBlank() && !isLocalArtworkSource(prevItem.path) },
-                    contentScale = if (isAudiobook) ContentScale.Fit else ContentScale.Crop,
-                  )
-                }
-              }
-
-              // 2. Next Cover Art Card (Visible when dragging left -> currentOffset < 0)
-              if (currentOffset < 0f) {
-                Surface(
-                  modifier = Modifier
-                    .aspectRatio(1f)
-                    .offset { IntOffset((stride + currentOffset).roundToInt(), 0) }
-                    .clip(coverShape),
-                  shape = coverShape,
-                  color = Color.Transparent,
-                ) {
-                  CoverArtCardImage(
-                    bitmap = nextCoverBitmap,
-                    artworkUrl = nextItem?.tvgLogo?.takeIf { it.isNotBlank() && !isLocalArtworkSource(nextItem.path) },
-                    contentScale = if (isAudiobook) ContentScale.Fit else ContentScale.Crop,
-                  )
-                }
-              }
-
-              // 3. Current Cover Art Card
+                  },
+                  onDragCancel = {
+                    coroutineScope.launch {
+                      animatableOffsetX.animateTo(0f, spring(stiffness = Spring.StiffnessMediumLow, dampingRatio = 0.85f))
+                    }
+                  },
+                  onHorizontalDrag = { change, dragAmount ->
+                    change.consume()
+                    coroutineScope.launch {
+                      animatableOffsetX.snapTo(animatableOffsetX.value + dragAmount)
+                    }
+                  }
+                )
+              },
+            contentAlignment = Alignment.Center,
+          ) {
+            // 1. Previous Cover Art Card (Visible when dragging right -> currentOffset > 0)
+            if (currentOffset > 0f) {
               Surface(
                 modifier = Modifier
                   .aspectRatio(1f)
-                  .offset { IntOffset(currentOffset.roundToInt(), 0) }
+                  .offset { IntOffset((-stride + currentOffset).roundToInt(), 0) }
                   .clip(coverShape),
                 shape = coverShape,
                 color = Color.Transparent,
               ) {
-                Box(Modifier.fillMaxSize()) {
-                  CoverArtCardImage(
-                    bitmap = activeCoverOverride ?: albumArtBitmap,
-                    artworkUrl = currentArtworkUri?.takeUnless { isLocalArtworkSource(currentMediaSource) },
-                    contentScale = if (isAudiobook) ContentScale.Fit else ContentScale.Crop,
-                    motionArtwork = currentAudioPresentation?.motionArtwork?.takeIf { activeCoverOverride == null },
-                    isPlaying = isPlaying,
-                    remoteMotionQuery = motionQuery?.takeIf {
-                      activeCoverOverride == null && !showVisualizer && !showInPlaceLyrics
-                    },
-                  )
+                CoverArtCardImage(
+                  bitmap = prevCoverBitmap,
+                  artworkUrl = prevItem?.tvgLogo?.takeIf { it.isNotBlank() && !isLocalArtworkSource(prevItem.path) },
+                  contentScale = if (isAudiobook) ContentScale.Fit else ContentScale.Crop,
+                )
+              }
+            }
 
-                }
+            // 2. Next Cover Art Card (Visible when dragging left -> currentOffset < 0)
+            if (currentOffset < 0f) {
+              Surface(
+                modifier = Modifier
+                  .aspectRatio(1f)
+                  .offset { IntOffset((stride + currentOffset).roundToInt(), 0) }
+                  .clip(coverShape),
+                shape = coverShape,
+                color = Color.Transparent,
+              ) {
+                CoverArtCardImage(
+                  bitmap = nextCoverBitmap,
+                  artworkUrl = nextItem?.tvgLogo?.takeIf { it.isNotBlank() && !isLocalArtworkSource(nextItem.path) },
+                  contentScale = if (isAudiobook) ContentScale.Fit else ContentScale.Crop,
+                )
+              }
+            }
+
+            // 3. Current Cover Art Card
+            Surface(
+              modifier = Modifier
+                .aspectRatio(1f)
+                .offset { IntOffset(currentOffset.roundToInt(), 0) }
+                .clip(coverShape),
+              shape = coverShape,
+              color = Color.Transparent,
+            ) {
+              Box(Modifier.fillMaxSize()) {
+                CoverArtCardImage(
+                  bitmap = activeCoverOverride ?: albumArtBitmap,
+                  artworkUrl = currentArtworkUri?.takeUnless { isLocalArtworkSource(currentMediaSource) },
+                  contentScale = if (isAudiobook) ContentScale.Fit else ContentScale.Crop,
+                  motionArtwork = currentAudioPresentation?.motionArtwork?.takeIf { activeCoverOverride == null },
+                  isPlaying = isPlaying,
+                  remoteMotionQuery = motionQuery?.takeIf {
+                    activeCoverOverride == null && !showInPlaceLyrics
+                  },
+                )
+
               }
             }
           }
         }
       }
-    }
     }
 
     @OptIn(ExperimentalFoundationApi::class)
@@ -2321,17 +2188,6 @@ fun AudioPlayerControls(
               horizontalArrangement = Arrangement.spacedBy(4.dp),
             ) {
               playbackModeButtons()
-              ReactiveIconButton(
-                onClick = { viewModel.toggleAudioVisualizer() },
-                onLongClick = { onOpenSheet(Sheets.VisualizerStyle) },
-                modifier = Modifier.size(40.dp),
-              ) {
-                Icon(
-                  imageVector = if (showVisualizer) Icons.RoundedFilled.AutoAwesome else Icons.RoundedFilled.Audiotrack,
-                  contentDescription = null,
-                  tint = if (showVisualizer) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-              }
               if (!isAudiobook) ReactiveIconButton(
                 onClick = {
                   val act = context as? PlayerActivity
@@ -2370,17 +2226,6 @@ fun AudioPlayerControls(
               horizontalArrangement = Arrangement.spacedBy(4.dp),
             ) {
               playbackModeButtons()
-              ReactiveIconButton(
-                onClick = { viewModel.toggleAudioVisualizer() },
-                onLongClick = { onOpenSheet(Sheets.VisualizerStyle) },
-                modifier = Modifier.size(40.dp),
-              ) {
-                Icon(
-                  imageVector = if (showVisualizer) Icons.RoundedFilled.AutoAwesome else Icons.RoundedFilled.Audiotrack,
-                  contentDescription = null,
-                  tint = if (showVisualizer) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-              }
               if (!isAudiobook) ReactiveIconButton(
                 onClick = {
                   val act = context as? PlayerActivity
@@ -2434,40 +2279,23 @@ fun AudioPlayerControls(
           ) { resetInactivityTimer() },
         horizontalAlignment = Alignment.CenterHorizontally,
       ) {
-        if (edgeToEdgeVisualizer) {
-          Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
-            centerVisualizerView(Modifier.fillMaxSize())
-            Column(
-              modifier =
-                Modifier
-                  .fillMaxWidth()
-                  .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))
-                  .padding(horizontal = controlsSidePadding)
-                  .padding(top = 6.dp),
-              horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-              headerBar()
-            }
-          }
-        } else {
-          androidx.compose.animation.AnimatedVisibility(
-            visible = !isLyricsFullscreen,
-            enter = fadeIn(animationSpec = tween(300)) +
-              androidx.compose.animation.expandVertically(animationSpec = tween(300)),
-            exit = fadeOut(animationSpec = tween(300)) +
-              androidx.compose.animation.shrinkVertically(animationSpec = tween(300)),
+        androidx.compose.animation.AnimatedVisibility(
+          visible = !isLyricsFullscreen,
+          enter = fadeIn(animationSpec = tween(300)) +
+            androidx.compose.animation.expandVertically(animationSpec = tween(300)),
+          exit = fadeOut(animationSpec = tween(300)) +
+            androidx.compose.animation.shrinkVertically(animationSpec = tween(300)),
+        ) {
+          Column(
+            modifier = Modifier.fillMaxWidth().then(headerContentPadding),
+            horizontalAlignment = Alignment.CenterHorizontally,
           ) {
-            Column(
-              modifier = Modifier.fillMaxWidth().then(headerContentPadding),
-              horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-              headerBar()
-              if (!showInPlaceLyrics) Spacer(modifier = Modifier.height(16.dp))
-            }
+            headerBar()
+            if (!showInPlaceLyrics) Spacer(modifier = Modifier.height(16.dp))
           }
-
-          centerVisualizerView(Modifier.weight(1f).fillMaxWidth())
         }
+
+        centerVisualizerView(Modifier.weight(1f).fillMaxWidth())
 
         androidx.compose.animation.AnimatedVisibility(
           visible = !isLyricsFullscreen,
@@ -2497,7 +2325,7 @@ fun AudioPlayerControls(
           }
         }
       }
-    } else if (isTabletLandscape && (showVisualizer || tabletDualPaneTab == 1)) {
+    } else if (isTabletLandscape && tabletDualPaneTab == 1) {
       Row(
         modifier = Modifier.fillMaxSize(),
         horizontalArrangement = Arrangement.spacedBy(20.dp),
@@ -2510,33 +2338,16 @@ fun AudioPlayerControls(
           verticalArrangement = Arrangement.SpaceBetween,
           horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-          if (edgeToEdgeVisualizer) {
-            Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
-              centerVisualizerView(Modifier.fillMaxSize())
-              Column(
-                modifier =
-                  Modifier
-                    .fillMaxWidth()
-                    .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))
-                    .padding(horizontal = controlsSidePadding)
-                    .padding(top = 6.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-              ) {
-                headerBar()
-              }
-            }
-          } else {
-            Column(
-              modifier = Modifier.fillMaxWidth().padding(horizontal = controlsSidePadding),
-              horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-              headerBar()
-              Spacer(modifier = Modifier.height(6.dp))
-            }
-            centerVisualizerView(
-              Modifier.weight(1f).fillMaxWidth().padding(vertical = 12.dp, horizontal = 24.dp),
-            )
+          Column(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = controlsSidePadding),
+            horizontalAlignment = Alignment.CenterHorizontally,
+          ) {
+            headerBar()
+            Spacer(modifier = Modifier.height(6.dp))
           }
+          centerVisualizerView(
+            Modifier.weight(1f).fillMaxWidth().padding(vertical = 12.dp, horizontal = 24.dp),
+          )
           Column(
             modifier = Modifier.padding(horizontal = controlsSidePadding),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -2564,13 +2375,6 @@ fun AudioPlayerControls(
           modifier = Modifier
             .weight(1.1f)
             .fillMaxHeight()
-            .then(
-              if (edgeToEdgeVisualizer) {
-                Modifier.windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top)).padding(top = 6.dp)
-              } else {
-                Modifier
-              },
-            )
             .padding(end = controlsSidePadding)
             .clip(RoundedCornerShape(24.dp)),
           color = Color.Transparent,
@@ -2602,13 +2406,7 @@ fun AudioPlayerControls(
               .fillMaxHeight()
               .padding(end = controlsSidePadding)
               .verticalScroll(rememberScrollState())
-              .then(
-              if (edgeToEdgeVisualizer) {
-                Modifier.windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top)).padding(top = 6.dp)
-              } else {
-                Modifier
-              },
-            ).padding(vertical = 4.dp),
+              .padding(vertical = 4.dp),
           verticalArrangement =
             if (isCompactLandscape) Arrangement.spacedBy(4.dp) else Arrangement.SpaceEvenly,
           horizontalAlignment = Alignment.CenterHorizontally,

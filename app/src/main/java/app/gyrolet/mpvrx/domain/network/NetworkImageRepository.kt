@@ -69,7 +69,7 @@ private const val THUMBNAIL_STORE_MIN_EDGE = 512
  */
 private const val MAX_CONCURRENT_TRANSFERS = 3
 
-private const val DEFAULT_MAX_CACHE_BYTES = 500L * 1024 * 1024
+private const val DEFAULT_MAX_CACHE_BYTES = 50L * 1024 * 1024
 
 class NetworkImageRepository(
   private val context: Context,
@@ -79,8 +79,17 @@ class NetworkImageRepository(
   /** Full-size images cached under [context.cacheDir]/network_images/ */
   private val fullImageDir = File(context.cacheDir, "network_images")
 
-  /** Thumbnails cached under [context.filesDir]/thumbnails/network/ (shared with video thumbnails) */
-  private val thumbnailDir = File(context.filesDir, "thumbnails/network").apply { mkdirs() }
+  /** Thumbnails cached under [context.cacheDir]/thumbnails/network/ (shared with video thumbnails) */
+  private val thumbnailDir = File(context.cacheDir, "thumbnails/network").apply { mkdirs() }
+
+  init {
+    runCatching {
+      val legacyDir = File(context.filesDir, "thumbnails/network")
+      if (legacyDir.exists()) {
+        legacyDir.deleteRecursively()
+      }
+    }
+  }
 
   /** In-memory cache for thumbnails shown in browser grids/lists. */
   private val memoryCache = BitmapMemoryCache<String>(heapDivisor = 32, maxSizeMiB = 12)

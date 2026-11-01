@@ -1052,8 +1052,6 @@ class PlayerViewModel(
   }
 
   // Audio player UI state
-  // The style and artwork/visualizer display choice are persisted via audioPreferences.
-  val showVisualizerInAudioPlayer = MutableStateFlow(audioPreferences.showAudioVisualizer.get())
   private val restoredEqualizerBands = audioPreferences.equalizerBands.get()
   val equalizerState =
     MutableStateFlow(
@@ -1810,17 +1808,7 @@ class PlayerViewModel(
   private fun formatEqualizerNumber(value: Float): String =
     String.format(java.util.Locale.US, "%.2f", value).trimEnd('0').trimEnd('.')
 
-  private val audioVisualizerToggleDebouncer =
-    app.gyrolet.mpvrx.ui.player
-      .ToggleDebouncer()
 
-  fun toggleAudioVisualizer(): Boolean {
-    if (!audioVisualizerToggleDebouncer.tryConsume()) return false
-    val newValue = !showVisualizerInAudioPlayer.value
-    showVisualizerInAudioPlayer.value = newValue
-    audioPreferences.showAudioVisualizer.set(newValue)
-    return true
-  }
 
   fun getAudioPropertiesData(): List<app.gyrolet.mpvrx.ui.player.controls.components.sheets.AudioPropertyItem> {
     val title =

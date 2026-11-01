@@ -595,6 +595,8 @@ class App :
         )
         val imageRepository: NetworkImageRepository = getKoin().get()
         imageRepository.evictStaleImageCaches()
+        val thumbnailRepository: app.gyrolet.mpvrx.domain.thumbnail.ThumbnailRepository = getKoin().get()
+        thumbnailRepository.trimDiskCacheIfNeeded()
         app.gyrolet.mpvrx.presentation.components.RemoteImageLoader.trimDiskCache(this@App)
         Log.d(TAG, "Network image cache cleanup completed")
       } catch (cancellation: CancellationException) {

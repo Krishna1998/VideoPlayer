@@ -9,6 +9,17 @@
 
 package app.gyrolet.mpvrx.ui.player.visualizer
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import kotlin.math.sin
+
 /**
  * Shared audio features extracted from the live spectrum.
  *
@@ -161,4 +172,47 @@ class AudioFeatures {
     beat *= beatFactor
     active = false
   }
+}
+
+/** Lightweight feature state shared by every renderer and the audio-reactive seekbar. */
+@Composable
+internal fun rememberAudioVisualizerFeatures(
+  isPlaying: Boolean,
+  volumeScale: Float,
+): AudioFeatures {
+  val features = remember { AudioFeatures() }
+  val scope = rememberCoroutineScope()
+
+  LaunchedEffect(volumeScale) {
+    features.volumeScale = volumeScale.coerceIn(0f, 1f)
+  }
+
+  DisposableEffect(isPlaying) {
+    val job =
+      scope.launch(Dispatchers.Default) {
+        while (isActive) {
+          val captureEpoch = features.lastCaptureNanos
+          val realCapture = features.active && features.hasRecentCapture(1_500_000_000L)
+          if (!realCapture && isPlaying) {
+            val time = System.nanoTime() / 1_000_000_000f
+            // A real capture can land while the idle frame is being synthesized. Re-check the
+            // capture epoch right before writing so fresh analyzer data is never clobbered.
+            if (features.lastCaptureNanos == captureEpoch) {
+              features.energy = 0.025f + sin(time * 0.72f) * 0.006f
+              features.bass = 0.018f + sin(time * 0.55f) * 0.004f
+              features.mid = 0.014f + sin(time * 0.83f) * 0.003f
+              features.treble = 0.010f + sin(time * 1.05f) * 0.002f
+              features.beat = 0f
+              features.centroid = 0.35f
+              features.active = false
+            }
+          } else if (!isPlaying) {
+            features.decay(0.90f, beatFactor = 0.75f)
+          }
+          delay(33)
+        }
+      }
+    onDispose { job.cancel() }
+  }
+  return features
 }

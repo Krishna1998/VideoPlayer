@@ -232,6 +232,8 @@ android {
       excludes += "META-INF/versions/9/OSGI-INF/MANIFEST.MF"
       excludes += "DebugProbesKt.bin"
       excludes += "**/*.proto"
+      excludes += "META-INF/*.txt"
+      excludes += "META-INF/*.md"
     }
     jniLibs {
       useLegacyPackaging = true
@@ -332,7 +334,6 @@ dependencies {
   implementation(libs.androidx.compose.constraintlayout)
   implementation(libs.androidx.constraintlayout)
   implementation(libs.composables.material.symbols.rounded.filled.android)
-  implementation(libs.composables.material.symbols.rounded.filled.cmp)
   implementation(libs.mediasession)
   implementation(libs.androidx.documentfile)
   implementation(libs.androidx.palette)

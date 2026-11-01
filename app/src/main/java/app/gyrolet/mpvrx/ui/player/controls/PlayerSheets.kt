@@ -55,7 +55,6 @@ import app.gyrolet.mpvrx.ui.player.controls.components.sheets.ScopesSheet
 import app.gyrolet.mpvrx.ui.player.controls.components.sheets.SubtitlesSheet
 import app.gyrolet.mpvrx.ui.player.controls.components.sheets.VideoZoomSheet
 import app.gyrolet.mpvrx.ui.player.controls.components.sheets.VideoQualitySheet
-import app.gyrolet.mpvrx.ui.player.controls.components.sheets.VisualizerStyleSheet
 import app.gyrolet.mpvrx.ui.player.setTrackSelectionId
 import app.gyrolet.mpvrx.utils.device.DeviceFormFactor
 import dev.vivvvek.seeker.Segment
@@ -645,16 +644,6 @@ fun PlayerSheets(
       val properties = remember { viewModel.getAudioPropertiesData() }
       app.gyrolet.mpvrx.ui.player.controls.components.sheets.AudioPropertiesSheet(
         properties = properties,
-        onDismissRequest = onDismissRequest,
-      )
-    }
-
-    Sheets.VisualizerStyle -> {
-      val audioPreferences = koinInject<app.gyrolet.mpvrx.preferences.AudioPreferences>()
-      val audioVisualizerStyle by audioPreferences.audioVisualizerStyle.collectAsState()
-      VisualizerStyleSheet(
-        selectedStyle = audioVisualizerStyle,
-        onSelectStyle = { audioPreferences.audioVisualizerStyle.set(it) },
         onDismissRequest = onDismissRequest,
       )
     }

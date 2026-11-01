@@ -53,8 +53,6 @@ class AudioPreferences(
   val equalizerToneY = preferenceStore.getInt("audio_equalizer_tone_y", 0)
   val equalizerFocused = preferenceStore.getBoolean("audio_equalizer_focused", false)
   val equalizerVolumeBoost = preferenceStore.getInt("audio_equalizer_volume_boost", 0)
-  val showAudioVisualizer = preferenceStore.getBoolean("show_audio_visualizer", true)
-  val audioVisualizerStyle = preferenceStore.getEnum("audio_visualizer_style", AudioVisualizerStyle.Blob)
   val audioOrientation = preferenceStore.getEnum("audio_player_orientation", AudioPlayerOrientation.Auto)
   val audioAmbientMode = preferenceStore.getBoolean("audio_ambient_mode", true)
   val animatedAlbumArtwork = preferenceStore.getBoolean("audio_animated_album_artwork", false)
@@ -147,16 +145,6 @@ enum class AudioPlayerOrientation(
   Portrait(R.string.pref_player_orientation_portrait),
   Landscape(R.string.pref_player_orientation_landscape),
 }
-
-enum class AudioVisualizerStyle(
-  @StringRes val title: Int,
-) {
-  Blob(R.string.pref_audio_visualizer_style_blob),
-  Galaxy(R.string.pref_audio_visualizer_style_galaxy),
-  Cuboid(R.string.pref_audio_visualizer_style_cuboid),
-  Particle(R.string.pref_audio_visualizer_style_particle),
-}
-
 
 enum class AudioChannels(
   @StringRes val title: Int,

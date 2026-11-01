@@ -59,6 +59,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.security.MessageDigest
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.concurrent.read
 import kotlin.concurrent.write
@@ -103,8 +104,20 @@ class ThumbnailRepository(
   }
 
   private val memoryCache = BitmapMemoryCache<String>(heapDivisor = 8, maxSizeMiB = 48)
-  private val localDiskDir = File(context.filesDir, "thumbnails/local").apply { mkdirs() }
-  private val networkDiskDir = File(context.filesDir, "thumbnails/network").apply { mkdirs() }
+  private val localDiskDir = File(context.cacheDir, "thumbnails/local").apply { mkdirs() }
+  private val networkDiskDir = File(context.cacheDir, "thumbnails/network").apply { mkdirs() }
+  private val writesSinceLastTrim = AtomicInteger(0)
+
+  init {
+    // Reclaim storage by clearing legacy thumbnails from filesDir
+    runCatching {
+      val legacyDir = File(context.filesDir, "thumbnails")
+      if (legacyDir.exists()) {
+        legacyDir.deleteRecursively()
+      }
+    }
+    trimDiskCacheIfNeeded()
+  }
   private val diskCacheLock = ReentrantReadWriteLock()
   private val _cacheRevision = MutableStateFlow(0L)
   val cacheRevision = _cacheRevision.asStateFlow()
@@ -1012,6 +1025,37 @@ class ThumbnailRepository(
       runCatching {
         FileOutputStream(file).use { output ->
           output.write(encoded)
+        }
+      }
+    }
+    checkDiskCacheSizePeriodically()
+  }
+
+  private fun checkDiskCacheSizePeriodically() {
+    if (writesSinceLastTrim.incrementAndGet() >= 40) {
+      writesSinceLastTrim.set(0)
+      trimDiskCacheIfNeeded()
+    }
+  }
+
+  fun trimDiskCacheIfNeeded() {
+    repositoryScope.launch(Dispatchers.IO) {
+      runCatching {
+        val localFiles = localDiskDir.listFiles()?.filter { it.isFile }.orEmpty()
+        val networkFiles = networkDiskDir.listFiles()?.filter { it.isFile }.orEmpty()
+        val allFiles = localFiles + networkFiles
+        var totalSize = allFiles.sumOf { it.length() }
+        val maxBytes = 50L * 1024 * 1024 // 50 MB disk cap
+        val targetBytes = 35L * 1024 * 1024 // trim to 35 MB
+        if (totalSize > maxBytes) {
+          val sorted = allFiles.sortedBy { it.lastModified() }
+          for (file in sorted) {
+            if (totalSize <= targetBytes) break
+            val len = file.length()
+            if (file.delete()) {
+              totalSize -= len
+            }
+          }
         }
       }
     }

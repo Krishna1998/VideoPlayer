@@ -169,7 +169,6 @@ enum class Sheets {
   FrameNavigation,
   Equalizer,
   AudioProperties,
-  VisualizerStyle,
   Lyrics,
   LyricsProvider,
   Scopes,
