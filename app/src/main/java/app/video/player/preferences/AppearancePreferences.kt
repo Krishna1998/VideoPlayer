@@ -93,7 +93,7 @@ class AppearancePreferences(
   val liquidGlassHighlightStrength = preferenceStore.getFloat("liquid_glass_highlight_strength", 1f)
   val liquidGlassHighlightWidth = preferenceStore.getFloat("liquid_glass_highlight_width", 1f)
   val liquidGlassHighlightBlur = preferenceStore.getFloat("liquid_glass_highlight_blur", 1f)
-  val navigationBarGlow = preferenceStore.getBoolean("navigation_bar_glow", true)
+  val navigationBarGlow = preferenceStore.getBoolean("navigation_bar_glow", false)
   val connectedMiniPlayerNavigation = preferenceStore.getBoolean("connected_mini_player_navigation", true)
   // Android 11 and older have no RenderEffect blur for the floating bar.
   val legacyNavigationBar =
@@ -124,15 +124,13 @@ class AppearancePreferences(
   val showProfileTab = preferenceStore.getBoolean("show_profile_tab", true)
   val profileName = preferenceStore.getString("profile_name", "")
   val profileImagePath = preferenceStore.getString("profile_image_path", "")
-  val showNetworkTab = preferenceStore.getBoolean("show_network_tab", false)
-  val showJellyfinTab = preferenceStore.getBoolean("show_jellyfin_tab", false)
   /** Persistent visual order of bottom navigation tabs. Home remains the root destination. */
   val bottomNavigationOrder = preferenceStore.getObject(
     key = "bottom_navigation_tab_order",
-    defaultValue = listOf("HOME", "MUSIC", "NETWORK", "JELLYFIN", "PROFILE"),
+    defaultValue = listOf("HOME", "MUSIC", "PROFILE"),
     serializer = { order -> order.joinToString(",") },
     deserializer = { stored ->
-      val defaults = listOf("HOME", "MUSIC", "NETWORK", "JELLYFIN", "PROFILE")
+      val defaults = listOf("HOME", "MUSIC", "PROFILE")
       val parsed = stored.split(",").map(String::trim).filter { it in defaults }.distinct()
       listOf("HOME") + parsed.filterNot { it == "HOME" } + defaults.drop(1).filterNot { it in parsed }
     },

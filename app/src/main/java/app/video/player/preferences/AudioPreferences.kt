@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 class AudioPreferences(
   preferenceStore: PreferenceStore,
 ) {
-  val preferredLanguages = preferenceStore.getString("audio_preferred_languages")
+  val preferredLanguages = preferenceStore.getString("audio_preferred_languages", "hi")
   val defaultAudioDelay = preferenceStore.getInt("audio_delay_default")
   val pickerPath = preferenceStore.getString("audio_picker_path")
   val audioPitchCorrection = preferenceStore.getBoolean("audio_pitch_correction", true)
@@ -53,7 +53,7 @@ class AudioPreferences(
   val equalizerToneY = preferenceStore.getInt("audio_equalizer_tone_y", 0)
   val equalizerFocused = preferenceStore.getBoolean("audio_equalizer_focused", false)
   val equalizerVolumeBoost = preferenceStore.getInt("audio_equalizer_volume_boost", 0)
-  val audioOrientation = preferenceStore.getEnum("audio_player_orientation", AudioPlayerOrientation.Auto)
+  val audioOrientation = preferenceStore.getEnum("audio_player_orientation", AudioPlayerOrientation.Portrait)
   val audioAmbientMode = preferenceStore.getBoolean("audio_ambient_mode", true)
   val animatedAlbumArtwork = preferenceStore.getBoolean("audio_animated_album_artwork", false)
   val audioWavySeekbar = preferenceStore.getBoolean("audio_wavy_seekbar", true)

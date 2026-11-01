@@ -104,7 +104,7 @@ class PlayerPreferences(
   val persistentStatusShowSpeed = preferenceStore.getBoolean("persistent_status_show_speed", true)
   val persistentStatusMicroBattery = preferenceStore.getBoolean("persistent_status_micro_battery", true)
   val showSystemStatusBar = preferenceStore.getBoolean("show_system_status_bar")
-  val showSystemNavigationBar = preferenceStore.getBoolean("show_system_navigation_bar")
+  val showSystemNavigationBar = preferenceStore.getBoolean("show_system_navigation_bar", true)
   val safeAreaWindow = preferenceStore.getBoolean("safe_area_window", false)
   val reduceMotion = preferenceStore.getBoolean("reduce_motion", false)
   val playerTimeToDisappear = preferenceStore.getInt("player_time_to_disappear", 4000)
@@ -346,7 +346,7 @@ class PlayerPreferences(
   val showAspectRatioOverlay = preferenceStore.getBoolean("show_aspect_ratio_overlay", true)
 
   /** Show the action pill when zoom level changes via pinch. */
-  val showZoomLevelOverlay = preferenceStore.getBoolean("show_zoom_level_overlay", true)
+  val showZoomLevelOverlay = preferenceStore.getBoolean("show_zoom_level_overlay", false)
 
   /** Show the action pill when toggling repeat mode or shuffle. */
   val showRepeatShuffleOverlay = preferenceStore.getBoolean("show_repeat_shuffle_overlay", true)

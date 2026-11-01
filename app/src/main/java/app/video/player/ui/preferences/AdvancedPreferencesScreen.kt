@@ -18,7 +18,6 @@ import android.os.Environment
 import app.video.player.ui.components.AppToast as Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -42,14 +41,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
-import androidx.core.os.LocaleListCompat
 import androidx.documentfile.provider.DocumentFile
 import app.video.player.R
 import app.video.player.domain.download.DownloadLocations
@@ -82,43 +79,6 @@ import app.video.player.ui.preferences.components.AppListPreference as ListPrefe
 import app.video.player.ui.preferences.components.AppPreference as Preference
 import org.koin.compose.koinInject
 import java.io.File
-import java.util.Locale
-
-private enum class AppLanguage(
-  val languageTag: String,
-) {
-  SystemDefault(""),
-  English("en"),
-  Arabic("ar"),
-  German("de"),
-  Spanish("es"),
-  French("fr"),
-  Hindi("hi"),
-  Japanese("ja"),
-  PortugueseBrazil("pt-BR"),
-  Russian("ru"),
-  SimplifiedChinese("zh-CN"),
-  Ukrainian("uk"),
-  ;
-
-  fun displayName(context: android.content.Context): String {
-    if (this == SystemDefault) return context.getString(R.string.pref_app_language_system_default)
-    val locale = Locale.forLanguageTag(languageTag)
-    return locale.getDisplayName(locale)
-  }
-
-  companion object {
-    fun fromLanguageTag(languageTag: String): AppLanguage {
-      if (languageTag.isBlank()) return SystemDefault
-      return entries.firstOrNull { it.languageTag.equals(languageTag, ignoreCase = true) }
-        ?: entries.firstOrNull {
-          it != SystemDefault &&
-            Locale.forLanguageTag(it.languageTag).language == Locale.forLanguageTag(languageTag).language
-        }
-        ?: SystemDefault
-    }
-  }
-}
 
 @Serializable
 object AdvancedPreferencesScreen : Screen {
@@ -138,18 +98,6 @@ object AdvancedPreferencesScreen : Screen {
     var showExportDialog by remember { mutableStateOf(false) }
     var importStats by remember { mutableStateOf<SettingsManager.ImportStats?>(null) }
     var exportStats by remember { mutableStateOf<SettingsManager.ExportStats?>(null) }
-    var pendingAppLanguage by remember { mutableStateOf<AppLanguage?>(null) }
-    val configuration = LocalConfiguration.current
-    val currentAppLanguage =
-      remember(configuration) {
-        AppLanguage.fromLanguageTag(
-          AppCompatDelegate
-            .getApplicationLocales()
-            .get(0)
-            ?.toLanguageTag()
-            .orEmpty(),
-        )
-      }
     val playbackHistoryClearedMessage = stringResource(R.string.pref_advanced_cleared_playback_history)
     val fontsCacheClearedMessage = stringResource(R.string.pref_advanced_cleared_fonts_cache)
     val unknownError = stringResource(R.string.generic_unknown_error)
@@ -298,25 +246,6 @@ object AdvancedPreferencesScreen : Screen {
           },
         )
       }
-    }
-
-    pendingAppLanguage?.let { language ->
-      RestartRequiredDialog(
-        title = stringResource(R.string.pref_app_language_restart_title),
-        message = stringResource(R.string.pref_app_language_restart_message),
-        confirmLabel = stringResource(R.string.pref_app_language_restart_now),
-        onDismiss = { pendingAppLanguage = null },
-        onConfirm = {
-          pendingAppLanguage = null
-          val locales =
-            if (language == AppLanguage.SystemDefault) {
-              LocaleListCompat.getEmptyLocaleList()
-            } else {
-              LocaleListCompat.forLanguageTags(language.languageTag)
-            }
-          AppCompatDelegate.setApplicationLocales(locales)
-        },
-      )
     }
 
     Scaffold(
@@ -579,7 +508,7 @@ object AdvancedPreferencesScreen : Screen {
             }
           }
 
-          // Language and notification style share one connected Advanced group.
+          // Notification style group.
           item {
             PreferenceSectionHeader(
               position = PreferenceSectionPosition.Middle,
@@ -598,24 +527,6 @@ object AdvancedPreferencesScreen : Screen {
               notificationStyle.takeIf { it.isSupportedOn(Build.VERSION.SDK_INT) }
                 ?: NotificationStyle.Media
             PreferenceCard {
-              ExpressivePreferenceItem {
-                ListPreference(
-                  modifier = Modifier.settingsSearchTarget(R.string.pref_app_language_title),
-                  value = currentAppLanguage,
-                  onValueChange = { language ->
-                    if (language != currentAppLanguage) pendingAppLanguage = language
-                  },
-                  values = AppLanguage.entries,
-                  valueToText = { AnnotatedString(it.displayName(context)) },
-                  title = { Text(stringResource(R.string.pref_app_language_title)) },
-                  summary = {
-                    Text(
-                      text = currentAppLanguage.displayName(context),
-                      color = MaterialTheme.colorScheme.outline,
-                    )
-                  },
-                )
-              }
               DevicePreference(R.string.pref_advanced_notification_style) {
                 ExpressivePreferenceItem {
                   ListPreference(
