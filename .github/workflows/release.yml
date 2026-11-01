@@ -22,7 +22,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: mpvrx-release-${{ github.ref }}
+  group: videoplayer-release-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -205,7 +205,7 @@ jobs:
           for abi in $APK_ABIS; do
             base="app-${APK_DIR}-${abi}-release"
             sign_apk "$out_dir" "$base" "${APK_DIR} ${abi} release"
-            cp "$out_dir/$base.apk" "release-assets/mpvRx-${ASSET_NAME:-$abi}-${VERSION_TAG}.apk"
+            cp "$out_dir/$base.apk" "release-assets/VideoPlayer-${ASSET_NAME:-$abi}-${VERSION_TAG}.apk"
           done
 
       - name: Upload R8 diagnostics
@@ -253,7 +253,7 @@ jobs:
           : > checksums.txt
           variants=(arm64-v8a)
           for variant in "${variants[@]}"; do
-            asset="release-assets/mpvRx-${variant}-${VERSION_TAG}.apk"
+            asset="release-assets/VideoPlayer-${variant}-${VERSION_TAG}.apk"
             if [[ ! -f "$asset" ]]; then
               echo "Missing expected release asset: $asset"
               find release-assets -type f -name '*.apk' -print || true
@@ -289,7 +289,7 @@ jobs:
           variant_guide = """
           ### APK variants
 
-          - **arm64-v8a** (`mpvRx-arm64-v8a-<version>.apk`): Built for 64-bit ARM Android devices.
+          - **arm64-v8a** (`VideoPlayer-arm64-v8a-<version>.apk`): Built for 64-bit ARM Android devices.
           """.strip()
           Path('release-notes.md').write_text(
               latest + '\n\n---\n' + variant_guide + '\n\n### SHA-256 checksums\n\n```text\n',

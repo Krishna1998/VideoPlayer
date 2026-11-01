@@ -22,30 +22,30 @@
 ## Showcase
 
 <div align="center">
-  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/tanjiro-playback.jpg" width="100%" alt="Video playback in mpvRx">
+  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/tanjiro-playback.jpg" width="100%" alt="Video playback in Video Player">
 </div>
 
 <div align="center">
-  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/player-controls.jpg" width="100%" alt="mpvRx player controls">
+  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/player-controls.jpg" width="100%" alt="Video Player player controls">
 </div>
 
 <div align="center">
-  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/playlist-window.jpg" width="49%" alt="mpvRx visual playlist">
-  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/chapter-navigation.jpg" width="49%" alt="mpvRx chapter navigation">
+  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/playlist-window.jpg" width="49%" alt="Video Player visual playlist">
+  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/chapter-navigation.jpg" width="49%" alt="Video Player chapter navigation">
 </div>
 
 
 <div align="center">
-  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/pip.png" width="32%" alt="mpvRx picture-in-picture mode">
-  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/music-player.jpg" width="32%" alt="mpvRx music player">
-  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/about-screen.jpg" width="32%" alt="mpvRx About screen">
+  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/pip.png" width="32%" alt="Video Player picture-in-picture mode">
+  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/music-player.jpg" width="32%" alt="Video Player music player">
+  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/about-screen.jpg" width="32%" alt="Video Player About screen">
 </div>
 
 ---
 
 ## Features
 
-mpvRx pushes the mpv-android experience further with deep customization, thermal-aware performance, and unique quality-of-life features. Here's what sets it apart:
+Video Player pushes the mpv-android experience further with deep customization, thermal-aware performance, and unique quality-of-life features. Here's what sets it apart:
 
 <details close>
 <summary><b>🎨 Theme & Visual System</b></summary>
@@ -258,7 +258,7 @@ Local playlist discovery runs when the Playlists page is first loaded and after 
 
 - **Use `gpu` not `gpu-next`** — `gpu-next` is a Vulkan-based renderer that keeps the GPU active unnecessarily during regular playback. The classic `gpu` backend is lighter and uses OpenGL, which on most Android devices has better power characteristics.
 - **Disable Vulkan entirely.** Vulkan offers great video playback performance but can be power-intensive on mobile devices.
-- **Use the `fast` mpv profile.** It's built into mpvRx: select MPV Profiles and set it to Default, or add `profile=fast` to `mpv.conf`.
+- **Use the `fast` mpv profile.** It's built into Video Player: select MPV Profiles and set it to Default, or add `profile=fast` to `mpv.conf`.
 - **Don't overuse shaders.** Shaders run on the GPU every single frame. Watching 24fps content with complex shader pipelines means 24 heavy compute passes per second for minimal perceptible difference on a phone screen.
 - **Avoid bloated configurations.** Copying complex configs with excessive scalers (`scale=ewa_lanczossharp`, `dscale=mitchell`, `cscale=sinc`) and dozens of shaders forces your mobile device to render like a cinema projector on a small display.
 

@@ -62,7 +62,7 @@
   <string name="pref_liquid_glass_highlight_width">Highlight width</string>
   <string name="pref_liquid_glass_highlight_blur">Highlight softness</string>
   <string name="pref_appearance_system_font_title">Use system font</string>
-  <string name="pref_appearance_system_font_summary">Use the Android system typeface across mpvRx instead of Google Sans</string>
+  <string name="pref_appearance_system_font_summary">Use the Android system typeface across Video Player instead of Google Sans</string>
   <string name="pref_appearance_app_font_title">App font</string>
   <string name="pref_appearance_app_font_summary">Current: %1$s</string>
   <string name="pref_appearance_app_font_summary_search">Choose the built-in font, Android system font, or a downloadable Google Font</string>
@@ -82,7 +82,7 @@
   <string name="pref_appearance_ui_scale_title">App UI scale</string>
   <string name="pref_appearance_ui_scale_summary">Scale the app interface to %1$d%%. Restart the app to apply changes.</string>
   <string name="pref_appearance_ui_scale_restart_title">Restart required</string>
-  <string name="pref_appearance_ui_scale_restart_message">Restart mpvRx to apply the new app UI scale of %1$d%%.</string>
+  <string name="pref_appearance_ui_scale_restart_message">Restart Video Player to apply the new app UI scale of %1$d%%.</string>
   <string name="pref_appearance_ui_scale_restart_now">Restart now</string>
   <string name="pref_appearance_unlimited_name_lines_title">Show full names</string>
   <string name="pref_appearance_unlimited_name_lines_summary">Show full folder and video names without truncation</string>
@@ -403,7 +403,7 @@
   <string name="pref_app_language_title">Language</string>
   <string name="pref_app_language_system_default">System default</string>
   <string name="pref_app_language_restart_title">Restart required</string>
-  <string name="pref_app_language_restart_message">Restart mpvRx to apply the new language.</string>
+  <string name="pref_app_language_restart_message">Restart Video Player to apply the new language.</string>
   <string name="pref_app_language_restart_now">Restart now</string>
   <string name="pref_advanced_mpv_conf_storage_location">Pick configuration storage location</string>
   <string name="pref_advanced_mpv_conf">Edit mpv.conf</string>
@@ -693,7 +693,7 @@
   <string name="notification_chapter_counter">Chapter %1$d of %2$d</string>
   <string name="notification_playback_progress">%1$s elapsed - %2$s remaining</string>
   <string name="notification_permission_denied">Notification permission is required for background playback controls.</string>
-  <string name="notification_permission_disabled">Notifications are disabled for mpvRx. Enable them to show playback controls.</string>
+  <string name="notification_permission_disabled">Notifications are disabled for Video Player. Enable them to show playback controls.</string>
   <string name="notification_disabled_in_advanced_settings">Enable notifications in Advanced Settings to use background playback.</string>
   <string name="pref_advanced_notification_style">Notification style</string>
   <!-- Media Info Activity -->
@@ -1340,11 +1340,11 @@
   <string name="storage_permission_needed_desc">Grant storage access to browse and play your media.</string>
   <string name="storage_permission_grant">Grant access</string>
   <string name="pref_player_web_stream_links_title">Open streaming site links</string>
-  <string name="pref_player_web_stream_links_summary">Offer mpvRx for supported streaming-site links and shared text links. Media files and direct media URLs remain available when disabled.</string>
+  <string name="pref_player_web_stream_links_summary">Offer Video Player for supported streaming-site links and shared text links. Media files and direct media URLs remain available when disabled.</string>
   <string name="player_unknown_video">Unknown Video</string>
-  <string name="media_widget_name">mpvRx playback</string>
+  <string name="media_widget_name">Video Player playback</string>
   <string name="media_widget_description">Control audio and video playback</string>
-  <string name="media_widget_pill_name">mpvRx music pill</string>
+  <string name="media_widget_pill_name">Video Player music pill</string>
   <string name="media_widget_pill_description">Compact music playback controls</string>
   <string name="media_widget_empty">Nothing playing</string>
   <string name="media_widget_audio">Audio</string>
@@ -1588,13 +1588,13 @@
   <string name="ui_playlist_created_successfully">Playlist created successfully</string>
   <string name="ui_why_do_i_see_this">Why do I see this?</string>
   <string name="ui_why_this_permission_is_needed">Why this permission is needed</string>
-  <string name="ui_mpvrx_needs_access_to_your_video_files_to_provide_its_core_funct">mpvRx needs access to your video files to provide its core functionality as a media player.</string>
+  <string name="ui_mpvrx_needs_access_to_your_video_files_to_provide_its_core_funct">Video Player needs access to your video files to provide its core functionality as a media player.</string>
   <string name="ui_the_permission_is_used_exclusively_for">The permission is used exclusively for:</string>
   <string name="ui_discovering_and_displaying_your_video_files_n_playing_media_cont">• Discovering and displaying your video files\n• Playing media content\n• Loading subtitle files</string>
-  <string name="ui_mpvrx_has_always_required_storage_access_permission_as_it_s_esse">mpvRx has always required storage access permission as it\'s essential for the app to find all media and subtitle files on your device, including the ones that are not supported by the system.</string>
+  <string name="ui_mpvrx_has_always_required_storage_access_permission_as_it_s_esse">Video Player has always required storage access permission as it\'s essential for the app to find all media and subtitle files on your device, including the ones that are not supported by the system.</string>
   <string name="ui_however_due_to_a_change_in_security_policy_apps_built_for_androi">However, due to a change in security policy, apps built for Android 11 and above now require additional permission to continue accessing the same.</string>
   <string name="ui_please_know_that_this_permission_is_only_used_for_the_auto_disco">Please know that this permission is only used for the auto-discovery of media/subtitle files on your device and will not allow us to access the private data files stored by other apps in any way.</string>
-  <string name="ui_mpvrx_is_an_open_source_project_you_can_review_the_source_code_a">mpvRx is an open source project. You can review the source code and verify how permissions are used by visiting our GitHub repository at:</string>
+  <string name="ui_mpvrx_is_an_open_source_project_you_can_review_the_source_code_a">Video Player is an open source project. You can review the source code and verify how permissions are used by visiting our GitHub repository at:</string>
   <string name="ui_be_rest_assured_your_privacy_is_our_utmost_priority_and_we_neith">Be rest assured, your privacy is our utmost priority, and we neither access your files for other purposes nor transfer or store them to our servers. They remain safe on your device.</string>
   <string name="ui_app_permissions">App Permissions</string>
   <string name="ui_permissions_setup_subtitle">Configure permissions to enable core features and media playback.</string>
@@ -1698,7 +1698,7 @@
   <string name="update_unknown_size">Unknown size</string>
   <string name="update_beta_build_format">Beta r%1$d</string>
   <string name="ui_beta_badge_suffix">\u0020(Beta)</string>
-  <string name="ui_core_open_source_dependencies_used_by_mpvrx">Core open source dependencies used by mpvRx.</string>
+  <string name="ui_core_open_source_dependencies_used_by_mpvrx">Core open source dependencies used by Video Player.</string>
   <string name="ui_already_using_latest_version">Already using latest version</string>
   <string name="ui_install_and_update_yt_dlp_for_streaming_support">Install and update yt-dlp for streaming support</string>
   <string name="ui_instructions_for_ai_file_renaming">Instructions for AI file renaming...</string>
@@ -2144,7 +2144,7 @@
   <string name="seerr_status_blacklisted">Blacklisted</string>
   <string name="seerr_approve">Approve</string>
   <string name="seerr_decline">Decline</string>
-  <string name="seerr_play_in_jellyfin">Play in mpvRx</string>
+  <string name="seerr_play_in_jellyfin">Play in Video Player</string>
   <string name="seerr_search_placeholder">Search Seerr for movies, shows…</string>
 
   <!-- Downloads -->
@@ -2258,23 +2258,23 @@
   <string name="wallpaper_link_invalid">Enter an http or https image link.</string>
   <string name="wallpaper_link_failed">Couldn\'t download an image from this link.</string>
   <string name="remote_settings_title_tv">Phone remote</string>
-  <string name="remote_settings_summary_tv">Control MPVRX and type links from a phone on the same network</string>
+  <string name="remote_settings_summary_tv">Control Video Player and type links from a phone on the same network</string>
   <string name="remote_settings_title_phone">TV remote</string>
-  <string name="remote_settings_summary_phone">Control MPVRX on your TV and type links from this phone</string>
+  <string name="remote_settings_summary_phone">Control Video Player on your TV and type links from this phone</string>
   <string name="remote_tv_enable">Allow phone remote</string>
-  <string name="remote_tv_enable_summary">Phones on the same network can ask to pair while MPVRX is open. You approve each phone here on the TV.</string>
+  <string name="remote_tv_enable_summary">Phones on the same network can ask to pair while Video Player is open. You approve each phone here on the TV.</string>
   <string name="remote_tv_address">This TV: %1$s</string>
   <string name="remote_tv_address_unavailable">Connect this TV to a network to see its address.</string>
-  <string name="remote_tv_how_to">On your phone, open MPVRX, go to Settings &gt; TV remote, and choose this TV. If it isn\'t listed, enter the address above.</string>
+  <string name="remote_tv_how_to">On your phone, open Video Player, go to Settings &gt; TV remote, and choose this TV. If it isn\'t listed, enter the address above.</string>
   <string name="remote_tv_paired_phones">Paired phones</string>
   <string name="remote_tv_no_paired_phones">No phones paired yet.</string>
   <string name="remote_tv_remove">Remove</string>
   <string name="remote_pair_title">Pair phone remote?</string>
-  <string name="remote_pair_message">%1$s wants to control MPVRX. Allow only if the phone shows this code.</string>
+  <string name="remote_pair_message">%1$s wants to control Video Player. Allow only if the phone shows this code.</string>
   <string name="remote_pair_allow">Allow</string>
   <string name="remote_pair_deny">Deny</string>
   <string name="remote_phone_searching">Looking for TVs on this network…</string>
-  <string name="remote_phone_no_tvs">No TVs found yet. Open MPVRX on the TV, or enter the address shown in its Phone remote settings.</string>
+  <string name="remote_phone_no_tvs">No TVs found yet. Open Video Player on the TV, or enter the address shown in its Phone remote settings.</string>
   <string name="remote_phone_address_label">TV address</string>
   <string name="remote_phone_connect">Connect</string>
   <string name="remote_phone_forget">Forget</string>
@@ -2299,12 +2299,12 @@
   <string name="remote_phone_fast_forward">Fast forward</string>
   <string name="remote_phone_volume_down">Volume down</string>
   <string name="remote_phone_volume_up">Volume up</string>
-  <string name="remote_error_unreachable">Couldn\'t reach the TV. Check that both devices are on the same network and MPVRX is open on the TV.</string>
+  <string name="remote_error_unreachable">Couldn\'t reach the TV. Check that both devices are on the same network and Video Player is open on the TV.</string>
   <string name="remote_error_denied">The TV declined pairing.</string>
   <string name="remote_error_busy">The TV is already showing another pairing request.</string>
   <string name="remote_error_verification">Couldn\'t verify the TV. Try again, or choose Forget and pair it again.</string>
   <string name="remote_error_disconnected">Disconnected from the TV.</string>
-  <string name="remote_error_background">Open MPVRX on the TV to control it.</string>
+  <string name="remote_error_background">Open Video Player on the TV to control it.</string>
   <string name="remote_error_invalid_address">Enter the address shown on the TV, such as 192.168.1.20:47821.</string>
   <string name="wallpaper_preset_aurora">Aurora</string>
   <string name="wallpaper_preset_sunset">Sunset</string>
@@ -2572,7 +2572,7 @@
   <string name="oss_anime4k_description">Real-time upscaling and restoration shaders for animated video.</string>
   <string name="oss_hdr_toys_description">HDR tone-mapping, gamut-mapping, and transfer-function shaders.</string>
   <string name="pref_auto_backup_title">Automatic settings backup</string>
-  <string name="pref_auto_backup_summary">Save changed settings in Configuration/Backup when mpvRx moves to the background. The latest seven backups are kept.</string>
+  <string name="pref_auto_backup_summary">Save changed settings in Configuration/Backup when Video Player moves to the background. The latest seven backups are kept.</string>
   <string name="pref_auto_backup_select_folder">Select a Configuration folder first</string>
   <string name="pref_auto_backup_last_backup">Last backup: %1$s</string>
   <string name="watch_stats_title">Watching statistics</string>
@@ -2590,10 +2590,10 @@
   <string name="watch_stats_reset_confirm">Reset all playback statistics? Your history, watched status and playlists will be kept.</string>
   <string name="pref_debug_log_size_title">Log size limit</string>
   <string name="pref_debug_log_size_summary">Keep up to %1$d MB in the log viewer and shared diagnostics.</string>
-  <string name="onboarding_configuration_title">Set up mpvRx storage</string>
+  <string name="onboarding_configuration_title">Set up Video Player storage</string>
   <string name="onboarding_configuration_desc">Choose the Configuration folder used for settings, backups, scripts, subtitles, and downloads.</string>
   <string name="onboarding_configuration_card_title">Configuration folder</string>
-  <string name="onboarding_configuration_card_desc">Select your mpvRx Configuration folder. Existing settings at its root or in Backup are restored automatically.</string>
+  <string name="onboarding_configuration_card_desc">Select your Video Player Configuration folder. Existing settings at its root or in Backup are restored automatically.</string>
   <string name="onboarding_configuration_restoring">Checking for settings backups…</string>
   <string name="onboarding_configuration_no_backup">Folder configured. Downloads will use Configuration/Downloads.</string>
   <string name="onboarding_configuration_restored">Restored settings from %1$s. Downloads will use Configuration/Downloads.</string>
@@ -2813,13 +2813,13 @@
   <string name="update_checking_download">Checking downloaded APK…</string>
   <string name="update_check_failed">Could not check for updates. Check your connection or try again later.</string>
   <string name="update_auto_install">Automatically download and install</string>
-  <string name="update_auto_install_summary">Download over unmetered networks and install when mpvRx is idle. Android may ask for approval.</string>
+  <string name="update_auto_install_summary">Download over unmetered networks and install when Video Player is idle. Android may ask for approval.</string>
   <string name="update_download_and_install">Download and install</string>
   <string name="update_background_downloading">Downloading app update…</string>
   <string name="update_installing">Installing update…</string>
   <string name="update_approval_required">Android needs your approval to finish installing. Tap Confirm installation.</string>
   <string name="update_confirm_install">Confirm installation</string>
-  <string name="update_install_complete">Update installed. Tap to open mpvRx.</string>
+  <string name="update_install_complete">Update installed. Tap to open Video Player.</string>
   <string name="update_download_waiting">Waiting for the network or retrying the download…</string>
   <string name="tv_nav_settings">Settings</string>
   <string name="tv_move_up">Move up</string>
@@ -2848,7 +2848,7 @@
   <string name="jellyfin_top_picks">Top picks for you</string>
   <string name="jellyfin_top_picks_subtitle">Popular and trending on your server</string>
   <string name="jellyfin_music_subtitle">Albums and tracks</string>
-  <string name="jellyfin_connect_message">Stream your library with mpvRx hardware decoding, no transcoding needed.</string>
+  <string name="jellyfin_connect_message">Stream your library with Video Player hardware decoding, no transcoding needed.</string>
   <string name="jellyfin_empty_folder_message">There\'s no media in this folder yet.</string>
   <string name="jellyfin_no_results_message">Nothing matched “%1$s”. Try another title or category.</string>
   <string name="jellyfin_filter_all">All</string>
