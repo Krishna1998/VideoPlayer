@@ -1749,7 +1749,6 @@ object SearchablePreferences {
 
   private val playStoreHiddenTitles =
     setOf(
-      R.string.pref_enable_p2p_streaming_title,
       R.string.pref_player_web_stream_links_title,
       R.string.ui_yt_dlp_manager,
       R.string.ytdlp_subtitles_language,
