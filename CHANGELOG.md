@@ -4,6 +4,28 @@ These notes are written in plain English and focus on what changed for real use.
 
 ## Unreleased
 
+## 1.0.9
+
+- Release version 1.0.9.
+- **Removed Torrent Facility:**
+  - Completely removed BitTorrent streaming engine, libtorrent4j native binaries across all ABIs, `.torrent` and `magnet:` intent filters, and torrent picker screen.
+  - Removed P2P streaming toggle and associated background services.
+- **App Rebranding & Build Artifacts:**
+  - Rebranded user-facing app name, dialogs, widgets, permissions, and store metadata to **Video Player**.
+  - Updated release APK build artifacts to `VideoPlayer-<abi>-<version>.apk`.
+- **Player Controls & Layout Customization:**
+  - Separated seekbar placement (above/below action buttons) and playback controls placement (center of screen, above seekbar, below seekbar) into independent options.
+  - Added dedicated layout settings with live synchronized editor preview and settings search indexing.
+  - Restored full landscape action button groups and dedicated landscape playback controls row.
+  - Refined portrait top status HUD with cutout and status-bar insets protection.
+  - Preserved native subtitle windowing and positioning.
+- **Settings Accessibility & Visual Indicators:**
+  - Added visual action indicators (navigation chevron and dialog dropdown icons with RTL support) across preference items.
+  - Added button accessibility roles and action semantics click labels (`Open page`, `Open dialog`).
+- **UI Adjustments:**
+  - Seekbar side time indicator font size adjusted to 11sp on both sides.
+  - Removed network tile from the Profile tab overview.
+
 ## 1.0.8
 
 - Release version 1.0.8.
