@@ -134,13 +134,13 @@ android {
     }
 
     configureEach {
-      val enableYtdlp = name in sideloadDistributions
-      buildConfigField("boolean", "ENABLE_YTDLP", enableYtdlp.toString())
-      buildConfigField("boolean", "ENABLE_TORRENT", enableYtdlp.toString())
-      if (enableYtdlp) proguardFile("src/sideload/proguard-rules.pro")
+      val enableTorrent = name in sideloadDistributions
+      buildConfigField("boolean", "ENABLE_YTDLP", "false")
+      buildConfigField("boolean", "ENABLE_TORRENT", enableTorrent.toString())
+      if (enableTorrent) proguardFile("src/sideload/proguard-rules.pro")
       externalNativeBuild {
         cmake {
-          arguments += "-DMPVRX_ENABLE_YTDLP=${if (enableYtdlp) "ON" else "OFF"}"
+          arguments += "-DMPVRX_ENABLE_YTDLP=OFF"
         }
       }
     }
@@ -152,8 +152,6 @@ android {
         // AGP's built-in Kotlin requires custom Kotlin directories on this source set.
         kotlin.directories.add("src/sideload/java")
         manifest.srcFile("src/sideload/AndroidManifest.xml")
-        assets.directories.add("src/ytdlp/assets")
-        jniLibs.directories.add("src/ytdlp/jniLibs")
       }
     }
   }

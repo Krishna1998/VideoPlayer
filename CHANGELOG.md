@@ -7,6 +7,7 @@ These notes are written in plain English and focus on what changed for real use.
 ## 1.0.2
 
 - Release version 1.0.2.
+- Completely removed yt-dlp, Python runtime, and related native executables.
 
 ## 1.0.1
 

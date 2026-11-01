@@ -209,25 +209,6 @@ class App :
         }
       }.onFailure { error ->
         Log.e(TAG, "Failed to initialize MediaInfoActivityAlias setting on launch", error)
-      }
-      runCatching {
-        val preferences: PlayerPreferences = getKoin().get()
-        val enableWebLinks = preferences.enableWebStreamLinkIntents.get()
-        if (!BuildConfig.ENABLE_YTDLP) return@runCatching
-        val componentName = ComponentName(this@App, "app.video.player.ui.player.WebStreamLinksActivityAlias")
-        val newState =
-          if (enableWebLinks) {
-            PackageManager.COMPONENT_ENABLED_STATE_ENABLED
-          } else {
-            PackageManager.COMPONENT_ENABLED_STATE_DISABLED
-          }
-        if (packageManager.getComponentEnabledSetting(componentName) != newState) {
-          packageManager.setComponentEnabledSetting(
-            componentName,
-            newState,
-            PackageManager.DONT_KILL_APP,
-          )
-        }
       }.onFailure { error ->
         Log.e(TAG, "Failed to initialize WebStreamLinksActivityAlias setting on launch", error)
       }
