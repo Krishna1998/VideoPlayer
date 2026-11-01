@@ -292,7 +292,7 @@ _Tip: If your battery consumption stays within 200 mAh and below 0.9W (see Stats
 
 | Variant | Description |
 |---|---|
-| `standard` | Main release with hardware acceleration, custom shaders, yt-dlp, and torrent streaming |
+| `standard` | Main release with hardware acceleration, custom shaders, and yt-dlp |
 
 ### APK Variants
 

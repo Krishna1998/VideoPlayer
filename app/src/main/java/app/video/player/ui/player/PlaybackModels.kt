@@ -62,15 +62,10 @@ data class PlaybackItem(
   val durationSeconds: Int? = null,
   val videoWidth: Int = 0,
   val videoHeight: Int = 0,
-  /** File index inside a multi-file torrent; lets a series episode restart its stream. */
-  val torrentFileIndex: Int? = null,
   val audiobook: AudiobookPlaybackInfo? = null,
   /** UI identity for this queue entry; copies and moves retain it even for duplicate media. */
   val queueEntryId: Long = nextPlaybackQueueEntryId.getAndIncrement(),
 ) {
-  /** True while this torrent episode still points at its magnet/torrent source instead of a live stream URL. */
-  fun requiresTorrentResolution(): Boolean = torrentFileIndex != null && playableUri == originalUri
-
   companion object {
     fun fromUri(
       uri: String,
@@ -408,11 +403,6 @@ object PlaybackIdentity {
 
   /** Gives every URI representation of the same local file one playback-state key. */
   fun forLocalPath(path: String): String = digest("local\u0000${normalizeLocalPath(path)}")
-
-  fun forTorrent(
-    infoHash: String,
-    fileIndex: Int,
-  ): String = digest("torrent\u0000${infoHash.trim().lowercase(Locale.ROOT)}\u0000$fileIndex")
 
   private fun digest(value: String): String {
     val bytes = MessageDigest.getInstance("SHA-256").digest(value.toByteArray(Charsets.UTF_8))

@@ -50,7 +50,6 @@ import app.video.player.database.repository.PlaylistRepository
 import app.video.player.domain.playbackstate.repository.PlaybackStateRepository
 import app.video.player.domain.thumbnail.ThumbnailRepository
 import app.video.player.domain.thumbnail.getArtwork
-import app.video.player.domain.torrent.TorrentStreamingEngine
 import app.video.player.preferences.AdvancedPreferences
 import app.video.player.preferences.AudioPreferences
 import app.video.player.preferences.BrowserPreferences
@@ -279,7 +278,6 @@ class MediaPlaybackService :
   private val gesturePreferences: GesturePreferences by inject()
   private val playlistRepository: PlaylistRepository by inject()
   private val playbackStateRepository: PlaybackStateRepository by inject()
-  private val torrentStreamingEngine: TorrentStreamingEngine by inject()
 
   private var mediaIdentifier = ""
   private var mediaTitle = ""
@@ -1152,7 +1150,6 @@ class MediaPlaybackService :
     if (!force && !canHandleTransportAction()) return
     handingBackToActivity = false
     schedulePlaybackStateSave(force = true)
-    torrentStreamingEngine.stopStream()
     PlaybackSession.stop(clearQueue = true)
     paused = true
     mediaSession.setPlaybackState(
@@ -1173,7 +1170,6 @@ class MediaPlaybackService :
     // service's asynchronous onDestroy() callback reaches here.
     if (mpvAccessReleased || activityForeground || handingBackToActivity) return
     if (PlaybackSession.state.value.surfaceAttached) return
-    torrentStreamingEngine.stopStream()
     PlaybackSession.stop(clearQueue = false)
   }
 

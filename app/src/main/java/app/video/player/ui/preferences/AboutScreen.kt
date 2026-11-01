@@ -724,13 +724,6 @@ internal val OPEN_SOURCE_LIBRARIES =
       url = "https://github.com/zhanghai/libarchive-android",
     ),
     OpenSourceLibrary(
-      name = "libtorrent4j",
-      artifact = "org.libtorrent4j:libtorrent4j",
-      descriptionRes = R.string.oss_libtorrent4j_description,
-      license = "MIT",
-      url = "https://github.com/aldenml/libtorrent4j",
-    ),
-    OpenSourceLibrary(
       name = "Multiplatform Markdown Renderer",
       artifact = "com.mikepenz:multiplatform-markdown-renderer-m3",
       descriptionRes = R.string.oss_markdown_renderer_description,
@@ -800,9 +793,4 @@ internal val OPEN_SOURCE_LIBRARIES =
       license = "MIT",
       url = "https://github.com/natural-harmonia-gropius/hdr-toys",
     ),
-  ).filter { library ->
-    when (library.name) {
-      "libtorrent4j" -> BuildConfig.ENABLE_TORRENT
-      else -> true
-    }
-  }.sortedBy { library -> library.name.lowercase(Locale.ROOT) }
+  ).sortedBy { library -> library.name.lowercase(Locale.ROOT) }

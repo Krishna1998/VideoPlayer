@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-package app.video.player.ui.torrent
+package app.video.player.ui.browser.networkstreaming
 
 import java.net.URI
 
@@ -17,7 +17,7 @@ private val releaseNoiseRegex =
       "web[ ._-]*dl|webrip|hdtv|x26[45]|hevc|av1|aac|dts|atmos|proper|repack)\\b.*$",
   )
 
-internal fun prettyTorrentTitle(value: String): String =
+internal fun prettyMediaTitle(value: String): String =
   value
     .substringAfterLast('/')
     .replace(knownExtensionRegex, "")
@@ -30,10 +30,10 @@ internal fun prettyTorrentTitle(value: String): String =
     .replace(Regex("[._]+"), " ")
     .replace(Regex("\\s+"), " ")
     .trim(' ', '-', '_', ':', '.')
-    .ifBlank { "Torrent" }
+    .ifBlank { "Media" }
 
 internal fun cleanSearchTitle(value: String): String =
-  prettyTorrentTitle(value)
+  prettyMediaTitle(value)
     .replace(Regex("\\s+"), " ")
     .trim()
 

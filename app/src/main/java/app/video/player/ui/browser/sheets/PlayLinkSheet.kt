@@ -44,8 +44,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import app.video.player.database.repository.NetworkStreamEntryRepository
-import app.video.player.domain.torrent.isTorrentSource
-import app.video.player.domain.torrent.normalizeTorrentSource
 import app.video.player.preferences.YtdlPreferences
 import app.video.player.ui.icons.Icon
 import app.video.player.ui.icons.Icons
@@ -87,7 +85,7 @@ fun PlayLinkSheet(
   val handleConfirm = {
     val url = normalizedInput
     if (url.isNotBlank() && MediaUtils.isURLValid(url)) {
-      val playableSource = normalizeTorrentSource(url) ?: url
+      val playableSource = url
       isSubmitting = true
       coroutineScope.launch {
         try {
@@ -111,46 +109,44 @@ fun PlayLinkSheet(
               } else {
                 null
               }
-          if (!isTorrentSource(selectedSource)) {
-            try {
-              RecentlyPlayedOps.addRecentlyPlayed(
-                filePath = selectedSource,
-                fileName = selectedName,
-                launchSource = "play_link",
-                artworkUrl = artworkUrl,
-              )
-              streamEntryRepository.saveNormalEntry(
-                canonicalSourceUri = selectedSource,
-                fileName = selectedName,
-                posterUrl = firstEntry?.thumbnailUrl,
-                backdropUrl = firstEntry?.thumbnailUrl,
-              )
+          try {
+            RecentlyPlayedOps.addRecentlyPlayed(
+              filePath = selectedSource,
+              fileName = selectedName,
+              launchSource = "play_link",
+              artworkUrl = artworkUrl,
+            )
+            streamEntryRepository.saveNormalEntry(
+              canonicalSourceUri = selectedSource,
+              fileName = selectedName,
+              posterUrl = firstEntry?.thumbnailUrl,
+              backdropUrl = firstEntry?.thumbnailUrl,
+            )
 
-              val uri = selectedUri
-              if (firstEntry == null && app.video.player.utils.media.HttpUtils.isYouTubeUrl(uri)) {
-                val ytMeta = app.video.player.utils.media.HttpUtils.fetchYouTubeMetadata(playableSource)
-                if (ytMeta != null && ytMeta.title.isNotBlank()) {
-                  RecentlyPlayedOps.updateVideoMetadata(
-                    filePath = selectedSource,
-                    videoTitle = ytMeta.title,
-                    duration = 0L,
-                    fileSize = 0L,
-                    width = 0,
-                    height = 0,
-                  )
-                  streamEntryRepository.saveNormalEntry(
-                    canonicalSourceUri = selectedSource,
-                    fileName = ytMeta.title,
-                    posterUrl = ytMeta.thumbnailUrl,
-                    backdropUrl = ytMeta.thumbnailUrl,
-                  )
-                }
+            val uri = selectedUri
+            if (firstEntry == null && app.video.player.utils.media.HttpUtils.isYouTubeUrl(uri)) {
+              val ytMeta = app.video.player.utils.media.HttpUtils.fetchYouTubeMetadata(playableSource)
+              if (ytMeta != null && ytMeta.title.isNotBlank()) {
+                RecentlyPlayedOps.updateVideoMetadata(
+                  filePath = selectedSource,
+                  videoTitle = ytMeta.title,
+                  duration = 0L,
+                  fileSize = 0L,
+                  width = 0,
+                  height = 0,
+                )
+                streamEntryRepository.saveNormalEntry(
+                  canonicalSourceUri = selectedSource,
+                  fileName = ytMeta.title,
+                  posterUrl = ytMeta.thumbnailUrl,
+                  backdropUrl = ytMeta.thumbnailUrl,
+                )
               }
-            } catch (cancellation: CancellationException) {
-              throw cancellation
-            } catch (_: Exception) {
-              // Playback must still open even if optional history persistence fails.
             }
+          } catch (cancellation: CancellationException) {
+            throw cancellation
+          } catch (_: Exception) {
+            // Playback must still open even if optional history persistence fails.
           }
           if (extractedPlaylist != null) {
             YtdlpManager.playPlaylist(context, extractedPlaylist, "play_link")
@@ -251,21 +247,16 @@ fun PlayLinkSheet(
           onClick = {
             val url = normalizedInput
             if (url.isNotBlank() && MediaUtils.isURLValid(url)) {
-              val playableSource = normalizeTorrentSource(url) ?: url
-              if (isTorrentSource(playableSource)) {
-                // Torrents download through the torrent flow.
-                onPlayLink(playableSource)
-              } else {
-                when (linkDownloadCoordinator.enqueue(playableSource, MediaInfoParser.parseStreamTitle(playableSource))) {
-                  app.video.player.domain.download.LinkDownloadCoordinator.Route.UNSUPPORTED ->
-                    app.video.player.ui.components.AppToast
-                      .makeText(context, app.video.player.R.string.downloads_location_invalid, app.video.player.ui.components.AppToast.LENGTH_SHORT)
-                      .show()
-                  else ->
-                    app.video.player.ui.components.AppToast
-                      .makeText(context, app.video.player.R.string.downloads_started, app.video.player.ui.components.AppToast.LENGTH_SHORT)
-                      .show()
-                }
+              val playableSource = url
+              when (linkDownloadCoordinator.enqueue(playableSource, MediaInfoParser.parseStreamTitle(playableSource))) {
+                app.video.player.domain.download.LinkDownloadCoordinator.Route.UNSUPPORTED ->
+                  app.video.player.ui.components.AppToast
+                    .makeText(context, app.video.player.R.string.downloads_location_invalid, app.video.player.ui.components.AppToast.LENGTH_SHORT)
+                    .show()
+                else ->
+                  app.video.player.ui.components.AppToast
+                    .makeText(context, app.video.player.R.string.downloads_started, app.video.player.ui.components.AppToast.LENGTH_SHORT)
+                    .show()
               }
               onDismiss()
             }

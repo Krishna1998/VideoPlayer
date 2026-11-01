@@ -12,9 +12,7 @@ package app.video.player.ui.player.controls
 import app.video.player.ui.player.DeclaredPlaybackMediaKind
 import app.video.player.ui.player.PlaybackSession
 import app.video.player.ui.player.declaredMediaKind
-import app.video.player.domain.torrent.TorrentStreamingState
-import app.video.player.domain.torrent.formatTorrentBytes
-import app.video.player.domain.torrent.formatTorrentSpeed
+import app.video.player.utils.media.MediaUtils
 import android.content.res.Configuration.ORIENTATION_PORTRAIT
 import android.database.ContentObserver
 import android.media.AudioManager
@@ -454,8 +452,6 @@ fun PlayerControls(
   val showSeekbarDuringHorizontalSeeking by gesturePreferences.showSeekbarDuringHorizontalSeeking.collectAsState()
   val showBufferedRange by playerPreferences.showBufferedRange.collectAsState()
   val showChapterIndicators by playerPreferences.showChapterIndicators.collectAsState()
-  // The buffering pill reads torrent details itself, so stats ticks do not re-run the controls tree.
-  val torrentStateHolder = viewModel.torrentState.collectAsState()
   val videoOpenAnimState by viewModel.videoOpenAnimationState.collectAsState()
   val showLoadingCircle by playerPreferences.showLoadingCircle.collectAsState()
 
@@ -1885,17 +1881,8 @@ fun PlayerControls(
               )
               val cachePercent = bufferingState.cachePercent
               val cacheSeconds = bufferingState.cacheSeconds
-              val currentTorrentState = torrentStateHolder.value
               val bufferText =
                 when {
-                  currentTorrentState is TorrentStreamingState.Streaming &&
-                    currentQueueItem?.playableUri == currentTorrentState.localUrl -> {
-                    val streamState = currentTorrentState
-                    val speed = app.video.player.domain.torrent.formatTorrentSpeed(streamState.downloadSpeed)
-                    val peers = "${streamState.peers} peers"
-                    val progress = "${(streamState.bufferProgress * 100).toInt()}%"
-                    "$speed | $peers | $progress"
-                  }
                   // mpv only reports a fill target while it is actually holding playback for cache.
                   isMpvBuffering && cachePercent != null && cachePercent in 1..99 ->
                     stringResource(R.string.player_buffering_percent, cachePercent)
@@ -2579,7 +2566,6 @@ private fun CustomStatsPageSixOverlay(
   modifier: Modifier = Modifier,
 ) {
   val context = LocalContext.current.applicationContext
-  val torrentState by viewModel.torrentState.collectAsState()
   val isHdrOutputEnabled by viewModel.isHdrScreenOutputEnabled.collectAsState()
   val hdrScreenMode by viewModel.hdrScreenMode.collectAsState()
   val hdrOutputText =
@@ -2667,10 +2653,10 @@ private fun CustomStatsPageSixOverlay(
       val processMemoryText =
         String.format(
           processMemoryFormat,
-          formatTorrentBytes(memorySnapshot.totalPssBytes),
-          formatTorrentBytes(memorySnapshot.javaHeapUsedBytes),
-          formatTorrentBytes(memorySnapshot.javaHeapMaxBytes),
-          formatTorrentBytes(memorySnapshot.nativeHeapBytes),
+          MediaUtils.formatFileSize(memorySnapshot.totalPssBytes),
+          MediaUtils.formatFileSize(memorySnapshot.javaHeapUsedBytes),
+          MediaUtils.formatFileSize(memorySnapshot.javaHeapMaxBytes),
+          MediaUtils.formatFileSize(memorySnapshot.nativeHeapBytes),
         )
       val cacheDurationSeconds =
         runCatching { PlaybackSession.getPropertyDouble("demuxer-cache-duration") }
@@ -2693,8 +2679,8 @@ private fun CustomStatsPageSixOverlay(
         String.format(
           playbackCacheFormat,
           cacheDurationSeconds,
-          formatTorrentBytes(packetCacheBytes),
-          formatTorrentBytes(fileCacheBytes),
+          MediaUtils.formatFileSize(packetCacheBytes),
+          MediaUtils.formatFileSize(fileCacheBytes),
         )
 
       val battery = readBatterySnapshot(context)
@@ -2842,104 +2828,6 @@ private fun CustomStatsPageSixOverlay(
       valueStyle,
     )
     OutlinedLabeled("Audio", "${stats.audio} | HDR: ${stats.hdrActive}", labelStyle, valueStyle)
-
-    when (val currentTorrentState = torrentState) {
-      is TorrentStreamingState.Connecting -> {
-        Spacer(modifier = Modifier.height(2.dp))
-        OutlinedText(stringResource(R.string.diagnostics_torrent_header), style = headerStyle)
-        Row(
-          modifier = Modifier.fillMaxWidth(),
-          horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-          Box(modifier = Modifier.weight(1f)) {
-            OutlinedLabeled(
-              stringResource(R.string.diagnostics_torrent_peer_status),
-              stringResource(
-                R.string.diagnostics_torrent_peers_value,
-                currentTorrentState.peers,
-                currentTorrentState.seeds,
-              ),
-              labelStyle,
-              valueStyle,
-            )
-          }
-          Box(modifier = Modifier.weight(1f)) {
-            OutlinedLabeled(
-              stringResource(R.string.diagnostics_torrent_transfer),
-              stringResource(
-                R.string.diagnostics_torrent_transfer_value,
-                formatTorrentSpeed(currentTorrentState.downloadSpeed),
-                formatTorrentSpeed(currentTorrentState.uploadSpeed),
-              ),
-              labelStyle,
-              valueStyle,
-            )
-          }
-        }
-      }
-      is TorrentStreamingState.Streaming -> {
-        val fileSize = currentTorrentState.fileSize.coerceAtLeast(0L)
-        val downloadedBytes = currentTorrentState.downloadedBytes.coerceAtLeast(0L).coerceAtMost(fileSize)
-        val bufferProgress =
-          currentTorrentState.bufferProgress
-            .takeIf { it.isFinite() }
-            ?.coerceIn(0f, 1f)
-            ?: 0f
-        Spacer(modifier = Modifier.height(2.dp))
-        OutlinedText(stringResource(R.string.diagnostics_torrent_header), style = headerStyle)
-        Row(
-          modifier = Modifier.fillMaxWidth(),
-          horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-          Box(modifier = Modifier.weight(1f)) {
-            OutlinedLabeled(
-              stringResource(R.string.diagnostics_torrent_peer_status),
-              stringResource(
-                R.string.diagnostics_torrent_peers_value,
-                currentTorrentState.peers,
-                currentTorrentState.seeds,
-              ),
-              labelStyle,
-              valueStyle,
-            )
-          }
-          Box(modifier = Modifier.weight(1f)) {
-            OutlinedLabeled(
-              stringResource(R.string.diagnostics_torrent_loaded),
-              stringResource(
-                R.string.diagnostics_torrent_loaded_value,
-                formatTorrentBytes(downloadedBytes),
-                formatTorrentBytes(fileSize),
-                (bufferProgress * 100f).roundToInt(),
-              ),
-              labelStyle,
-              valueStyle,
-            )
-          }
-        }
-        OutlinedLabeled(
-          stringResource(R.string.diagnostics_torrent_transfer),
-          stringResource(
-            R.string.diagnostics_torrent_transfer_value,
-            formatTorrentSpeed(currentTorrentState.downloadSpeed),
-            formatTorrentSpeed(currentTorrentState.uploadSpeed),
-          ),
-          labelStyle,
-          valueStyle,
-        )
-        LinearProgressIndicator(
-          progress = { bufferProgress },
-          modifier =
-            Modifier
-              .fillMaxWidth()
-              .height(3.dp)
-              .padding(vertical = 0.5.dp),
-        )
-      }
-      is TorrentStreamingState.Error,
-      TorrentStreamingState.Idle,
-      -> Unit
-    }
 
     Spacer(modifier = Modifier.height(2.dp))
     OutlinedText(stringResource(R.string.diagnostics_power_thermals_header), style = headerStyle)

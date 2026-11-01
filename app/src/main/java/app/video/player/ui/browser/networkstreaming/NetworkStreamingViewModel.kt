@@ -20,8 +20,6 @@ import app.video.player.database.entities.NetworkStreamEntryEntity
 import app.video.player.database.repository.NetworkStreamEntryRepository
 import app.video.player.domain.network.ConnectionStatus
 import app.video.player.domain.network.NetworkConnection
-import app.video.player.domain.torrent.isTorrentSource
-import app.video.player.domain.torrent.parseMagnet
 import app.video.player.repository.JellyfinRepository
 import app.video.player.repository.NetworkRepository
 import app.video.player.preferences.NetworkBookmarkPreferences
@@ -29,8 +27,6 @@ import app.video.player.repository.wyzie.WyzieSearchRepository
 import app.video.player.repository.wyzie.WyzieTmdbResult
 import app.video.player.repository.wyzie.bestTmdbResult
 import app.video.player.data.jellyfin.JellyfinClient
-import app.video.player.ui.torrent.cleanSearchTitle
-import app.video.player.ui.torrent.tmdbImageUrl
 import app.video.player.utils.media.HttpUtils
 import app.video.player.utils.media.MediaInfoParser
 import app.video.player.utils.media.MediaUtils
@@ -117,11 +113,7 @@ class NetworkStreamingViewModel(
       )
 
   val torrentFiles: StateFlow<List<NetworkStreamEntryEntity>> =
-    (if (app.video.player.BuildConfig.ENABLE_TORRENT) {
-      streamEntryRepository.observeTorrentFileEntries()
-    } else {
-      flowOf(emptyList<NetworkStreamEntryEntity>())
-    })
+    flowOf(emptyList<NetworkStreamEntryEntity>())
       .stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
@@ -340,7 +332,7 @@ class NetworkStreamingViewModel(
 
   fun recordSubmittedLink(url: String) {
     val source = url.trim()
-    if (source.isBlank() || isTorrentSource(source) || !MediaUtils.isURLValid(source)) return
+    if (source.isBlank() || !MediaUtils.isURLValid(source)) return
     viewModelScope.launch {
       val uri = runCatching { Uri.parse(source) }.getOrNull()
       val initialTitle = MediaInfoParser.parseStreamTitle(source)
@@ -535,11 +527,6 @@ class NetworkStreamingViewModel(
       infoHash: String?,
       files: List<NetworkStreamEntryEntity>,
     ): String {
-      runCatching { parseMagnet(source)?.displayName?.trim() }
-        .getOrNull()
-        ?.takeIf { it.isNotEmpty() && !looksLikeHash(it) && !looksLikeGarbage(it) }
-        ?.let { return it }
-
       runCatching {
         android.net.Uri.parse(source).lastPathSegment
           ?.substringAfterLast('/')

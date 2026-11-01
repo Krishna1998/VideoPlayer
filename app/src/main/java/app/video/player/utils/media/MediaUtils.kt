@@ -18,7 +18,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import app.video.player.domain.media.model.Video
-import app.video.player.domain.torrent.isTorrentSource
 import app.video.player.ui.browser.NavigationBarState
 import app.video.player.ui.player.ContainerGeometryProbe
 import app.video.player.ui.player.MediaPlaybackService
@@ -30,7 +29,6 @@ import app.video.player.ui.player.PlaybackSession
 import app.video.player.ui.player.PlayerActivity
 import app.video.player.ui.player.PlayerLookupHints
 import app.video.player.ui.player.PreparedPlaybackLaunchStore
-import app.video.player.ui.torrent.torrentSelectionActivityClass
 import app.video.player.utils.storage.FileTypeUtils
 import `is`.xyz.mpv.Utils
 import java.io.File
@@ -210,8 +208,6 @@ object MediaUtils {
     enabledSubtitles: List<Uri> = emptyList(),
     subtitleTracks: List<PlaybackSubtitleTrack> = emptyList(),
     lookupHints: PlayerLookupHints = PlayerLookupHints(),
-    torrentFileIndex: Int? = null,
-    torrentPreparationId: String? = null,
     mediaDescription: String? = null,
     posterUrl: String? = null,
     backdropUrl: String? = null,
@@ -307,20 +303,7 @@ object MediaUtils {
     }
 
     val intent = Intent(Intent.ACTION_VIEW, playbackUri)
-    val torrentSource =
-      when (source) {
-        is String -> source.trim()
-        is Uri -> source.toString()
-        else -> playbackUri.toString().takeIf { videoSource != null && isTorrentSource(it, videoSource.mimeType) }
-      }?.takeIf { isTorrentSource(it) }
-    intent.setClass(
-      context,
-      if (torrentSource != null && torrentFileIndex == null && torrentPreparationId == null) {
-        torrentSelectionActivityClass() ?: return
-      } else {
-        PlayerActivity::class.java
-      },
-    )
+    intent.setClass(context, PlayerActivity::class.java)
     intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     intent.putExtra("internal_launch", true)
@@ -360,9 +343,6 @@ object MediaUtils {
       enabledSubtitles = enabledSubtitles,
       subtitleTracks = subtitleTracks,
       lookupHints = lookupHints,
-      torrentFileIndex = torrentFileIndex,
-      torrentPreparationId = torrentPreparationId,
-      torrentSource = torrentSource,
       mediaDescription = mediaDescription,
       posterUrl = posterUrl,
       backdropUrl = backdropUrl,
@@ -442,9 +422,6 @@ object MediaUtils {
     enabledSubtitles: List<Uri>,
     subtitleTracks: List<PlaybackSubtitleTrack>,
     lookupHints: PlayerLookupHints,
-    torrentFileIndex: Int?,
-    torrentPreparationId: String?,
-    torrentSource: String?,
     mediaDescription: String?,
     posterUrl: String?,
     backdropUrl: String?,
@@ -497,9 +474,6 @@ object MediaUtils {
       intent.putExtra("title", it)
       intent.putExtra(EXTRA_MEDIA_TITLE, it)
     }
-    torrentFileIndex?.takeIf { it >= 0 }?.let { intent.putExtra(EXTRA_TORRENT_FILE_INDEX, it) }
-    torrentPreparationId?.takeIf { it.isNotBlank() }?.let { intent.putExtra(EXTRA_TORRENT_PREPARATION_ID, it) }
-    torrentSource?.takeIf { it.isNotBlank() }?.let { intent.putExtra(EXTRA_TORRENT_SOURCE, it) }
     mediaDescription?.takeIf { it.isNotBlank() }?.let { intent.putExtra(EXTRA_MEDIA_DESCRIPTION, it) }
     posterUrl?.takeIf { it.isNotBlank() }?.let { intent.putExtra(EXTRA_MEDIA_POSTER_URL, it) }
     backdropUrl?.takeIf { it.isNotBlank() }?.let { intent.putExtra(EXTRA_MEDIA_BACKDROP_URL, it) }
@@ -564,13 +538,10 @@ object MediaUtils {
     return scheme !in setOf("file", "content", "android.resource")
   }
 
-  const val EXTRA_TORRENT_SOURCE = "torrent_source"
-  const val EXTRA_TORRENT_FILE_INDEX = "torrent_file_index"
-  const val EXTRA_TORRENT_PREPARATION_ID = "torrent_preparation_id"
-  const val EXTRA_MEDIA_TITLE = "torrent_media_title"
-  const val EXTRA_MEDIA_DESCRIPTION = "torrent_media_description"
-  const val EXTRA_MEDIA_POSTER_URL = "torrent_media_poster_url"
-  const val EXTRA_MEDIA_BACKDROP_URL = "torrent_media_backdrop_url"
+  const val EXTRA_MEDIA_TITLE = "media_title"
+  const val EXTRA_MEDIA_DESCRIPTION = "media_description"
+  const val EXTRA_MEDIA_POSTER_URL = "media_poster_url"
+  const val EXTRA_MEDIA_BACKDROP_URL = "media_backdrop_url"
 
   /**
    * Validate URL structure and protocol support.
@@ -578,12 +549,11 @@ object MediaUtils {
    * Network errors are detected when MPV attempts to open the stream.
    */
   fun isURLValid(url: String): Boolean =
-    isTorrentSource(url) ||
-      url.toUri().let { uri ->
-        val structureOk =
-          uri.isHierarchical && !uri.isRelative && (!uri.host.isNullOrBlank() || !uri.path.isNullOrBlank())
-        structureOk && Utils.PROTOCOLS.contains(uri.scheme)
-      }
+    url.toUri().let { uri ->
+      val structureOk =
+        uri.isHierarchical && !uri.isRelative && (!uri.host.isNullOrBlank() || !uri.path.isNullOrBlank())
+      structureOk && Utils.PROTOCOLS.contains(uri.scheme)
+    }
 
   /**
    * Share videos via system share sheet.

@@ -44,7 +44,6 @@ import app.video.player.domain.autocrop.AutoCropEdges
 import app.video.player.domain.hdr.HdrToysManager
 import app.video.player.domain.network.NetworkPlaybackUri
 import app.video.player.domain.network.XtreamPlaybackUri
-import app.video.player.domain.torrent.TorrentStreamingState
 import app.video.player.domain.syncplay.SyncplayFile
 import app.video.player.domain.syncplay.SyncplayPlaybackState
 import app.video.player.preferences.AdvancedPreferences
@@ -345,9 +344,6 @@ class PlayerViewModel(
 
   private val _realtimeSubsStatus = MutableStateFlow("")
   val realtimeSubsStatus: StateFlow<String> = _realtimeSubsStatus.asStateFlow()
-
-  private val _torrentState = MutableStateFlow<TorrentStreamingState>(TorrentStreamingState.Idle)
-  val torrentState: StateFlow<TorrentStreamingState> = _torrentState.asStateFlow()
 
   private var realtimeSrtFile: java.io.File? = null
   private var realtimeSubtitleTrackId: Int? = null
@@ -3005,10 +3001,6 @@ fun restartFromBeginning() {
     applyEqualizerMpvFilters()
     if (isAudioOnly.value) loadLyricsForCurrentTrack()
     scheduleAutoCropAnalysis()
-  }
-
-  fun updateTorrentState(state: TorrentStreamingState) {
-    _torrentState.value = state
   }
 
   private fun currentSyncplayPlaybackState(): SyncplayPlaybackState =

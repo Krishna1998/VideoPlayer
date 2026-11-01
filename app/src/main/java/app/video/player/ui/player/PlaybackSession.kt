@@ -184,10 +184,10 @@ object PlaybackSession : MPVLib.EventObserver {
   /**
    * Stronger libavformat probing only for local audio/video items whose library duration is
    * missing. This check never reads files or metadata and is therefore safe on the load path.
-   * Network streams, archive entries, torrents and audiobooks keep their normal startup settings.
+   * Network streams, archive entries and audiobooks keep their normal startup settings.
    */
   private fun shouldProbeMissingDuration(item: PlaybackItem, playableUri: String): Boolean {
-    if ((item.durationSeconds ?: 0) > 0 || item.audiobook != null || item.torrentFileIndex != null) return false
+    if ((item.durationSeconds ?: 0) > 0 || item.audiobook != null) return false
     if (item.networkSource != null || item.declaredMediaKind() == DeclaredPlaybackMediaKind.UNKNOWN) return false
     if (app.video.player.domain.archive.ZipArchiveMedia.isPlaybackUri(item.originalUri)) return false
     return playableUri.startsWith("/") ||
@@ -1039,9 +1039,6 @@ internal fun userScriptsNeedReload(currentKey: String): Boolean {
 
   fun playQueueItem(index: Int): PlaybackItem? =
     nativeLock.withLock {
-      // Unresolved torrent episodes need the player screen's streaming engine; loading the raw
-      // magnet/torrent source into mpv would fail and desync the queue.
-      if (_queue.value.items.getOrNull(index)?.requiresTorrentResolution() == true) return@withLock null
       val item = selectQueueItem(index) ?: return@withLock null
       load(item)
       item
@@ -1049,7 +1046,6 @@ internal fun userScriptsNeedReload(currentKey: String): Boolean {
 
   fun playNext(): PlaybackItem? =
     nativeLock.withLock {
-      if (PlaybackQueueReducer.peekNext(_queue.value)?.requiresTorrentResolution() == true) return@withLock null
       val item = selectNext() ?: return@withLock null
       load(item)
       item
@@ -1057,7 +1053,6 @@ internal fun userScriptsNeedReload(currentKey: String): Boolean {
 
   fun playPrevious(): PlaybackItem? =
     nativeLock.withLock {
-      if (PlaybackQueueReducer.peekPrevious(_queue.value)?.requiresTorrentResolution() == true) return@withLock null
       val item = selectPrevious() ?: return@withLock null
       load(item)
       item
@@ -2192,9 +2187,9 @@ internal fun userScriptsNeedReload(currentKey: String): Boolean {
   }
 
   private fun activeFileUsesNetworkLocked(): Boolean {
-    // Inspect the source mpv is actually playing: a downloaded URL is local, while SMB, HLS and
-    // torrent streams can arrive through an HTTP loopback proxy. Do not infer this from the
-    // original URL, the torrent engine's global state, or an external network subtitle/audio track.
+    // Inspect the source mpv is actually playing: a downloaded URL is local, while SMB and HLS
+    // streams can arrive through an HTTP loopback proxy. Do not infer this from the
+    // original URL or an external network subtitle/audio track.
     val path = MPVLib.getPropertyString("path") ?: return false
     val scheme = path.substringBefore("://", missingDelimiterValue = "").lowercase()
     if (scheme.isEmpty() || scheme in setOf("file", "content", "fd", "archive", "memory", "hex")) return false

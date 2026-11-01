@@ -13,7 +13,6 @@ import app.video.player.domain.anime4k.Anime4KManager
 import app.video.player.domain.fonts.GoogleFontsRepository
 import app.video.player.domain.hdr.HdrToysManager
 import app.video.player.domain.hdr.MpvShaderRuntime
-import app.video.player.domain.torrent.TorrentStreamingEngine
 import app.video.player.network.AndroidCookieJar
 import app.video.player.network.SharedHttpClient
 import app.video.player.preferences.AiPreferences
@@ -99,6 +98,5 @@ val domainModule =
     single { app.video.player.data.artwork.AppleMusicArtworkRepository(get()) }
     single { app.video.player.data.lyrics.LyricsTranslationService(get()) }
     single { app.video.player.repository.lyrics.LyricsRepository(androidContext(), get(), get()) }
-    single { TorrentStreamingEngine(androidContext()) }
     single { app.video.player.repository.SeerrRepository(get(), get(), get()) }
   }

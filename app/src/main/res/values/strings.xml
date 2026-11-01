@@ -227,8 +227,6 @@
   <string name="pref_import_settings_summary">Import settings from an XML file</string>
   <string name="pref_enable_lua_scripts_title">Enable scripts</string>
   <string name="pref_enable_lua_scripts_summary">Load scripts from your MPV configuration directory</string>
-  <string name="pref_enable_p2p_streaming_title">Enable P2P torrent streaming</string>
-  <string name="pref_enable_p2p_streaming_summary">Stream playable media from magnet links and torrent files</string>
   <string name="pref_manage_lua_scripts_title">Manage scripts</string>
   <string name="pref_manage_lua_scripts_summary">Manage enabled scripts</string>
   <string name="pref_clear_config_cache_title">Clear config cache</string>
@@ -943,9 +941,6 @@
   <string name="pref_section_mpv_config">MPV Configuration</string>
   <string name="pref_config_edit_summary">Tap to edit configuration</string>
   <string name="pref_section_scripts">Scripts (Lua / JS)</string>
-  <string name="pref_section_p2p_streaming">P2P streaming</string>
-  <string name="pref_network_summary">P2P streaming</string>
-  <string name="toast_torrent_streaming_disabled">Enable P2P torrent streaming in Advanced settings first</string>
   <string name="ui_search_episodes">Search episodes…</string>
   <string name="ui_sort_ascending">Sort Ascending</string>
   <string name="ui_sort_descending">Sort Descending</string>
@@ -954,17 +949,6 @@
   <string name="player_opening_stream">Opening stream…</string>
   <string name="player_buffering_percent">Buffering %1$d%%</string>
   <string name="player_buffering_seconds">Buffering · %1$s s ready</string>
-  <string name="torrent_picker_choose_title">Choose what to play</string>
-  <plurals name="torrent_picker_playable_count">
-    <item quantity="one">%1$d playable file</item>
-    <item quantity="other">%1$d playable files</item>
-  </plurals>
-  <string name="torrent_picker_preparing_title">Reading torrent</string>
-  <string name="torrent_picker_preparing_description">Connecting to peers and finding playable files…</string>
-  <string name="torrent_picker_error_title">Couldn\'t open torrent</string>
-  <string name="torrent_picker_retry">Try again</string>
-  <string name="torrent_picker_episode_label">Season %1$d • Episode %2$d</string>
-  <string name="torrent_picker_single_episode_label">Episode %1$d</string>
   <string name="pref_manage_scripts_summary_disabled">Set storage location and enable scripts first</string>
   <string name="pref_manage_scripts_summary_none">No scripts enabled</string>
   <string name="pref_manage_scripts_summary_singular">1 script enabled</string>
@@ -1137,13 +1121,6 @@
   <string name="diagnostics_playback_decoder_header">PLAYBACK &amp; DECODER</string>
   <string name="diagnostics_power_thermals_header">POWER &amp; THERMALS</string>
   <string name="diagnostics_session_header">SESSION</string>
-  <string name="diagnostics_torrent_header">TORRENT</string>
-  <string name="diagnostics_torrent_peer_status">Peer status</string>
-  <string name="diagnostics_torrent_peers_value">%1$d peers | %2$d seeds</string>
-  <string name="diagnostics_torrent_loaded">Loaded</string>
-  <string name="diagnostics_torrent_loaded_value">%1$s / %2$s (%3$d%%)</string>
-  <string name="diagnostics_torrent_transfer">Transfer</string>
-  <string name="diagnostics_torrent_transfer_value">Down %1$s | Up %2$s</string>
   <string name="diagnostics_app_cpu">App CPU</string>
   <string name="diagnostics_memory_cache_header">MEMORY &amp; CACHE</string>
   <string name="diagnostics_process_memory">Process</string>
@@ -1844,7 +1821,6 @@
   <string name="oss_androidx_activity_description">Connects Android activities and lifecycle-aware APIs with Compose.</string>
   <string name="oss_jsch_description">SSH and SFTP client used for remote file access.</string>
   <string name="oss_libarchive_android_description">Android libarchive bindings used to extract subtitle archives.</string>
-  <string name="oss_libtorrent4j_description">Java bindings and native libraries used for BitTorrent streaming.</string>
   <string name="oss_markdown_renderer_description">Renders Markdown as native Material 3 Compose content.</string>
   <string name="oss_mpv_description">Native media playback engine for audio, video, and subtitles.</string>
   <string name="oss_mpvlib_android_description">Android libmpv wrapper used by the Standard, No-Vulkan, and FongMi builds.</string>

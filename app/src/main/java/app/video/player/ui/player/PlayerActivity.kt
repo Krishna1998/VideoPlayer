@@ -87,12 +87,6 @@ import app.video.player.domain.anime4k.Anime4KManager
 import app.video.player.domain.fonts.GoogleFontsRepository
 import app.video.player.domain.network.NetworkPlaybackUri
 import app.video.player.domain.playbackstate.repository.PlaybackStateRepository
-import app.video.player.domain.torrent.TorrentStreamRequest
-import app.video.player.domain.torrent.TorrentStreamException
-import app.video.player.domain.torrent.TorrentStreamResult
-import app.video.player.domain.torrent.TorrentStreamingEngine
-import app.video.player.domain.torrent.canonicalInfoHash
-import app.video.player.domain.torrent.isTorrentSource
 import app.video.player.network.AndroidCookieJar
 import app.video.player.network.NetworkUserAgent
 import app.video.player.preferences.AdvancedPreferences
@@ -122,7 +116,6 @@ import app.video.player.ui.player.components.rememberVideoAmbientFrame
 import app.video.player.ui.player.ytdlp.YtdlpManager
 import app.video.player.ui.theme.MpvrxTheme
 import app.video.player.ui.remote.RemotePairingPrompt
-import app.video.player.ui.torrent.torrentSelectionActivityClass
 import app.video.player.utils.device.DeviceFormFactor
 import app.video.player.ui.player.controls.tvScrubStepSeconds
 import app.video.player.utils.device.VulkanCapabilities
@@ -242,8 +235,6 @@ class PlayerActivity :
    * Repository for managing playback state.
    */
   private val playbackStateRepository: PlaybackStateRepository by inject()
-
-  private val torrentStreamingEngine: TorrentStreamingEngine by inject()
 
   private val networkStreamEntryRepository: NetworkStreamEntryRepository by inject()
 
@@ -469,7 +460,6 @@ class PlayerActivity :
   private var screenStateReceiverRegistered = false
   private var mpvInitialized = false // Track MPV initialization state
   private var viewModelHostAttached = false
-  private var torrentPickerHandoff = false
   private var savePlaybackStateJob: Job? = null // Track ongoing save job
   private var lastImmediatePlaybackStateSnapshot: PlaybackStateSnapshot? = null
   private var backgroundPlaybackShutdownIssued = false
@@ -707,7 +697,6 @@ class PlayerActivity :
         applyInitialVideoOrientation(playbackIntent)
       }
     }
-    if (redirectUnselectedTorrentToPicker(intent, finishCurrent = true)) return
     if (!acceptPreparedPlaybackLaunch(intent)) {
       finish()
       return
@@ -912,7 +901,6 @@ class PlayerActivity :
       }
     }
     observePlaybackSessionQueue()
-    observeTorrentStreamingState()
     setupCastPlayback()
 
     // Video mode waits for mpv geometry; every other preference is decidable now. Audio launches
@@ -1864,9 +1852,6 @@ class PlayerActivity :
       }
       cleanupReceivers()
       releaseMediaSession()
-      if (ownsPlaybackSession && !keepBackgroundPlaybackAlive && !torrentPickerHandoff) {
-        torrentStreamingEngine.stopStream()
-      }
     }.onFailure { e ->
       Log.e(TAG, "Error during onDestroy", e)
     }
@@ -2006,22 +1991,6 @@ class PlayerActivity :
         playlistItems = emptyList()
         playlistEntity = null
         playlistId = null
-      }
-    }
-  }
-
-  /**
- * The torrent engine can only emit state for torrent-backed items, so an offline launch has
- * nothing to observe and skips the subscription entirely. A source that is not local may still be
- * a magnet/hash/http torrent, and a later queue item can be one, so anything else keeps observing.
- */
-  private fun observeTorrentStreamingState() {
-    if (isOfflineLocalLaunch(intent)) return
-    lifecycleScope.launch {
-      repeatOnLifecycle(Lifecycle.State.STARTED) {
-        torrentStreamingEngine.state.collect { state ->
-          viewModel.updateTorrentState(state)
-        }
       }
     }
   }
@@ -4422,11 +4391,6 @@ class PlayerActivity :
    * @return A playable URI string, or null if unable to resolve
    */
   private fun getPlayableUri(intent: Intent): String? {
-    extractUriFromIntent(intent)
-      ?.toString()
-      ?.takeIf { source -> isTorrentSource(source, intent.type) }
-      ?.let { return it }
-
     val uri = parsePathFromIntent(intent)
     if (uri == null) {
       Log.e(TAG, "Unable to resolve playable media URI: ${extractUriFromIntent(intent)}")
@@ -5630,7 +5594,6 @@ private suspend fun restorePlaybackPosition(state: PlaybackStateEntity?, loadGen
         getPlaylistItemByIndex(playlistIndex)?.fileName?.takeIf { it.isNotBlank() }
           ?: networkPlaylistTitles.getOrNull(playlistIndex)?.takeIf { it.isNotBlank() }
           ?: intent.getStringExtra("title")
-          ?: intent.getStringExtra("torrent_media_title")
 
       val resolvedFileName =
         if (fileName.isBlank() || fileName.equals("stream.mkv", ignoreCase = true) || fileName.equals("stream", ignoreCase = true)) {
@@ -5839,15 +5802,12 @@ private suspend fun restorePlaybackPosition(state: PlaybackStateEntity?, loadGen
 
     if (!acceptPreparedPlaybackLaunch(intent)) return
 
-    if (redirectUnselectedTorrentToPicker(intent, finishCurrent = false)) return
-
     // A browser may replace the process queue before this singleTask Activity receives its Intent.
     // Snapshot what this Activity actually has loaded before installing any incoming metadata.
     val previouslyLoadedIdentifier = mediaIdentifier
     val previouslyLoadedUri =
       playlist.getOrNull(playlistIndex)?.toString()
         ?: extractUriFromIntent(this.intent)?.toString()
-    val previouslyLoadedTorrentFileIndex = this.intent.getIntExtra("torrent_file_index", -1)
     val previousItemWasReady = isReady
 
     setIntent(intent)
@@ -5968,18 +5928,10 @@ private suspend fun restorePlaybackPosition(state: PlaybackStateEntity?, loadGen
       // If the requested song is the same URI that's already loaded (e.g. user tapped the
       // currently-playing song from the Songs tab), don't restart from position 0.
       val incomingOriginalUri = extractUriFromIntent(intent)?.toString()
-      val incomingTorrentFileIndex = intent.getIntExtra("torrent_file_index", -1)
-      val incomingIsTorrent = isTorrentSource(incomingOriginalUri ?: uri, intent.type)
       val alreadyPlayingThisItem =
         previousItemWasReady &&
-          if (incomingIsTorrent) {
-            incomingOriginalUri != null &&
-              incomingOriginalUri == previouslyLoadedUri &&
-              incomingTorrentFileIndex == previouslyLoadedTorrentFileIndex
-          } else {
-            previouslyLoadedIdentifier.isNotBlank() && previouslyLoadedIdentifier == mediaIdentifier ||
-              (incomingOriginalUri != null && incomingOriginalUri == previouslyLoadedUri)
-          }
+          (previouslyLoadedIdentifier.isNotBlank() && previouslyLoadedIdentifier == mediaIdentifier ||
+            (incomingOriginalUri != null && incomingOriginalUri == previouslyLoadedUri))
 
       if (alreadyPlayingThisItem) {
         Log.d(TAG, "onNewIntent: same item already playing, skipping reload")
@@ -6038,9 +5990,6 @@ private suspend fun restorePlaybackPosition(state: PlaybackStateEntity?, loadGen
         PlaybackHttpHeaders.fromFlatPairs(sourceIntent.extras?.getStringArray("headers")),
         requestedQueueItem?.headers.orEmpty(),
       )
-    val requestedTorrentFileIndex = sourceIntent.getIntExtra("torrent_file_index", -1).takeIf { it >= 0 }
-    val isTorrentRequest =
-      isTorrentSource(requestedSource, sourceIntent.type) || isTorrentSource(playableUri, sourceIntent.type)
     mediaLoadJob =
       lifecycleScope.launch(mediaLoadDispatcher) {
         try {
@@ -6065,17 +6014,6 @@ private suspend fun restorePlaybackPosition(state: PlaybackStateEntity?, loadGen
             issuePlaybackLoad(bookItem, attempt = 0, requestGeneration = requestGeneration)
             return@launch
           }
-          if (!isTorrentRequest) torrentStreamingEngine.stopStream()
-          if (isTorrentRequest && !advancedPreferences.enableP2pStreaming.get()) {
-            torrentStreamingEngine.stopStream()
-            playWhenFileLoaded = false
-            withContext(Dispatchers.Main) {
-              ensureCurrentMediaRequest(requestGeneration)
-              viewModel.onVideoLoadCompleted()
-              viewModel.showToast(getString(R.string.toast_torrent_streaming_disabled))
-            }
-            return@launch
-          }
 
           if (expandM3u &&
             loadDynamicM3uPlaylist(
@@ -6093,69 +6031,11 @@ private suspend fun restorePlaybackPosition(state: PlaybackStateEntity?, loadGen
             return@launch
           }
 
-          var resolvedPlayableUri = playableUri
-          var resolvedOriginalUri = requestedSource
-          var resolvedFileName = requestedFileName
-          var resolvedMediaIdentifier = requestedMediaIdentifier
-          var resolvedMimeType = sourceIntent.type ?: "audio/*".takeIf { isKnownAudioLaunch(sourceIntent) }
-          var torrentResult: TorrentStreamResult? = null
-
-          if (isTorrentRequest) {
-            val result =
-              torrentStreamingEngine.startStream(
-                TorrentStreamRequest(
-                  source = requestedSource,
-                  fileIndex = requestedTorrentFileIndex,
-                  preparationId = sourceIntent.getStringExtra("torrent_preparation_id"),
-                ),
-              )
-            coroutineContext.ensureActive()
-            if (!isCurrentMediaRequest(requestGeneration)) {
-              throw CancellationException("Torrent request was replaced")
-            }
-            torrentResult = result
-            resolvedPlayableUri = result.localUrl
-            resolvedOriginalUri = result.source
-            resolvedFileName = result.selectedFile.name
-            resolvedMimeType = result.selectedFile.mimeType
-            resolvedMediaIdentifier = PlaybackIdentity.forTorrent(result.infoHash, result.selectedFile.index)
-
-            try {
-              networkStreamEntryRepository.replaceTorrentFiles(
-                canonicalSourceUri = result.source,
-                infoHash = result.infoHash,
-                files =
-                  result.playableFiles.map { file ->
-                    NetworkStreamEntryRepository.TorrentFile(
-                      index = file.index,
-                      path = file.path,
-                      name = file.name,
-                      size = file.size,
-                    )
-                  },
-              )
-            } catch (cancellation: CancellationException) {
-              throw cancellation
-            } catch (error: Exception) {
-              Log.e(TAG, "Failed to persist torrent file catalog", error)
-            }
-            coroutineContext.ensureActive()
-            if (!isCurrentMediaRequest(requestGeneration)) {
-              throw CancellationException("Torrent request was replaced")
-            }
-
-            withContext(Dispatchers.Main) {
-              ensureCurrentMediaRequest(requestGeneration)
-              fileName = resolvedFileName
-              legacyMediaIdentifier = null
-              mediaIdentifier = resolvedMediaIdentifier
-              currentPlayableUri = resolvedPlayableUri
-              intent.setDataAndType(Uri.parse(result.source), result.selectedFile.mimeType)
-              intent.putExtra("title", result.selectedFile.name)
-              intent.putExtra("torrent_file_index", result.selectedFile.index)
-              intent.putExtra("is_audio", result.selectedFile.mimeType.startsWith("audio/"))
-            }
-          }
+          val resolvedPlayableUri = playableUri
+          val resolvedOriginalUri = requestedSource
+          val resolvedFileName = requestedFileName
+          val resolvedMediaIdentifier = requestedMediaIdentifier
+          val resolvedMimeType = sourceIntent.type ?: "audio/*".takeIf { isKnownAudioLaunch(sourceIntent) }
 
           val networkPath = sourceIntent.getStringExtra("network_file_path")
           val networkConnectionId = sourceIntent.getLongExtra("network_connection_id", -1L)
@@ -6166,11 +6046,7 @@ private suspend fun restorePlaybackPosition(state: PlaybackStateEntity?, loadGen
               null
             }
           val item =
-            if (!isTorrentRequest) {
-              requestedQueueItem?.copy(playableUri = resolvedPlayableUri, headers = requestedHeaders)
-            } else {
-              null
-            }
+            requestedQueueItem?.copy(playableUri = resolvedPlayableUri, headers = requestedHeaders)
               ?: PlaybackItem(
                 stableId = resolvedMediaIdentifier.ifBlank { PlaybackIdentity.forUri(resolvedOriginalUri) },
                 originalUri = resolvedOriginalUri,
@@ -6183,7 +6059,6 @@ private suspend fun restorePlaybackPosition(state: PlaybackStateEntity?, loadGen
                   .takeIf { it.getBooleanExtra("internal_launch", false) }
                   ?.getIntExtra("duration", 0)
                   ?.takeIf { it > 0 },
-                torrentFileIndex = torrentResult?.selectedFile?.index,
               )
 
           // Prepare YouTube artwork and the cookie jar in load order, before invoking mpv.
@@ -6210,59 +6085,14 @@ private suspend fun restorePlaybackPosition(state: PlaybackStateEntity?, loadGen
               .onFailure { error -> Log.w(TAG, "Failed to prepare playback cookies", error) }
           }
           ensureCurrentMediaRequest(requestGeneration)
-          if (requestedQueueItem == null || isTorrentRequest) {
-            val torrentSeries = torrentResult?.takeIf { it.playableFiles.size > 1 }
-            if (torrentSeries != null) {
-              // A multi-file torrent is a series: expose every episode as its own queue entry so
-              // the playlist sheet and next/previous can navigate between them.
-              val orderedFiles =
-                torrentSeries.playableFiles.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name })
-              val seriesItems =
-                orderedFiles.map { file ->
-                  if (file.index == torrentSeries.selectedFile.index) {
-                    item
-                  } else {
-                    PlaybackItem(
-                      stableId = PlaybackIdentity.forTorrent(torrentSeries.infoHash, file.index),
-                      originalUri = torrentSeries.source,
-                      playableUri = torrentSeries.source,
-                      title = file.name,
-                      mimeType = file.mimeType,
-                      headers = requestedHeaders,
-                      torrentFileIndex = file.index,
-                    )
-                  }
-                }
-              val selectedPosition =
-                orderedFiles.indexOfFirst { it.index == torrentSeries.selectedFile.index }.coerceAtLeast(0)
-              commitMediaRequest(requestGeneration) {
-                PlaybackSession.replaceQueue(seriesItems, selectedPosition, isExplicitQueue = true)
-              }
-              withContext(Dispatchers.Main) {
-                ensureCurrentMediaRequest(requestGeneration)
-                playlistId = null
-                playlistItems = emptyList()
-                playlistEntity = null
-                isM3uPlaylist = false
-                playlist = seriesItems.map { queued -> Uri.parse(queued.originalUri) }
-                playlistIndex = selectedPosition
-                playlistWindowOffset = 0
-                playlistTotalCount = seriesItems.size
-                networkPlaylistPaths = seriesItems.map { "" }
-                networkPlaylistTitles = seriesItems.map { queued -> queued.title.orEmpty() }
-                networkPlaylistHeaders = seriesItems.map(PlaybackItem::headers)
-                networkPlaylistConnectionId = -1L
-                viewModel.refreshPlaylistItems()
-              }
-            } else {
-              commitMediaRequest(requestGeneration) { PlaybackSession.replaceQueue(listOf(itemWithArtwork), 0) }
-            }
+          if (requestedQueueItem == null) {
+            commitMediaRequest(requestGeneration) { PlaybackSession.replaceQueue(listOf(itemWithArtwork), 0) }
           }
           issuePlaybackLoad(
             item = itemWithArtwork,
             attempt = 0,
             requestGeneration = requestGeneration,
-            legacyMediaIdentifier = requestedLegacyMediaIdentifier.takeUnless { isTorrentRequest },
+            legacyMediaIdentifier = requestedLegacyMediaIdentifier,
           )
         } catch (error: CancellationException) {
           throw error
@@ -6274,12 +6104,7 @@ private suspend fun restorePlaybackPosition(state: PlaybackStateEntity?, loadGen
           withContext(Dispatchers.Main) {
             if (!isCurrentMediaRequest(requestGeneration)) return@withContext
             viewModel.onVideoLoadCompleted()
-            val message =
-              if (isTorrentRequest && error is TorrentStreamException) {
-                error.message?.takeIf { it.isNotBlank() } ?: getString(R.string.toast_playback_load_failed)
-              } else {
-                getString(R.string.toast_playback_load_failed)
-              }
+            val message = getString(R.string.toast_playback_load_failed)
             viewModel.showToast(message)
           }
         }
@@ -6540,53 +6365,8 @@ private suspend fun restorePlaybackPosition(state: PlaybackStateEntity?, loadGen
         .toSet()
     val isRemote =
       item.networkSource != null ||
-        sourceSchemes.any { scheme -> scheme in setOf("http", "https", "rtsp", "rtmp", "magnet", "torrent") }
+        sourceSchemes.any { scheme -> scheme in setOf("http", "https", "rtsp", "rtmp") }
     return if (isRemote) NETWORK_PLAYBACK_LOAD_TIMEOUT_MS else LOCAL_PLAYBACK_LOAD_TIMEOUT_MS
-  }
-
-  /**
-   * Whether this launch is plain offline media: a `file://` or `content://` URI that is not itself
-   * a `.torrent` payload.
-   *
-   * The torrent hand-off and the torrent engine observer only exist for magnet/hash/http sources,
-   * plus the `content://`/`.torrent` case that the picker has to resolve. Recognising the ordinary
-   * local file up front means an offline open never reaches [isTorrentSource]'s hash and magnet
-   * parsing, and it still cannot swallow the one local form that genuinely is a torrent. Network
-   * launches deliberately keep the existing checks, since a later queue item can be a torrent.
-   */
-  private fun isOfflineLocalLaunch(sourceIntent: Intent): Boolean {
-    val data = sourceIntent.data ?: return false
-    val scheme = data.scheme?.lowercase() ?: return false
-    if (scheme != "file" && scheme != "content") return false
-    return !data.toString().substringBefore('?').substringBefore('#')
-      .endsWith(".torrent", ignoreCase = true)
-  }
-
-  private fun redirectUnselectedTorrentToPicker(
-    sourceIntent: Intent,
-    finishCurrent: Boolean,
-  ): Boolean {
-    if (
-      sourceIntent.getIntExtra(MediaUtils.EXTRA_TORRENT_FILE_INDEX, -1) >= 0 ||
-      !sourceIntent.getStringExtra(MediaUtils.EXTRA_TORRENT_PREPARATION_ID).isNullOrBlank()
-    ) {
-      return false
-    }
-    if (isOfflineLocalLaunch(sourceIntent)) return false
-    val source = extractUriFromIntent(sourceIntent)?.toString()?.trim().orEmpty()
-    if (!isTorrentSource(source, sourceIntent.type)) return false
-    val pickerClass = torrentSelectionActivityClass() ?: return false
-
-    val pickerIntent =
-      Intent(sourceIntent).apply {
-        setClass(this@PlayerActivity, pickerClass)
-        putExtra(MediaUtils.EXTRA_TORRENT_SOURCE, source)
-        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-      }
-    torrentPickerHandoff = finishCurrent
-    startActivity(pickerIntent)
-    if (finishCurrent) finish()
-    return true
   }
 
   // ==================== Picture-in-Picture Management ====================
@@ -7284,7 +7064,6 @@ private suspend fun restorePlaybackPosition(state: PlaybackStateEntity?, loadGen
               override fun onStop() {
                 runIfActivePlaybackOwner {
                   if (fileName.isNotBlank()) saveVideoPlaybackState(fileName, immediate = true)
-                  torrentStreamingEngine.stopStream()
                   PlaybackSession.stop(clearQueue = false)
                   mediaSession.setPlaybackState(
                     PlaybackState.Builder().setState(PlaybackState.STATE_STOPPED, 0L, 0f).build(),
@@ -7981,14 +7760,6 @@ private suspend fun restorePlaybackPosition(state: PlaybackStateEntity?, loadGen
     // Update playlist index
     playlistIndex = index
     PlaybackSession.selectQueueItem(index)
-    // Torrent series entries carry their file index; the torrent branch of startMediaLoad reads
-    // it from the intent to restart the stream on the right episode.
-    val queueTorrentFileIndex = PlaybackSession.queue.value.items.getOrNull(index)?.torrentFileIndex
-    if (queueTorrentFileIndex != null) {
-      intent.putExtra("torrent_file_index", queueTorrentFileIndex)
-    } else {
-      intent.removeExtra("torrent_file_index")
-    }
     viewModel.calculateVideoHash(uri)
 
     // Extract and set the new file name
@@ -8346,12 +8117,6 @@ private suspend fun restorePlaybackPosition(state: PlaybackStateEntity?, loadGen
     intent.getStringExtra("media_identifier")?.takeIf { it.isNotBlank() }?.let { return it }
 
     val source = extractUriFromIntent(intent)?.toString() ?: parsePathFromIntent(intent) ?: fileName
-    if (isTorrentSource(source, intent.type)) {
-      val fileIndex = intent.getIntExtra("torrent_file_index", -1)
-      return canonicalInfoHash(source)
-        ?.let { infoHash -> PlaybackIdentity.forTorrent(infoHash, fileIndex) }
-        ?: PlaybackIdentity.forUri("$source\u0000torrent-file:$fileIndex")
-    }
     return NetworkPlaybackUri.parse(source)
       ?.let { reference -> PlaybackIdentity.forNetwork(reference.connectionId, reference.path.value) }
       ?: PlaybackIdentity.forUri(source)

@@ -22,6 +22,8 @@ These notes are written in plain English and focus on what changed for real use.
 - **UI Adjustments:**
   - Seekbar side time indicator font size adjusted to 11sp on both sides.
   - Removed network tile from the Profile tab overview.
+- **Removed Torrent Streaming:**
+  - Completely removed BitTorrent streaming engine, libtorrent4j native binaries, `.torrent` and `magnet:` intent filters, and torrent picker screen.
 
 ## 1.0.7
 

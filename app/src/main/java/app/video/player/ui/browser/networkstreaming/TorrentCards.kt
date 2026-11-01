@@ -59,7 +59,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.video.player.database.entities.NetworkStreamEntryEntity
-import app.video.player.domain.torrent.formatTorrentBytes
 import app.video.player.presentation.components.RemoteImage
 import app.video.player.ui.icons.Icon
 import app.video.player.ui.icons.Icons
@@ -242,7 +241,7 @@ fun TorrentHeroBanner(
                   border = BorderStroke(1.dp, Color.White.copy(alpha = 0.2f)),
                 ) {
                   Text(
-                    text = formatTorrentBytes(group.totalSize),
+                    text = MediaUtils.formatFileSize(group.totalSize),
                     style = MaterialTheme.typography.labelSmall,
                     fontWeight = FontWeight.Bold,
                     color = Color.White,
@@ -557,7 +556,7 @@ fun TorrentResumeCard(
               .padding(horizontal = 6.dp, vertical = 2.dp),
         ) {
           Text(
-            text = formatTorrentBytes(entry.fileSize),
+            text = MediaUtils.formatFileSize(entry.fileSize),
             style = MaterialTheme.typography.labelSmall,
             color = Color.White,
           )
@@ -662,7 +661,7 @@ fun TorrentPosterCard(
             group.files.size > 1 -> "${group.files.size} eps"
             group.groupType == MediaGroupType.YOUTUBE -> "YouTube"
             group.groupType == MediaGroupType.STREAM -> "Stream"
-            else -> "Torrent"
+            else -> "Media"
           }
         Surface(
           shape = RoundedCornerShape(8.dp),
@@ -720,7 +719,7 @@ fun TorrentPosterCard(
         // Bottom size badge
         if (group.totalSize > 0L) {
           Text(
-            text = formatTorrentBytes(group.totalSize),
+            text = MediaUtils.formatFileSize(group.totalSize),
             style = MaterialTheme.typography.labelSmall,
             fontWeight = FontWeight.Bold,
             color = Color.White.copy(alpha = 0.9f),

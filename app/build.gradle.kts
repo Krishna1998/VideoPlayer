@@ -134,10 +134,7 @@ android {
     }
 
     configureEach {
-      val enableTorrent = name in sideloadDistributions
       buildConfigField("boolean", "ENABLE_YTDLP", "false")
-      buildConfigField("boolean", "ENABLE_TORRENT", enableTorrent.toString())
-      if (enableTorrent) proguardFile("src/sideload/proguard-rules.pro")
       externalNativeBuild {
         cmake {
           arguments += "-DMPVRX_ENABLE_YTDLP=OFF"
@@ -398,12 +395,6 @@ dependencies {
   implementation(libs.sonner)
   implementation(libs.kyant.backdrop)
   implementation(libs.kyant.shapes)
-
-  // Keep both the Java API and native payloads out of the Play Store compilation classpath.
-  sideloadDistributions.forEach { flavor ->
-    "${flavor}Implementation"(libs.libtorrent4j)
-    "${flavor}Implementation"(libs.libtorrent4j.android.arm64)
-  }
 }
 
 // ---------------- Git helpers ----------------

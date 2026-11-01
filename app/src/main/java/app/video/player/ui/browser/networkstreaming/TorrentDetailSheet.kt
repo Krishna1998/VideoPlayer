@@ -68,7 +68,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.video.player.database.entities.NetworkStreamEntryEntity
-import app.video.player.domain.torrent.formatTorrentBytes
 import app.video.player.presentation.components.RemoteImage
 import app.video.player.ui.icons.Icon
 import app.video.player.ui.icons.Icons
@@ -344,7 +343,7 @@ fun TorrentDetailSheet(
               color = MaterialTheme.colorScheme.surfaceContainerHigh,
             ) {
               Text(
-                text = formatTorrentBytes(group.totalSize),
+                text = MediaUtils.formatFileSize(group.totalSize),
                 style = MaterialTheme.typography.labelMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface,
@@ -446,7 +445,7 @@ fun TorrentDetailSheet(
             ) {
               Icon(
                 imageVector = Icons.RoundedFilled.Delete,
-                contentDescription = "Delete Torrent",
+                contentDescription = "Delete",
                 modifier = Modifier.size(20.dp),
               )
             }
@@ -671,7 +670,7 @@ fun TorrentDetailSheet(
                 )
                 if (file.fileSize > 0L) {
                   Text(
-                    text = formatTorrentBytes(file.fileSize),
+                    text = MediaUtils.formatFileSize(file.fileSize),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
                     modifier = Modifier.padding(top = 2.dp),
