@@ -29,8 +29,11 @@ object YtdlpManager {
   fun getYtdlDir(context: Context): File = File(context.filesDir, "ytdl")
   fun getExecutablePath(context: Context): String = ""
 
-  suspend fun refreshInstallationInfo(context: Context): YtdlpInstallationInfo =
-    YtdlpInstallationInfo(isInstalled = false, version = null, channel = null, commit = null)
+  suspend fun refreshInstallationInfo(context: Context): YtdlpInstallationInfo {
+    val info = YtdlpInstallationInfo.NotInstalled
+    _installationInfo.value = info
+    return info
+  }
 
   suspend fun extractPlaylist(
     context: Context,
