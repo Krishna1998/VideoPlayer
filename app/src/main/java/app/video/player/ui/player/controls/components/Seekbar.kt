@@ -102,6 +102,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import app.video.player.preferences.SeekbarStyle
 import app.video.player.R
 import app.video.player.ui.icons.Icon
@@ -2144,7 +2145,7 @@ fun SeekbarStyleLivePreview(
     ) {
       Text(
         text = Utils.prettyTime(position.toInt(), false),
-        style = MaterialTheme.typography.labelMedium.copy(fontFeatureSettings = "tnum"),
+        style = MaterialTheme.typography.labelMedium.copy(fontSize = 13.sp, fontFeatureSettings = "tnum"),
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         maxLines = 1,
         modifier = Modifier.width(48.dp),
@@ -2161,7 +2162,7 @@ fun SeekbarStyleLivePreview(
       )
       Text(
         text = Utils.prettyTime(duration.toInt(), false),
-        style = MaterialTheme.typography.labelMedium.copy(fontFeatureSettings = "tnum"),
+        style = MaterialTheme.typography.labelMedium.copy(fontSize = 13.sp, fontFeatureSettings = "tnum"),
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         textAlign = TextAlign.End,
         maxLines = 1,
@@ -2323,7 +2324,7 @@ fun VideoTimer(
     text = timeText,
     color = textColor,
     textAlign = TextAlign.Center,
-    style = MaterialTheme.typography.labelSmall.withTabularDigits(),
+    style = MaterialTheme.typography.labelSmall.withTabularDigits().copy(fontSize = 13.sp),
   )
 }
 
