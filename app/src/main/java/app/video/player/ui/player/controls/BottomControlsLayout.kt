@@ -54,57 +54,50 @@ internal enum class VideoControlsLayoutPreset(
 
 internal data class BottomControlsLayout(
   val bottomToTop: List<BottomSlot>,
-  val buttonsBesidePlayback: Boolean,
 )
 
 internal data class PlaybackControlsGeometry(
   val playPauseSize: Dp,
   val skipButtonSize: Dp,
   val buttonGap: Dp,
-  val rowHalfWidth: Dp,
-  val sideGap: Dp,
-  val canShareRow: Boolean,
 )
 
-/** Shared by playback and its editor preview so compact sizing and narrow-window fallback agree. */
 internal fun resolvePlaybackControlsGeometry(
   width: Dp,
-  playbackPosition: PlaybackControlsPosition,
-  hasPlaylistControls: Boolean,
-  hasActions: Boolean,
   spacing: Spacing,
-  horizontalInsets: Dp = 0.dp,
+  landscape: Boolean = false,
 ): PlaybackControlsGeometry {
-  val compact = width < 360.dp || (playbackPosition != PlaybackControlsPosition.Center && width < 480.dp)
-  val playPauseSize = if (compact) 56.dp else 68.dp
-  val skipButtonSize = if (compact) 48.dp else 60.dp
-  val buttonGap = if (compact) 4.dp else spacing.large
-  val rowHalfWidth =
-    (playPauseSize + if (hasPlaylistControls) (skipButtonSize + buttonGap) * 2 else 0.dp) / 2
-  val sideGap = if (compact) spacing.smaller else spacing.medium
-  val minimumWidth =
-    rowHalfWidth * 2 + spacing.large * 2 + horizontalInsets +
-      if (hasActions) 96.dp + sideGap * 2 else 0.dp
-  return PlaybackControlsGeometry(playPauseSize, skipButtonSize, buttonGap, rowHalfWidth, sideGap, width >= minimumWidth)
+  if (landscape) return PlaybackControlsGeometry(56.dp, 48.dp, 8.dp)
+  val compact = width < 360.dp
+  return PlaybackControlsGeometry(
+    playPauseSize = if (compact) 56.dp else 68.dp,
+    skipButtonSize = if (compact) 48.dp else 60.dp,
+    buttonGap = if (compact) 4.dp else spacing.large,
+  )
 }
 
-/**
- * Android video controls have at most two bottom rows. An exceptionally narrow window keeps
- * playback in the centre rather than clipping action touch targets beside it.
- */
 internal fun resolveBottomControlsLayout(
   seekbarPlacement: SeekbarPlacement,
-  playbackPosition: PlaybackControlsPosition,
   hasButtons: Boolean = true,
-  allowSharedRow: Boolean = true,
-): BottomControlsLayout {
-  val preset = VideoControlsLayoutPreset.fromPreferences(seekbarPlacement, playbackPosition)
-  val buttonsBesidePlayback = allowSharedRow && preset.playbackPosition != PlaybackControlsPosition.Center
-  val includeButtonsRow = hasButtons || buttonsBesidePlayback
-  val bottomToTop = buildList {
-    if (includeButtonsRow && preset.seekbarPlacement == SeekbarPlacement.AboveButtons) add(BottomSlot.Buttons)
-    add(BottomSlot.Seekbar)
-    if (includeButtonsRow && preset.seekbarPlacement == SeekbarPlacement.BelowButtons) add(BottomSlot.Buttons)
-  }
-  return BottomControlsLayout(bottomToTop, buttonsBesidePlayback)
-}
+  playbackControlsPlacement: PlaybackControlsPosition = PlaybackControlsPosition.Center,
+  sharedLandscapeRow: Boolean = false,
+): BottomControlsLayout =
+  BottomControlsLayout(
+    bottomToTop = buildList {
+      if (sharedLandscapeRow) {
+        if (seekbarPlacement == SeekbarPlacement.AboveButtons) {
+          add(BottomSlot.Playback)
+          add(BottomSlot.Seekbar)
+        } else {
+          add(BottomSlot.Seekbar)
+          add(BottomSlot.Playback)
+        }
+        return@buildList
+      }
+      if (hasButtons && seekbarPlacement == SeekbarPlacement.AboveButtons) add(BottomSlot.Buttons)
+      if (playbackControlsPlacement == PlaybackControlsPosition.BelowSeekbar) add(BottomSlot.Playback)
+      add(BottomSlot.Seekbar)
+      if (playbackControlsPlacement == PlaybackControlsPosition.AboveSeekbar) add(BottomSlot.Playback)
+      if (hasButtons && seekbarPlacement == SeekbarPlacement.BelowButtons) add(BottomSlot.Buttons)
+    },
+  )

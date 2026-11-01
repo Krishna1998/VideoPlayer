@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
@@ -84,7 +85,8 @@ object PersistentStatusBarPreferencesScreen : Screen {
               Box(
                 modifier = Modifier.fillMaxWidth()
                   .height(172.dp)
-                  .background(Color(0xFF101216), RoundedCornerShape(26.dp)),
+                  .clip(RoundedCornerShape(26.dp))
+                  .background(Color(0xFF101216)),
               ) {
                 Column(
                   modifier = Modifier.align(Alignment.Center),
@@ -250,3 +252,4 @@ private fun StatusSlotPreference(
     )
   }
 }
+

@@ -7,6 +7,7 @@ package app.video.player.ui.player.controls
 
 import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.res.Configuration
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.BatteryManager
@@ -14,6 +15,7 @@ import android.text.format.DateUtils
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -23,6 +25,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsIgnoringVisibility
+import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,6 +45,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -65,6 +70,7 @@ import kotlinx.coroutines.delay
  * loop: playback already updates [PlayerViewModel.precisePosition] with the controls hidden.
  */
 @Composable
+@OptIn(ExperimentalLayoutApi::class)
 internal fun PersistentStatusHud(
   viewModel: PlayerViewModel,
   preferences: PlayerPreferences,
@@ -82,6 +88,7 @@ internal fun PersistentStatusHud(
   val preferFinishTime by preferences.persistentStatusPreferFinishTime.collectAsState()
   val showSpeed by preferences.persistentStatusShowSpeed.collectAsState()
   val microBattery by preferences.persistentStatusMicroBattery.collectAsState()
+  val safeAreaWindow by preferences.safeAreaWindow.collectAsState()
   val clockFormat by preferences.clockFormat.collectAsState()
   val television = isTelevision()
   val slots = listOf(left, center, right)
@@ -93,6 +100,13 @@ internal fun PersistentStatusHud(
 
   Box(modifier.fillMaxSize()) {
     val isTop = position == PersistentStatusPosition.Top
+    val portraitTop = isTop && !television &&
+      LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
+    // Some OEMs expose the notch reservation only as a status-bar inset in immersive mode.
+    // Union takes the larger inset, so a cutout and status bar never add padding twice.
+    val hudInsets = if (portraitTop) {
+      WindowInsets.displayCutout.union(WindowInsets.statusBarsIgnoringVisibility)
+    } else WindowInsets.displayCutout
     PersistentStatusHudRow(
       leftSlot = left,
       centerSlot = center,
@@ -106,15 +120,19 @@ internal fun PersistentStatusHud(
       batteryLevel = battery,
       nowMillis = now,
       clockFormat = clockFormat,
-      // Only the cutout is avoided: system-bar insets change when the controls show their bars.
+      // The portrait top HUD always clears the camera; other placements follow Safe area window.
       modifier = Modifier
         .align(if (isTop) Alignment.TopCenter else Alignment.BottomCenter)
         .tvOverscanPadding(top = isTop, bottom = !isTop)
-        .windowInsetsPadding(
-          WindowInsets.displayCutout.only(
-            WindowInsetsSides.Horizontal +
-              if (isTop) WindowInsetsSides.Top else WindowInsetsSides.Bottom,
-          ),
+        .then(
+          if (safeAreaWindow || portraitTop) {
+            Modifier.windowInsetsPadding(
+              hudInsets.only(
+                WindowInsetsSides.Horizontal +
+                  if (isTop) WindowInsetsSides.Top else WindowInsetsSides.Bottom,
+              ),
+            )
+          } else Modifier,
         )
         .padding(vertical = 8.dp),
     )
@@ -270,3 +288,4 @@ private fun StatusSlotContent(
     }
   }
 }
+
