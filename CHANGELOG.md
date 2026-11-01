@@ -4,6 +4,17 @@ These notes are written in plain English and focus on what changed for real use.
 
 ## Unreleased
 
+## 1.0.8
+
+- Release version 1.0.8.
+- Refined player layout alignment and controls:
+  - Separated seekbar placement (above/below actions) and playback controls placement (center of screen, above seekbar, below seekbar).
+  - Added independent configuration with synchronized editor preview and settings search indexing.
+  - Added visual accessibility indicators (chevron/dropdown icons, button roles, and action labels) across preferences.
+  - Restored full landscape action groups and landscape playback controls row.
+- Adjusted seekbar side time indicators font size to 11sp.
+- Removed network tile from the Profile overview tab.
+
 ## 1.0.7
 
 - Release version 1.0.7.
