@@ -69,6 +69,7 @@ import app.video.player.ui.player.controls.components.AbLoopIcon
 import app.video.player.ui.player.controls.components.LocalForceDarkPlayerButtonsBackground
 import app.video.player.ui.player.controls.components.LocalPlayerButtonsOpacity
 import app.video.player.ui.player.controls.components.SeekbarStylePreview
+import app.video.player.ui.player.controls.components.fadingHorizontalScroll
 import app.video.player.ui.player.controls.resolveBottomControlsLayout
 import app.video.player.ui.player.controls.resolvePlaybackControlsGeometry
 import app.video.player.ui.preferences.ControlRegion
@@ -360,10 +361,13 @@ private fun PreviewPlayback(
   playlist: Boolean,
   geometry: PlaybackControlsGeometry,
   modifier: Modifier = Modifier,
+  evenlySpaced: Boolean = false,
 ) {
   Row(
-    modifier, verticalAlignment = Alignment.CenterVertically,
-    horizontalArrangement = Arrangement.spacedBy(geometry.buttonGap),
+    modifier.fadingHorizontalScroll(rememberScrollState(), shadowRoom = 0.dp),
+    verticalAlignment = Alignment.CenterVertically,
+    horizontalArrangement =
+      if (evenlySpaced) Arrangement.SpaceEvenly else Arrangement.spacedBy(geometry.buttonGap, Alignment.CenterHorizontally),
   ) {
     if (playlist) PreviewIcon(Icons.RoundedFilled.SkipPrevious, geometry.skipButtonSize)
     PreviewIcon(Icons.RoundedFilled.PlayArrow, geometry.playPauseSize)

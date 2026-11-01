@@ -12,6 +12,7 @@ package app.video.player.preferences
 import android.content.Context
 import android.os.Build
 import androidx.annotation.StringRes
+import app.video.player.R
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize

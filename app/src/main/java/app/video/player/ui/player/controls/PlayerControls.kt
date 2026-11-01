@@ -1123,6 +1123,21 @@ fun PlayerControls(
           val (customLeftButtonsRef, customRightButtonsRef) = createRefs()
           val customButtonsPortraitRef = createRef()
 
+          val hasPlaylistControls =
+            playlistMode && (playlistItems.size > 1 || viewModel.getPlaylistTotalCount() > 1)
+          val automaticQualityButton =
+            showVideoQualitySelector &&
+              !(if (isPortrait) portraitHasConfiguredQualityButton else landscapeHasConfiguredQualityButton)
+          val hasBottomActions =
+            automaticQualityButton ||
+              (if (isPortrait) {
+                portraitBottomButtons.isNotEmpty()
+              } else {
+                bottomLeftButtons.isNotEmpty() || bottomRightButtons.isNotEmpty()
+              })
+          val controlsWidth =
+            if (playerBounds.width > 0) with(density) { playerBounds.width.toDp() } else configuration.screenWidthDp.dp
+
           val playbackPosition =
             if (isPortrait) portraitPlaybackControlsPlacement else landscapePlaybackControlsPlacement
           val sharedLandscapeRow = !isPortrait && playbackPosition != PlaybackControlsPlacement.Center
