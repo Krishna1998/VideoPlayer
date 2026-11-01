@@ -2145,7 +2145,7 @@ fun SeekbarStyleLivePreview(
     ) {
       Text(
         text = Utils.prettyTime(position.toInt(), false),
-        style = MaterialTheme.typography.labelMedium.copy(fontSize = 13.sp, fontFeatureSettings = "tnum"),
+        style = MaterialTheme.typography.labelMedium.copy(fontSize = 11.sp, fontFeatureSettings = "tnum"),
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         maxLines = 1,
         modifier = Modifier.width(48.dp),
@@ -2162,7 +2162,7 @@ fun SeekbarStyleLivePreview(
       )
       Text(
         text = Utils.prettyTime(duration.toInt(), false),
-        style = MaterialTheme.typography.labelMedium.copy(fontSize = 13.sp, fontFeatureSettings = "tnum"),
+        style = MaterialTheme.typography.labelMedium.copy(fontSize = 11.sp, fontFeatureSettings = "tnum"),
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         textAlign = TextAlign.End,
         maxLines = 1,
@@ -2324,7 +2324,7 @@ fun VideoTimer(
     text = timeText,
     color = textColor,
     textAlign = TextAlign.Center,
-    style = MaterialTheme.typography.labelSmall.withTabularDigits().copy(fontSize = 13.sp),
+    style = MaterialTheme.typography.labelSmall.withTabularDigits().copy(fontSize = 11.sp),
   )
 }
 
