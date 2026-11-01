@@ -124,6 +124,7 @@ class AppearancePreferences(
   val showProfileTab = preferenceStore.getBoolean("show_profile_tab", true)
   val profileName = preferenceStore.getString("profile_name", "")
   val profileImagePath = preferenceStore.getString("profile_image_path", "")
+  val showJellyfinTab = preferenceStore.getBoolean("show_jellyfin_tab", false)
   /** Persistent visual order of bottom navigation tabs. Home remains the root destination. */
   val bottomNavigationOrder = preferenceStore.getObject(
     key = "bottom_navigation_tab_order",
