@@ -45,11 +45,26 @@ class Anime4KManager(
   var isInitialized: Boolean = true
     private set
 
+  fun setPostFilters(
+    darken: Boolean = false,
+    thin: Boolean = false,
+    deblur: Boolean = false,
+  ) {}
+
   fun initialize(): Boolean = false
 
   fun copyShadersFromAssets(): Boolean = true
 
+  fun getShaderChain(
+    mode: Mode,
+    quality: Quality = DEFAULT_QUALITY,
+  ): String = ""
+
+  fun getShaderPaths(mode: Mode): List<String> = emptyList()
+
   fun getShaderPaths(mode: Mode, quality: Quality): List<String> = emptyList()
+
+  fun getShaderFiles(mode: Mode, quality: Quality): List<File> = emptyList()
 
   fun getShadersForMode(
     mode: Mode,
