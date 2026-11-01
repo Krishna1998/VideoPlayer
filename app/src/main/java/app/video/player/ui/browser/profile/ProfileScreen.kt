@@ -136,7 +136,6 @@ import app.video.player.ui.browser.cards.PlaylistCard
 import app.video.player.ui.browser.components.BrowserTopBar
 import app.video.player.ui.browser.components.rememberSwipePlaybackInfo
 import app.video.player.ui.browser.dialogs.DeleteConfirmationDialog
-import app.video.player.ui.browser.networkstreaming.NetworkStreamingScreen
 import app.video.player.ui.browser.playlist.PlaylistDetailScreen
 import app.video.player.ui.browser.playlist.PlaylistScreen
 import app.video.player.ui.browser.playlist.PlaylistViewModel
@@ -362,7 +361,6 @@ object ProfileScreen : Screen {
               recentCount = recentItems.size,
               playlistCount = playlists.size,
               snapshotCount = snapshots.size,
-              showNetwork = true,
               collapseProgress = heroCollapseProgress,
               onEditProfile = {
                 haptics.tick()
@@ -371,7 +369,6 @@ object ProfileScreen : Screen {
               onRecents = { backStack.navigateTo(RecentlyPlayedScreen) },
               onPlaylists = { backStack.navigateTo(PlaylistScreen) },
               onSnapshots = { backStack.navigateTo(SnapshotScreen) },
-              onNetwork = { backStack.navigateTo(NetworkStreamingScreen) },
             )
           }
 
@@ -656,13 +653,11 @@ private fun ProfileOverviewCard(
   recentCount: Int,
   playlistCount: Int,
   snapshotCount: Int,
-  showNetwork: Boolean,
   collapseProgress: Float,
   onEditProfile: () -> Unit,
   onRecents: () -> Unit,
   onPlaylists: () -> Unit,
   onSnapshots: () -> Unit,
-  onNetwork: () -> Unit,
 ) {
   val configuration = LocalConfiguration.current
   val isTablet = configuration.smallestScreenWidthDp >= 600
@@ -766,10 +761,6 @@ private fun ProfileOverviewCard(
       add(ProfileShortcutDestination(
         Icons.RoundedFilled.Image, stringResource(R.string.ui_snapshots), snapshotCount,
         MaterialTheme.colorScheme.tertiary, onSnapshots,
-      ))
-      if (showNetwork) add(ProfileShortcutDestination(
-        Icons.RoundedFilled.BringYourOwnIp, stringResource(R.string.ui_network), null,
-        MaterialTheme.colorScheme.primary, onNetwork,
       ))
     }
     BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
