@@ -4,6 +4,21 @@ These notes are written in plain English and focus on what changed for real use.
 
 ## Unreleased
 
+## 1.0.6
+
+- Release version 1.0.6.
+- Preference and navigation adjustments:
+  - Set default audio player orientation to Portrait.
+  - Set default preferred audio language to Hindi (`hi`).
+  - Set navigation bar glow (glass glow) to off by default.
+  - Set show system navigation bar with player controls to on by default.
+  - Set zoom level feedback overlay to off by default.
+  - Set automatic subtitle loading to off by default.
+  - Completely removed Network tab option and cleaned up bottom navigation order.
+  - Completely removed switch music player option from Audio settings.
+  - Removed app language option from Advanced settings.
+  - Fixed compilation by preserving `showJellyfinTab` property in `AppearancePreferences`.
+
 ## 1.0.5
 
 - Release version 1.0.5.

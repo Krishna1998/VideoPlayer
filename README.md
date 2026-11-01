@@ -316,8 +316,8 @@ To cut a signed GitHub release through Actions, configure these repository secre
 Then bump `versionCode` and `versionName` in `app/build.gradle.kts`, create a tag, and push it:
 
 ```bash
-git tag -a v1.0.5 -m "Release version 1.0.5"
-git push origin v1.0.5
+git tag -a v1.0.6 -m "Release version 1.0.6"
+git push origin v1.0.6
 ```
 
 ---
