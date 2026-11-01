@@ -103,6 +103,7 @@ class ThumbnailRepository(
     KoinJavaComponent.get<NetworkRepository>(NetworkRepository::class.java)
   }
 
+  private val repositoryScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
   private val memoryCache = BitmapMemoryCache<String>(heapDivisor = 8, maxSizeMiB = 48)
   private val localDiskDir = File(context.cacheDir, "thumbnails/local").apply { mkdirs() }
   private val networkDiskDir = File(context.cacheDir, "thumbnails/network").apply { mkdirs() }
@@ -134,7 +135,6 @@ class ThumbnailRepository(
     val duration: Long,
   )
   private val localMetadataCache = LruCache<String, CachedIdentity<ResolvedMetadata>>(2048)
-  private val repositoryScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
   private val maxConcurrentFolders = 3
 
   /** Device default used when the setting is Auto: 1 on low-end devices, otherwise 2. */

@@ -4,6 +4,11 @@ These notes are written in plain English and focus on what changed for real use.
 
 ## Unreleased
 
+## 1.0.4
+
+- Release version 1.0.4.
+- Fixed startup crash caused by uninitialized coroutine scope in `ThumbnailRepository`.
+
 ## 1.0.3
 
 - Release version 1.0.3.
