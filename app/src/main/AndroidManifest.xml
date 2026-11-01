@@ -1511,7 +1511,7 @@
             android:name=".ui.mediainfo.MediaInfoActivityAlias"
             android:targetActivity=".ui.mediainfo.MediaInfoActivity"
             android:exported="true"
-            android:enabled="true"
+            android:enabled="false"
             android:label="@string/ui_media_info">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />

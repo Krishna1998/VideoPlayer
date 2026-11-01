@@ -198,7 +198,7 @@ open class MainActivity : AppCompatActivity() {
     setContent {
       // Set up theme and edge-to-edge display
       val dark by appearancePreferences.darkMode.collectAsState()
-      val networkStreamingEnabled by appearancePreferences.showNetworkTab.collectAsState()
+      val networkStreamingEnabled = false
       val sessionState by PlaybackSession.state.collectAsState()
       val enableVideoMiniPlayer by playerPreferences.enableVideoMiniPlayer.collectAsState()
       val autoPiPOnNavigation by playerPreferences.autoPiPOnNavigation.collectAsState()

@@ -900,9 +900,8 @@ object AppearancePreferencesScreen : Screen {
           item {
             val showMusicTab by preferences.showMusicTab.collectAsState()
             val showProfileTab by preferences.showProfileTab.collectAsState()
-            val showNetworkTab by preferences.showNetworkTab.collectAsState()
             val savedOrder by preferences.bottomNavigationOrder.collectAsState()
-            val names = listOf("HOME", "MUSIC", "NETWORK", "PROFILE")
+            val names = listOf("HOME", "MUSIC", "PROFILE")
             val ordered =
               listOf("HOME") +
                 (savedOrder.filter { it in names } + names)
@@ -912,7 +911,6 @@ object AppearancePreferencesScreen : Screen {
               when (id) {
                 "HOME" -> ReorderableTabItem(id, stringResource(R.string.pref_nav_home_title), stringResource(R.string.pref_nav_home_summary), true, required = true)
                 "MUSIC" -> ReorderableTabItem(id, stringResource(R.string.pref_nav_music_title), stringResource(R.string.pref_nav_music_summary), showMusicTab, titleRes = R.string.pref_nav_music_title)
-                "NETWORK" -> ReorderableTabItem(id, stringResource(R.string.pref_nav_network_title), stringResource(R.string.pref_nav_network_summary), showNetworkTab, titleRes = R.string.pref_nav_network_title)
                 else -> ReorderableTabItem(id, stringResource(R.string.pref_nav_profile_title), stringResource(R.string.pref_nav_profile_summary), showProfileTab, titleRes = R.string.pref_nav_profile_title)
               }
             }
@@ -922,7 +920,6 @@ object AppearancePreferencesScreen : Screen {
                 onEnabledChange = { id, enabled ->
                   when (id) {
                     "MUSIC" -> preferences.showMusicTab.set(enabled)
-                    "NETWORK" -> preferences.showNetworkTab.set(enabled)
                     "PROFILE" -> preferences.showProfileTab.set(enabled)
                   }
                 },

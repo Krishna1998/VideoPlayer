@@ -185,7 +185,6 @@ object MainScreen : Screen, TvEdgeToEdgeScreen {
   internal enum class MainTab {
     HOME,
     MUSIC,
-    NETWORK,
     PROFILE,
   }
 
@@ -240,7 +239,6 @@ object MainScreen : Screen, TvEdgeToEdgeScreen {
     val localMusicTabs by musicLibraryViewModel.visibleTabs.collectAsStateWithLifecycle()
     val showMusicTab by appearancePreferences.showMusicTab.collectAsState()
     val showProfileTab by appearancePreferences.showProfileTab.collectAsState()
-    val showNetworkTab by appearancePreferences.showNetworkTab.collectAsState()
     val liquidGlassEnabled by appearancePreferences.liquidGlassEnabled.collectAsState()
     val legacyNavigationBar by appearancePreferences.legacyNavigationBar.collectAsState()
     val progressiveNavigationBlur by appearancePreferences.progressiveNavigationBlur.collectAsState()
@@ -266,11 +264,10 @@ object MainScreen : Screen, TvEdgeToEdgeScreen {
 
     val bottomNavigationOrder by appearancePreferences.bottomNavigationOrder.collectAsState()
     val visibleTabs =
-      remember(showMusicTab, showProfileTab, showNetworkTab, bottomNavigationOrder) {
+      remember(showMusicTab, showProfileTab, bottomNavigationOrder) {
         mainNavigationTabs(
           showMusic = showMusicTab,
           showProfile = showProfileTab,
-          showNetwork = showNetworkTab,
           order = bottomNavigationOrder,
         )
       }
@@ -807,7 +804,6 @@ object MainScreen : Screen, TvEdgeToEdgeScreen {
                     )
                   }
                 }
-                MainTab.NETWORK -> NetworkStreamingScreen.Content()
                 MainTab.PROFILE -> app.video.player.ui.browser.profile.ProfileScreen.Content()
               }
             }
@@ -1273,7 +1269,6 @@ internal fun mainNavigationLabel(tab: MainScreen.MainTab): String =
   stringResource(when (tab) {
     MainScreen.MainTab.HOME -> R.string.ui_home
     MainScreen.MainTab.MUSIC -> R.string.ui_music
-    MainScreen.MainTab.NETWORK -> R.string.ui_network
     MainScreen.MainTab.PROFILE -> R.string.ui_profile
   })
 
@@ -1329,7 +1324,6 @@ internal fun MainTabIcon(
   val icon = when (tab) {
     MainScreen.MainTab.HOME -> Icons.RoundedFilled.Home
     MainScreen.MainTab.MUSIC -> Icons.RoundedFilled.Audiotrack
-    MainScreen.MainTab.NETWORK -> Icons.RoundedFilled.BringYourOwnIp
     MainScreen.MainTab.PROFILE -> Icons.RoundedFilled.AccountCircle
   }
   Icon(
@@ -1354,13 +1348,11 @@ private const val TV_TAB_FOCUS_RETRY_MS = 100L
 internal fun mainNavigationTabs(
   showMusic: Boolean,
   showProfile: Boolean,
-  showNetwork: Boolean,
   order: List<String> = emptyList(),
 ): List<MainScreen.MainTab> {
   val available = buildList {
     add(MainScreen.MainTab.HOME)
     if (showMusic) add(MainScreen.MainTab.MUSIC)
-    if (showNetwork) add(MainScreen.MainTab.NETWORK)
     if (showProfile) add(MainScreen.MainTab.PROFILE)
   }
   val byName = available.associateBy { it.name }

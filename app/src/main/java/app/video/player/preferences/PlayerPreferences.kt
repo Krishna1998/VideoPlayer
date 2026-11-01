@@ -93,7 +93,7 @@ class PlayerPreferences(
   val defaultBrightness = preferenceStore.getFloat("default_brightness", -1f)
 
   val allowGesturesInPanels = preferenceStore.getBoolean("allow_gestures_in_panels")
-  val showControlsDrawer = preferenceStore.getBoolean("show_controls_drawer", true)
+  val showControlsDrawer = preferenceStore.getBoolean("show_controls_drawer", false)
   // This HUD is drawn over video, independently of the Android system status bar.
   val persistentStatusEnabled = preferenceStore.getBoolean("persistent_status_enabled", false)
   val persistentStatusPosition = preferenceStore.getEnum("persistent_status_position", PersistentStatusPosition.Top)
@@ -151,7 +151,7 @@ class PlayerPreferences(
   val shuffleEnabled = preferenceStore.getBoolean("shuffle_enabled", false)
 
   // New: autoplay next video when current file ends
-  val autoplayNextVideo = preferenceStore.getBoolean("autoplay_next_video", true)
+  val autoplayNextVideo = preferenceStore.getBoolean("autoplay_next_video", false)
   val autoplayNextAudio = preferenceStore.getBoolean("autoplay_next_audio", true)
 
   /** Queue availability serves autoplay even when the user hides next/previous controls. */
@@ -169,7 +169,7 @@ class PlayerPreferences(
   val keepScreenOnWhenPaused = preferenceStore.getBoolean("keep_screen_on_when_paused", false)
   val externalDisplayProjection = preferenceStore.getBoolean("external_display_projection", false)
   val autoplayAfterScreenUnlock = preferenceStore.getBoolean("autoplay_after_screen_unlock", false)
-  val enableMediaInfoIntent = preferenceStore.getBoolean("enable_mediainfo_intent", true)
+  val enableMediaInfoIntent = preferenceStore.getBoolean("enable_mediainfo_intent", false)
   val enableWebStreamLinkIntents = preferenceStore.getBoolean("enable_web_stream_link_intents", true)
 
   // Custom Buttons - JSON List

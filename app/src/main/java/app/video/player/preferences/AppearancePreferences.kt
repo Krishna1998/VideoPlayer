@@ -75,7 +75,7 @@ class AppearancePreferences(
   val customWallpaperBlur = preferenceStore.getFloat("custom_wallpaper_blur", 0f)
   val customWallpaperAlpha = preferenceStore.getFloat("custom_wallpaper_alpha", 1f)
   val customWallpaperUseColors = preferenceStore.getBoolean("custom_wallpaper_use_colors", false)
-  val amoledMode = preferenceStore.getBoolean("amoled_mode", false)
+  val amoledMode = preferenceStore.getBoolean("amoled_mode", true)
   // Opt-in: glass records the screen behind it every frame and moves player video to a TextureView.
   val liquidGlassEnabled = preferenceStore.getBoolean("liquid_glass_enabled", false)
   val liquidGlassInHdr = preferenceStore.getBoolean("liquid_glass_in_hdr", false)
@@ -99,7 +99,7 @@ class AppearancePreferences(
   val legacyNavigationBar =
     preferenceStore.getBoolean("legacy_navigation_bar", Build.VERSION.SDK_INT < Build.VERSION_CODES.S)
   val progressiveNavigationBlur = preferenceStore.getBoolean("progressive_navigation_blur", !DevicePerformance.isLowEnd)
-  val useSystemFont = preferenceStore.getBoolean("use_system_font", false)
+  val useSystemFont = preferenceStore.getBoolean("use_system_font", true)
   val googleFontFamily = preferenceStore.getString("google_font_family", "")
   val googleFontRevision = preferenceStore.getInt("google_font_revision", 0)
   val appUiScale = preferenceStore.getFloat("app_ui_scale", 0.95f)
