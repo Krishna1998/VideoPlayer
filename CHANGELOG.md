@@ -7,13 +7,21 @@ These notes are written in plain English and focus on what changed for real use.
 ## 1.0.8
 
 - Release version 1.0.8.
-- Refined player layout alignment and controls:
-  - Separated seekbar placement (above/below actions) and playback controls placement (center of screen, above seekbar, below seekbar).
-  - Added independent configuration with synchronized editor preview and settings search indexing.
-  - Added visual accessibility indicators (chevron/dropdown icons, button roles, and action labels) across preferences.
-  - Restored full landscape action groups and landscape playback controls row.
-- Adjusted seekbar side time indicators font size to 11sp.
-- Removed network tile from the Profile overview tab.
+- **App Rebranding:**
+  - Rebranded user-facing app name, dialogs, widgets, permissions, and store metadata to **Video Player**.
+  - Updated release APK build artifacts to `VideoPlayer-<abi>-<version>.apk`.
+- **Player Controls & Layout Customization:**
+  - Separated seekbar placement (above/below action buttons) and playback controls placement (center of screen, above seekbar, below seekbar) into independent options.
+  - Added dedicated layout settings with live synchronized editor preview and settings search indexing.
+  - Restored full landscape action button groups and dedicated landscape playback controls row.
+  - Refined portrait top status HUD with cutout and status-bar insets protection.
+  - Preserved native subtitle windowing and positioning.
+- **Settings Accessibility & Visual Indicators:**
+  - Added visual action indicators (navigation chevron and dialog dropdown icons with RTL support) across preference items.
+  - Added button accessibility roles and action semantics click labels (`Open page`, `Open dialog`).
+- **UI Adjustments:**
+  - Seekbar side time indicator font size adjusted to 11sp on both sides.
+  - Removed network tile from the Profile tab overview.
 
 ## 1.0.7
 
