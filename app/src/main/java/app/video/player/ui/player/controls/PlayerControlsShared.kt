@@ -528,26 +528,6 @@ fun RenderPlayerButton(
                 tint = if (borderless) controlColor else MaterialTheme.colorScheme.onSurface,
                 size = buttonSize - 4.dp,
               )
-              if (isSnapshotLoading) {
-                Box(contentAlignment = Alignment.Center, modifier = Modifier.size(buttonSize - 4.dp)) {
-                  CircularProgressIndicator(
-                    modifier = Modifier.size(16.dp),
-                    strokeWidth = 2.dp,
-                    color = if (borderless) controlColor else MaterialTheme.colorScheme.primary,
-                  )
-                }
-              } else {
-                LiquidIconButton(
-                  icon = Icons.RoundedFilled.Aperture,
-                  onClick = {
-                    viewModel.takeSnapshot(context)
-                    viewModel.resetFrameNavigationTimer()
-                  },
-                  onLongClick = { onOpenSheet(Sheets.FrameNavigation) },
-                  tint = if (borderless) controlColor else MaterialTheme.colorScheme.onSurface,
-                  size = buttonSize - 4.dp,
-                )
-              }
               LiquidIconButton(
                 icon = Icons.RoundedFilled.FastForward,
                 onClick = {
@@ -604,53 +584,7 @@ fun RenderPlayerButton(
                   }
                 }
 
-                // Camera / Loading button
-                if (isSnapshotLoading) {
-                  Surface(
-                    shape = CircleShape,
-                    color = playerButtonContainerColor(),
-                    border = BorderStroke(1.dp, playerButtonBorderColor()),
-                    modifier = Modifier.size(buttonSize - 4.dp),
-                  ) {
-                    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                      CircularProgressIndicator(
-                        modifier = Modifier.size(16.dp),
-                        strokeWidth = 2.dp,
-                        color = if (borderless) controlColor else MaterialTheme.colorScheme.primary,
-                      )
-                    }
-                  }
-                } else {
-                  @OptIn(ExperimentalFoundationApi::class)
-                  Surface(
-                    shape = CircleShape,
-                    color = playerButtonContainerColor(),
-                    border = BorderStroke(1.dp, playerButtonBorderColor()),
-                    modifier =
-                      Modifier
-                        .size(buttonSize - 4.dp)
-                        .clip(CircleShape)
-                        .combinedClickable(
-                          onClick = {
-                            viewModel.takeSnapshot(context)
-                            viewModel.resetFrameNavigationTimer()
-                          },
-                          onLongClick = { onOpenSheet(Sheets.FrameNavigation) },
-                        ),
-                  ) {
-                    Box(contentAlignment = Alignment.Center) {
-                      AppSymbolIcon(
-                        imageVector = Icons.RoundedFilled.Aperture,
-                        contentDescription =
-                          androidx.compose.ui.res.stringResource(
-                            app.video.player.R.string.ui_take_screenshot,
-                          ),
-                        tint = if (borderless) controlColor else MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.size(20.dp),
-                      )
-                    }
-                  }
-                }
+
 
                 // Next frame button
                 Surface(

@@ -42,7 +42,7 @@ import app.video.player.repository.JellyfinRepository
 import app.video.player.repository.NavidromeRepository
 import app.video.player.ui.icons.Icon
 import app.video.player.ui.icons.Icons
-import app.video.player.ui.preferences.MediaServersPreferencesScreen
+import app.video.player.ui.preferences.PreferencesScreen
 import app.video.player.ui.utils.LocalBackStack
 import app.video.player.ui.utils.navigateTo
 import org.koin.compose.koinInject
@@ -209,7 +209,7 @@ fun MusicSourceDropdown(
           },
           onClick = {
             isDropdownOpen = false
-            backStack.navigateTo(MediaServersPreferencesScreen)
+            backStack.navigateTo(PreferencesScreen)
           },
         )
       }

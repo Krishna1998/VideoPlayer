@@ -131,7 +131,6 @@ import app.video.player.ui.icons.Icon
 import app.video.player.ui.icons.Icons
 import app.video.player.ui.player.AudiobookPlayback
 import app.video.player.ui.player.PlaybackSession
-import app.video.player.ui.preferences.MediaServersPreferencesScreen
 import app.video.player.ui.preferences.PreferencesScreen
 import app.video.player.ui.utils.LocalBackStack
 import app.video.player.ui.utils.navigateTo
@@ -366,7 +365,7 @@ fun AudiobookLibraryContent(
                     },
                     onClick = {
                       dismiss()
-                      backStack.navigateTo(MediaServersPreferencesScreen)
+                      backStack.navigateTo(PreferencesScreen)
                     },
                   )
                 },
@@ -516,7 +515,7 @@ fun AudiobookLibraryContent(
                   textAlign = androidx.compose.ui.text.style.TextAlign.Center,
                 )
                 Button(
-                  onClick = { backStack.navigateTo(MediaServersPreferencesScreen) },
+                  onClick = { backStack.navigateTo(PreferencesScreen) },
                   shapes = ButtonDefaults.shapes(),
                 ) {
                   Text(stringResource(R.string.pref_audiobookshelf_add_server))

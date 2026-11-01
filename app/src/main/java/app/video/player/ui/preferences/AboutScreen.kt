@@ -95,7 +95,6 @@ object AboutScreen : Screen {
         ?: BuildConfig.VERSION_NAME
     val buildType = BuildConfig.BUILD_TYPE
     val githubRepoUrl = stringResource(R.string.github_repo_url)
-    val privacyPolicyUrl = stringResource(R.string.privacy_policy_url)
     val settingsScrollState = rememberScrollState()
 
     Scaffold(
@@ -222,7 +221,7 @@ object AboutScreen : Screen {
                     Modifier
                       .weight(1f)
                       .height(56.dp),
-                  shape = RoundedCornerShape(topStart = 24.dp, topEnd = 6.dp, bottomEnd = 6.dp, bottomStart = 6.dp),
+                  shape = RoundedCornerShape(topStart = 24.dp, topEnd = 6.dp, bottomEnd = 6.dp, bottomStart = 24.dp),
                   colors =
                     ButtonDefaults.buttonColors(
                       containerColor = btnContainer,
@@ -255,7 +254,7 @@ object AboutScreen : Screen {
                     Modifier
                       .weight(1f)
                       .height(56.dp),
-                  shape = RoundedCornerShape(topStart = 6.dp, topEnd = 24.dp, bottomEnd = 6.dp, bottomStart = 6.dp),
+                  shape = RoundedCornerShape(topStart = 6.dp, topEnd = 24.dp, bottomEnd = 24.dp, bottomStart = 6.dp),
                   colors =
                     ButtonDefaults.buttonColors(
                       containerColor = btnContainer,
@@ -276,25 +275,6 @@ object AboutScreen : Screen {
                     fontWeight = FontWeight.SemiBold,
                   )
                 }
-              }
-
-              Spacer(modifier = Modifier.height(app.video.player.ui.theme.AppConnectedShapeTokens.spacing))
-
-              Button(
-                onClick = {
-                  context.startActivity(Intent(Intent.ACTION_VIEW, privacyPolicyUrl.toUri()))
-                },
-                modifier = Modifier.fillMaxWidth().height(50.dp),
-                shape = RoundedCornerShape(topStart = 6.dp, topEnd = 6.dp, bottomEnd = 24.dp, bottomStart = 24.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = cs.primary, contentColor = cs.onPrimary),
-              ) {
-                Icon(Icons.RoundedFilled.Security, contentDescription = null, modifier = Modifier.size(18.dp))
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                  text = stringResource(R.string.ui_privacy_policy),
-                  style = MaterialTheme.typography.titleMedium,
-                  fontWeight = FontWeight.SemiBold,
-                )
               }
 
               Spacer(modifier = Modifier.height(20.dp))
@@ -814,27 +794,6 @@ internal val OPEN_SOURCE_LIBRARIES =
       url = "https://github.com/square/leakcanary",
     ),
     OpenSourceLibrary(
-      name = "Python",
-      artifact = "libpython / python313.zip",
-      descriptionRes = R.string.oss_python_description,
-      license = "PSF-2.0",
-      url = "https://www.python.org/",
-    ),
-    OpenSourceLibrary(
-      name = "yt-dlp",
-      artifact = "yt-dlp",
-      descriptionRes = R.string.oss_ytdlp_description,
-      license = "Unlicense",
-      url = "https://github.com/yt-dlp/yt-dlp",
-    ),
-    OpenSourceLibrary(
-      name = "Anime4K",
-      artifact = "Anime4K GLSL shaders",
-      descriptionRes = R.string.oss_anime4k_description,
-      license = "MIT",
-      url = "https://github.com/bloc97/Anime4K",
-    ),
-    OpenSourceLibrary(
       name = "HDR Toys",
       artifact = "hdr-toys GLSL shaders",
       descriptionRes = R.string.oss_hdr_toys_description,
@@ -844,7 +803,6 @@ internal val OPEN_SOURCE_LIBRARIES =
   ).filter { library ->
     when (library.name) {
       "libtorrent4j" -> BuildConfig.ENABLE_TORRENT
-      "Python", "yt-dlp" -> BuildConfig.ENABLE_YTDLP
       else -> true
     }
   }.sortedBy { library -> library.name.lowercase(Locale.ROOT) }

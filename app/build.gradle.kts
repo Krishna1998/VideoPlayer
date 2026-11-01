@@ -48,7 +48,7 @@ val sideloadDistributions = setOf("standard")
 // AGP cannot build an app bundle while ABI splits produce multiple APKs (issuetracker 402800800).
 val isBundleBuild =
   gradle.startParameter.taskNames.any { it.substringAfterLast(':').startsWith("bundle") }
-val releaseVersionCode = 104
+val releaseVersionCode = 105
 val versionCodeBandSize = 10_000
 val stableVersionCode = releaseVersionCode * versionCodeBandSize + (versionCodeBandSize - 1)
 val previewVersionCode =
@@ -97,7 +97,7 @@ android {
     // Stable occupies the top of its version band. Preview uses the next band's commit-count
     // offset, so Stable -> Preview -> newer Preview -> next Stable is always an Android upgrade.
     versionCode = stableVersionCode
-    versionName = "1.0.4"
+    versionName = "1.0.5"
 
     vectorDrawables {
       useSupportLibrary = true
@@ -126,7 +126,7 @@ android {
     create("standard") {
       dimension = "distribution"
       buildConfigField("boolean", "IS_PLAY_STORE_BUILD", "false")
-      buildConfigField("boolean", "ENABLE_UPDATE_FEATURE", "true")
+      buildConfigField("boolean", "ENABLE_UPDATE_FEATURE", "false")
       buildConfigField("String", "UPDATE_APK_VARIANT", "\"standard\"")
       buildConfigField("boolean", "SCOPED_STORAGE_ONLY", "false")
       buildConfigField("boolean", "MPV_SUPPORTS_VULKAN", "true")

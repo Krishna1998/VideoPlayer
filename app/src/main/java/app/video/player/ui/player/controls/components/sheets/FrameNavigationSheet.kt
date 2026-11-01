@@ -931,49 +931,7 @@ private fun ControlButtons(
       )
     }
 
-    Button(
-      onClick = onSnapshot,
-      modifier = Modifier.size(56.dp),
-      enabled = !isSnapshotLoading && !isSaveSnapshotLoading,
-      colors = buttonColors,
-      contentPadding = PaddingValues(0.dp),
-    ) {
-      if (isSnapshotLoading) {
-        CircularProgressIndicator(
-          modifier = Modifier.size(32.dp),
-          strokeWidth = 2.dp,
-          color = MaterialTheme.colorScheme.onPrimary,
-        )
-      } else {
-        Icon(
-          Icons.RoundedFilled.Aperture,
-          contentDescription = stringResource(R.string.ui_take_screenshot),
-          modifier = Modifier.size(32.dp),
-        )
-      }
-    }
 
-    Button(
-      onClick = onSaveSnapshot,
-      modifier = Modifier.size(56.dp),
-      enabled = !isSnapshotLoading && !isSaveSnapshotLoading,
-      colors = buttonColors,
-      contentPadding = PaddingValues(0.dp),
-    ) {
-      if (isSaveSnapshotLoading) {
-        CircularProgressIndicator(
-          modifier = Modifier.size(32.dp),
-          strokeWidth = 2.dp,
-          color = MaterialTheme.colorScheme.onPrimary,
-        )
-      } else {
-        Icon(
-          Icons.RoundedFilled.Bookmarks,
-          contentDescription = stringResource(R.string.snapshot_save_button),
-          modifier = Modifier.size(32.dp),
-        )
-      }
-    }
   }
 }
 

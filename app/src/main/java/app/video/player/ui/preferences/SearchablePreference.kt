@@ -1200,17 +1200,7 @@ object SearchablePreferences {
           screen = AdvancedPreferencesScreen,
         ),
       )
-      if (app.video.player.BuildConfig.ENABLE_YTDLP) {
-        add(
-          SearchablePreference(
-            titleRes = R.string.ui_yt_dlp_manager,
-            summaryRes = R.string.ui_install_and_update_yt_dlp_for_streaming_support,
-            keywords = listOf("yt-dlp", "online", "streaming", "extractor", "network", "download"),
-            category = "Network",
-            screen = NetworkConfigurationPreferencesScreen,
-          ),
-        )
-      }
+
       add(
         SearchablePreference(
           titleRes = R.string.pref_advanced_enable_recently_played_title,
@@ -1282,122 +1272,7 @@ object SearchablePreferences {
         ),
       )
 
-      // AI / Intelligence
-      add(
-        SearchablePreference(
-          titleRes = R.string.pref_section_ai_title,
-          summary = "AI-powered rename, subtitle formatting, speech-to-text, subtitle translation",
-          keywords =
-            listOf(
-              "ai",
-              "opencode",
-              "groq",
-              "openai",
-              "anthropic",
-              "together",
-              "openrouter",
-              "machine learning",
-              "intelligence",
-            ),
-          category = "AI",
-          screen = AiIntegrationScreen,
-          targetRes = R.string.pref_section_ai_title,
-        ),
-      )
-      add(
-        SearchablePreference(
-          titleRes = R.string.pref_ai_provider_title,
-          summary = "Choose OpenCode, Groq, OpenAI, Anthropic, OpenRouter, or Together",
-          keywords =
-            listOf(
-              "provider",
-              "opencode",
-              "groq",
-              "openai",
-              "anthropic",
-              "together",
-              "openrouter",
-              "local",
-              "offline",
-              "api",
-            ),
-          category = "AI",
-          screen = AiIntegrationScreen,
-        ),
-      )
-      add(
-        SearchablePreference(
-          titleRes = R.string.search_api_key_config_title,
-          summary = "Enter and verify your AI provider API key",
-          keywords = listOf("api key", "key", "authentication", "token", "verify", "opencode", "groq", "openai"),
-          category = "AI",
-          screen = AiIntegrationScreen,
-        ),
-      )
-      add(
-        SearchablePreference(
-          titleRes = R.string.search_ai_model_selection_title,
-          summary = "Fetch and select which AI model to use",
-          keywords = listOf("model", "llm", "opencode", "gpt", "claude", "mixtral", "deepseek", "selection"),
-          category = "AI",
-          screen = AiIntegrationScreen,
-        ),
-      )
-      add(
-        SearchablePreference(
-          titleRes = R.string.pref_ai_rename_title,
-          summary = "Use AI to generate clean filenames for bulk rename operations",
-          keywords = listOf("rename", "bulk", "filename", "clean", "ai", "organize"),
-          category = "AI",
-          screen = AiIntegrationScreen,
-        ),
-      )
-      add(
-        SearchablePreference(
-          titleRes = R.string.pref_ai_search_title,
-          summary = "Auto-format video titles for Wyzie/SubHub subtitle search",
-          keywords = listOf("subtitle", "search", "format", "wyzie", "subhub", "title", "ai"),
-          category = "AI",
-          screen = AiIntegrationScreen,
-        ),
-      )
-      add(
-        SearchablePreference(
-          titleRes = R.string.search_stt_title,
-          summary = "Configure STT provider, real-time model, audio language, and output format",
-          keywords =
-            listOf(
-              "speech",
-              "stt",
-              "transcription",
-              "whisper",
-              "audio",
-              "language",
-              "voice",
-              "speech to text",
-            ),
-          category = "AI",
-          screen = AiIntegrationScreen,
-        ),
-      )
-      add(
-        SearchablePreference(
-          titleRes = R.string.pref_translation_section,
-          summary = "Translate external subtitles using AI with auto-translate target languages",
-          keywords = listOf("translation", "translate", "subtitle", "language", "auto", "target"),
-          category = "AI",
-          screen = AiIntegrationScreen,
-        ),
-      )
-      add(
-        SearchablePreference(
-          titleRes = R.string.search_custom_ai_prompts_title,
-          summary = "Override default instructions for rename, translation, and formatting tasks",
-          keywords = listOf("prompt", "custom", "instructions", "override", "rename", "translate", "format"),
-          category = "AI",
-          screen = AiIntegrationScreen,
-        ),
-      )
+
 
       // Settings added after the original catalog. Keep route metadata beside each entry so
       // search coverage and exact lazy-list navigation cannot drift independently.
@@ -1613,14 +1488,7 @@ object SearchablePreferences {
         anchorItemIndex = 5,
         SearchEntrySpec(R.string.pref_mpv_conf_overrides_title, listOf("mpv", "config", "override", "ownership")),
       )
-      if (!app.video.player.BuildConfig.IS_PLAY_STORE_BUILD) {
-        addSearchEntries(
-          category = "Network",
-          screen = NetworkConfigurationPreferencesScreen,
-          anchorItemIndex = 1,
-          SearchEntrySpec(R.string.pref_enable_p2p_streaming_title, listOf("p2p", "torrent", "streaming", "enable")),
-        )
-      }
+
       addSearchEntries(
         category = "Advanced",
         screen = CustomButtonScreen,
@@ -1628,57 +1496,7 @@ object SearchablePreferences {
         SearchEntrySpec(R.string.pref_custom_buttons_title, listOf("custom", "buttons", "lua", "player", "script"), R.string.pref_custom_lua_title),
       )
 
-      if (app.video.player.BuildConfig.ENABLE_YTDLP) {
-        addSearchEntries(
-          category = "Network",
-          screen = NetworkConfigurationPreferencesScreen,
-          anchorItemIndex = 0,
-          SearchEntrySpec(R.string.ui_download_media_subtitles, listOf("yt-dlp", "subtitle", "download", "manual")),
-          SearchEntrySpec(R.string.ui_include_auto_generated_subtitles, listOf("yt-dlp", "subtitle", "automatic", "captions", "youtube")),
-          SearchEntrySpec(R.string.ytdlp_playlist_behavior, listOf("yt-dlp", "playlist", "video", "all entries")),
-        )
-      }
 
-      addSearchEntries(
-        category = "AI",
-        screen = AiIntegrationScreen,
-        anchorItemIndex = 0,
-        SearchEntrySpec(R.string.pref_ai_enabled_title, listOf("ai", "enable", "disable", "features")),
-        SearchEntrySpec(R.string.pref_stt_title, listOf("speech", "text", "realtime", "subtitle", "transcription")),
-        SearchEntrySpec(R.string.pref_stt_output_format_title, listOf("speech", "text", "subtitle", "srt", "vtt")),
-        SearchEntrySpec(R.string.pref_stt_provider_title, listOf("speech", "text", "provider", "groq", "openai")),
-        SearchEntrySpec(R.string.pref_audio_language_title, listOf("speech", "audio", "language", "detect")),
-        SearchEntrySpec(R.string.pref_enable_translation_title, listOf("subtitle", "translation", "enable", "language")),
-        SearchEntrySpec(R.string.ui_auto_translate_target_languages, listOf("subtitle", "translation", "target", "languages"), R.string.pref_translation_section),
-        SearchEntrySpec(R.string.pref_override_instructions_title, listOf("ai", "prompt", "override", "instructions", "custom")),
-      )
-
-      addSearchEntries(
-        category = "Media Servers",
-        screen = MediaServersPreferencesScreen,
-        anchorItemIndex = 1,
-        SearchEntrySpec(R.string.pref_jellyfin_server_management, listOf("jellyfin", "server", "remote", "streaming", "account")),
-      )
-      addSearchEntries(
-        category = "Media Servers",
-        screen = MediaServersPreferencesScreen,
-        anchorItemIndex = 2,
-        SearchEntrySpec(R.string.pref_seerr_server_management, listOf("seerr", "jellyseerr", "overseerr", "requests", "server", "api")),
-      )
-      addSearchEntries(
-        category = "Media Servers",
-        screen = MediaServersPreferencesScreen,
-        anchorItemIndex = 3,
-        SearchEntrySpec(R.string.pref_navidrome_title, listOf("navidrome", "subsonic", "opensubsonic", "music", "server", "stream", "audio")),
-        SearchEntrySpec(R.string.pref_navidrome_add_server, listOf("navidrome", "subsonic", "connect", "server", "music"), R.string.pref_navidrome_title),
-      )
-      addSearchEntries(
-        category = "Media Servers",
-        screen = MediaServersPreferencesScreen,
-        anchorItemIndex = 4,
-        SearchEntrySpec(R.string.pref_audiobookshelf_title, listOf("audiobookshelf", "abs", "audiobook", "audiobooks", "server", "stream", "listening", "book")),
-        SearchEntrySpec(R.string.pref_audiobookshelf_add_server, listOf("audiobookshelf", "abs", "connect", "server", "token", "login"), R.string.pref_audiobookshelf_title),
-      )
 
       addSearchEntries(
         category = "Appearance",
@@ -1709,57 +1527,7 @@ object SearchablePreferences {
         SearchEntrySpec(R.string.app_icon_use_wallpaper_colors, listOf("app", "icon", "wallpaper", "colors"), R.string.pref_app_icon_title),
         SearchEntrySpec(R.string.app_icon_create_custom_shortcut, listOf("app", "icon", "custom", "home", "shortcut"), R.string.pref_app_icon_title),
       )
-      addSearchEntries(
-        category = "Appearance",
-        screen = BackgroundAnimationPreferencesScreen,
-        anchorItemIndex = 0,
-        SearchEntrySpec(R.string.bg_pref_title, listOf("background", "animation", "effects", "particles")),
-        SearchEntrySpec(R.string.bg_parallax_title, listOf("background", "parallax", "tilt", "motion")),
-        SearchEntrySpec(R.string.bg_over_wallpaper_title, listOf("background", "animation", "wallpaper", "overlay")),
-        SearchEntrySpec(R.string.bg_seasonal_title, listOf("background", "seasonal", "holiday", "festival", "halloween", "diwali")),
-        SearchEntrySpec(R.string.bg_interval_title, listOf("background", "random", "shuffle", "interval", "daily"), R.string.bg_random),
-      )
-      BackgroundType.PICKABLE.forEach { type ->
-        add(
-          SearchablePreference(
-            titleRes = type.labelRes,
-            keywords = listOf("background", "animation", "effect"),
-            category = "Appearance",
-            screen = BackgroundAnimationPreferencesScreen,
-          ),
-        )
-      }
-      RandomInterval.entries.forEach { interval ->
-        add(
-          SearchablePreference(
-            titleRes = interval.labelRes,
-            keywords = listOf("background", "random", "interval", "shuffle"),
-            category = "Appearance",
-            screen = BackgroundAnimationPreferencesScreen,
-            targetRes = R.string.bg_random,
-          ),
-        )
-      }
-      addSearchEntries(
-        category = "Audio",
-        screen = AudioPreferencesScreen,
-        anchorItemIndex = 1,
-        SearchEntrySpec(R.string.pref_music_player_switch_title, listOf("music", "player", "source", "local", "jellyfin", "navidrome", "audiobooks")),
-        SearchEntrySpec(R.string.pref_lyrics_auto_fetch_online, listOf("lyrics", "online", "automatic", "fetch", "local")),
-        SearchEntrySpec(R.string.pref_paxsenix_api_key, listOf("lyrics", "paxsenix", "api", "key", "translation")),
-      )
-      addSearchEntries(
-        category = "AI",
-        screen = AiIntegrationScreen,
-        anchorItemIndex = 15,
-        SearchEntrySpec(R.string.pref_custom_rename_prompt_label, listOf("ai", "custom", "rename", "prompt"), R.string.pref_override_instructions_title),
-        SearchEntrySpec(R.string.pref_custom_translation_prompt_label, listOf("ai", "custom", "translation", "prompt"), R.string.pref_override_instructions_title),
-        SearchEntrySpec(R.string.pref_custom_format_prompt_label, listOf("ai", "custom", "subtitle", "format", "prompt"), R.string.pref_override_instructions_title),
-        SearchEntrySpec(R.string.ui_real_time_model, listOf("speech", "transcription", "stt", "model"), R.string.search_stt_title),
-        SearchEntrySpec(R.string.pref_verify_key, listOf("ai", "api", "key", "verify"), R.string.search_api_key_config_title),
-        SearchEntrySpec(R.string.pref_fetch_models, listOf("ai", "model", "fetch"), R.string.search_ai_model_selection_title),
-        SearchEntrySpec(R.string.pref_check_model_access, listOf("ai", "model", "verify", "access"), R.string.search_ai_model_selection_title),
-      )
+
       addSearchEntries(
         category = "Appearance",
         screen = PlayerControlsPreferencesScreen,
@@ -1820,18 +1588,7 @@ object SearchablePreferences {
         SearchEntrySpec(R.string.pref_folders_add_marker_title, listOf("hidden", "marker", "add", "nomedia"), R.string.pref_hidden_scan_per_mode_title),
         SearchEntrySpec(R.string.pref_folders_marker_name, listOf("hidden", "marker", "name", "nomedia"), R.string.pref_hidden_scan_per_mode_title),
       )
-      addSearchEntries(
-        category = "Media Servers",
-        screen = MediaServersPreferencesScreen,
-        anchorItemIndex = 1,
-        SearchEntrySpec(R.string.pref_jellyfin_title, listOf("jellyfin", "server", "login"), R.string.pref_jellyfin_server_management),
-        SearchEntrySpec(R.string.pref_jellyfin_add_server, listOf("jellyfin", "add", "server"), R.string.pref_jellyfin_server_management),
-        SearchEntrySpec(R.string.pref_jellyfin_add_another_server, listOf("jellyfin", "another", "server"), R.string.pref_jellyfin_server_management),
-        SearchEntrySpec(R.string.pref_seerr_title, listOf("seerr", "jellyseerr", "overseerr", "server"), R.string.pref_seerr_server_management),
-        SearchEntrySpec(R.string.pref_seerr_add_server, listOf("seerr", "add", "server"), R.string.pref_seerr_server_management),
-        SearchEntrySpec(R.string.pref_navidrome_add_another_server, listOf("navidrome", "add", "server"), R.string.pref_navidrome_title),
-        SearchEntrySpec(R.string.pref_audiobookshelf_add_another_server, listOf("audiobookshelf", "add", "server"), R.string.pref_audiobookshelf_title),
-      )
+
       addSearchEntries(
         category = "Folders",
         screen = SecureFolderSettingsScreen,
@@ -1844,16 +1601,7 @@ object SearchablePreferences {
         SearchEntrySpec(R.string.secure_folder_hide_settings, listOf("secure", "folder", "hide", "entry")),
         SearchEntrySpec(R.string.secure_folder_destroy_title, listOf("secure", "folder", "destroy", "delete", "reset")),
       )
-      if (app.video.player.BuildConfig.ENABLE_YTDLP) {
-        addSearchEntries(
-          category = "Network",
-          screen = NetworkConfigurationPreferencesScreen,
-          anchorItemIndex = 0,
-          SearchEntrySpec(R.string.ui_yt_dlp_streaming, listOf("yt-dlp", "streaming", "install"), R.string.ui_yt_dlp_manager),
-          SearchEntrySpec(R.string.ui_release_channel, listOf("yt-dlp", "release", "stable", "nightly", "update")),
-          SearchEntrySpec(R.string.ytdlp_subtitles_language, listOf("yt-dlp", "subtitles", "language")),
-        )
-      }
+
       // About
       add(
         SearchablePreference(
@@ -1961,24 +1709,7 @@ object SearchablePreferences {
         category = "Folders",
         screen = FoldersPreferencesScreen,
       ),
-      SearchablePreference(
-        titleRes = R.string.pref_section_ai_title,
-        summaryRes = R.string.pref_section_ai_summary,
-        keywords =
-          listOf(
-            "enable provider opencode groq openai anthropic openrouter together api key model verify",
-            "rename subtitle format translation speech text stt realtime whisper language output prompt custom auto translate",
-          ),
-        category = "AI",
-        screen = AiIntegrationScreen,
-      ),
-      SearchablePreference(
-        titleRes = R.string.pref_media_servers_title,
-        summaryRes = R.string.pref_media_servers_summary,
-        keywords = listOf("jellyfin seerr jellyseerr overseerr media server streaming remote music player"),
-        category = "Media Servers",
-        screen = MediaServersPreferencesScreen,
-      ),
+
       SearchablePreference(
         titleRes = R.string.pref_advanced,
         keywords =
@@ -2023,12 +1754,7 @@ object SearchablePreferences {
       R.string.pref_paxsenix_api_key,
     )
 
-  private val excludedSearchScreens: Set<Screen> =
-    setOf(
-      NetworkConfigurationPreferencesScreen,
-      MediaServersPreferencesScreen,
-      AiIntegrationScreen,
-    )
+  private val excludedSearchScreens: Set<Screen> = emptySet()
 
   // Play builds omit AI, P2P and lyrics translation, so their settings must not surface.
   // Network, Media Servers, and AI Integration sections are removed from settings.

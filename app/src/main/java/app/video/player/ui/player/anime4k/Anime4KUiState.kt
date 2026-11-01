@@ -27,5 +27,5 @@ data class Anime4KUiState(
     get() = enableIn4k || !isHighResolution
 
   val isAvailable: Boolean
-    get() = isEnabled && (!usesGpuNext || usesVulkan)
+    get() = false
 }

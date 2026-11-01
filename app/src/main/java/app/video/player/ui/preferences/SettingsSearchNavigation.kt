@@ -185,7 +185,7 @@ private val settingsSearchListAnchors: Map<Screen, List<SettingsSearchListAnchor
         SettingsSearchListAnchor(titleRes = R.string.pref_decoder_vulkan_experimental_title, itemIndex = 1),
         SettingsSearchListAnchor(titleRes = R.string.pref_decoder_debanding_title, itemIndex = 1),
         SettingsSearchListAnchor(titleRes = R.string.pref_decoder_yuv420p_title, itemIndex = 1),
-        SettingsSearchListAnchor(titleRes = R.string.pref_anime4k_title, itemIndex = 1),
+
       ),
     AudioPreferencesScreen to
       listOf(
@@ -227,24 +227,7 @@ private val settingsSearchListAnchors: Map<Screen, List<SettingsSearchListAnchor
         SettingsSearchListAnchor(titleRes = R.string.pref_preferred_encodings_title, itemIndex = 5),
         SettingsSearchListAnchor(titleRes = R.string.pref_subtitles_clear_downloads, itemIndex = 5),
       ),
-    AiIntegrationScreen to
-      listOf(
-        SettingsSearchListAnchor(titleRes = R.string.pref_section_ai_title, itemIndex = 0),
-        SettingsSearchListAnchor(titleRes = R.string.pref_ai_provider_title, itemIndex = 3),
-        SettingsSearchListAnchor(titleRes = R.string.pref_ai_enabled_title, itemIndex = 1),
-        SettingsSearchListAnchor(titleRes = R.string.search_api_key_config_title, itemIndex = 4),
-        SettingsSearchListAnchor(titleRes = R.string.search_ai_model_selection_title, itemIndex = 6),
-        SettingsSearchListAnchor(titleRes = R.string.pref_ai_rename_title, itemIndex = 9),
-        SettingsSearchListAnchor(titleRes = R.string.pref_ai_search_title, itemIndex = 9),
-        SettingsSearchListAnchor(titleRes = R.string.search_stt_title, itemIndex = 10),
-        SettingsSearchListAnchor(titleRes = R.string.pref_stt_title, itemIndex = 11),
-        SettingsSearchListAnchor(titleRes = R.string.pref_stt_output_format_title, itemIndex = 11),
-        SettingsSearchListAnchor(titleRes = R.string.pref_stt_provider_title, itemIndex = 11),
-        SettingsSearchListAnchor(titleRes = R.string.pref_audio_language_title, itemIndex = 11),
-        SettingsSearchListAnchor(titleRes = R.string.pref_translation_section, itemIndex = 12),
-        SettingsSearchListAnchor(titleRes = R.string.pref_enable_translation_title, itemIndex = 13),
-        SettingsSearchListAnchor(titleRes = R.string.search_custom_ai_prompts_title, itemIndex = 14),
-      ),
+
     AdvancedPreferencesScreen to
       listOf(
         SettingsSearchListAnchor(titleRes = R.string.pref_advanced, itemIndex = 8),
@@ -267,23 +250,7 @@ private val settingsSearchListAnchors: Map<Screen, List<SettingsSearchListAnchor
         SettingsSearchListAnchor(titleRes = R.string.pref_debug_log_size_title, itemIndex = 13),
         SettingsSearchListAnchor(titleRes = R.string.pref_advanced_dump_logs_title, itemIndex = 13),
       ),
-    MediaServersPreferencesScreen to
-      listOf(
-        SettingsSearchListAnchor(titleRes = R.string.pref_media_servers_title, itemIndex = 0),
-        SettingsSearchListAnchor(titleRes = R.string.pref_jellyfin_server_management, itemIndex = 1),
-        SettingsSearchListAnchor(titleRes = R.string.pref_seerr_server_management, itemIndex = 3),
-        SettingsSearchListAnchor(titleRes = R.string.pref_navidrome_title, itemIndex = 5),
-        SettingsSearchListAnchor(titleRes = R.string.pref_audiobookshelf_title, itemIndex = 7),
-      ),
-    NetworkConfigurationPreferencesScreen to
-      listOf(
-        SettingsSearchListAnchor(titleRes = R.string.ui_yt_dlp_manager, itemIndex = 0),
-        SettingsSearchListAnchor(titleRes = R.string.ui_release_channel, itemIndex = 0),
-        SettingsSearchListAnchor(titleRes = R.string.ytdlp_subtitles_language, itemIndex = 0),
-        SettingsSearchListAnchor(titleRes = R.string.ytdlp_playlist_behavior, itemIndex = 0),
-        SettingsSearchListAnchor(titleRes = R.string.pref_section_p2p_streaming, itemIndex = 0),
-        SettingsSearchListAnchor(titleRes = R.string.pref_enable_p2p_streaming_title, itemIndex = 0),
-      ),
+
   )
 
 object SettingsSearchNavigation {

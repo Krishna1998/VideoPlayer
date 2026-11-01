@@ -67,7 +67,6 @@ import app.video.player.ui.preferences.components.thumbnailParallelismLabel
 import app.video.player.domain.thumbnail.maxThumbnailParallelism
 import app.video.player.ui.theme.DarkMode
 import app.video.player.ui.theme.CustomThemeDefinition
-import app.video.player.ui.theme.WallpaperDerivedThemeName
 import app.video.player.ui.theme.LocalThemeTransitionState
 import app.video.player.ui.utils.LocalBackStack
 import app.video.player.ui.utils.navigateTo
@@ -130,14 +129,7 @@ object AppearancePreferencesScreen : Screen {
     val thumbnailMode = storedThumbnailMode
     val customThemes = remember(customTheme) { CustomThemeDefinition.parseCollection(customTheme) }
     val selectedCustomTheme = customThemes.firstOrNull { it.name == selectedCustomThemeName }
-    // The wallpaper-derived theme is managed from the wallpaper editor, so it's hidden from the picker.
-    val pickerThemes = remember(customThemes) { customThemes.filterNot { it.name == WallpaperDerivedThemeName } }
-    val selectedThemeLabel =
-      if (selectedCustomTheme?.name == WallpaperDerivedThemeName) {
-        stringResource(R.string.pref_appearance_custom_wallpaper_title)
-      } else {
-        selectedCustomTheme?.name ?: stringResource(appTheme.titleRes)
-      }
+    val selectedThemeLabel = selectedCustomTheme?.name ?: stringResource(appTheme.titleRes)
 
     // Determine if we're in dark mode for theme preview
     val isDarkMode =
@@ -319,7 +311,7 @@ object AppearancePreferencesScreen : Screen {
                   val amoledMode by preferences.amoledMode.collectAsState()
                   ThemePicker(
                     currentTheme = appTheme,
-                    customThemes = pickerThemes,
+                    customThemes = customThemes,
                     selectedCustomThemeName = selectedCustomThemeName,
                     isDarkMode = isDarkMode,
                     onThemeSelected = { theme, position ->

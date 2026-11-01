@@ -4,6 +4,18 @@ These notes are written in plain English and focus on what changed for real use.
 
 ## Unreleased
 
+## 1.0.5
+
+- Release version 1.0.5.
+- Reduced app size and streamlined preferences:
+  - Removed Anime4K upscaling shaders and manager.
+  - Removed custom wallpaper functionality, editor, presets, and background drawing.
+  - Removed background animations in Appearance.
+  - Removed screenshots and snapshots from player controls and frame navigation sheet.
+  - Removed Network section, Media Servers section, TV Remote section, and AI Integration from Settings.
+  - Removed Jellyfin navigation tab from main browser tabs.
+  - Removed Privacy Policy, Support, and Updates from About screen.
+
 ## 1.0.4
 
 - Release version 1.0.4.

@@ -100,7 +100,7 @@ import app.video.player.ui.icons.Icons
 import app.video.player.ui.player.ytdlp.YtdlpInstallPromptDialog
 import app.video.player.ui.player.ytdlp.YtdlpInstallProgressDialog
 import app.video.player.ui.player.ytdlp.YtdlpManager
-import app.video.player.ui.preferences.NetworkConfigurationPreferencesScreen
+import app.video.player.ui.preferences.PreferencesScreen
 import app.video.player.ui.torrent.TorrentSelectionInput
 import app.video.player.ui.torrent.TorrentSelectionScreen
 import app.video.player.ui.torrent.TorrentSelectionViewModel
@@ -621,7 +621,7 @@ object NetworkStreamingScreen : Screen {
         onConfigure = {
           showYtdlpInstallPrompt = false
           pendingYtdlpUrl = null
-          backstack.navigateTo(NetworkConfigurationPreferencesScreen)
+          backstack.navigateTo(PreferencesScreen)
         },
         onDismiss = {
           showYtdlpInstallPrompt = false

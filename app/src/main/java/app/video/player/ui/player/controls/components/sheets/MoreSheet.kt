@@ -298,45 +298,7 @@ fun MoreSheet(
         }
       }
 
-      // Standard Anime4K needs legacy gpu or gpu-next with Vulkan.
-      if (anime4KUiState.isAvailable) {
-        Text(
-          text = stringResource(R.string.anime4k_mode_title),
-          style = MaterialTheme.typography.titleMedium,
-          color = MaterialTheme.colorScheme.primary,
-        )
 
-        if (anime4KUiState.isHighResolution && !anime4KUiState.enableIn4k) {
-          Text(
-            text =
-              androidx.compose.ui.res.stringResource(
-                app.video.player.R.string.ui_not_available_for_4k_8k_video,
-              ),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.error,
-            modifier = Modifier.padding(bottom = 4.dp),
-          )
-        }
-
-        LazyRow(
-          horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.smaller),
-        ) {
-          items(Anime4KManager.Mode.entries, key = { it.name }) { mode ->
-            FilterChip(
-              label = { Text(stringResource(mode.titleRes)) },
-              selected = anime4KUiState.selectedMode == mode.name,
-              enabled = anime4KEnabled && (anime4KUiState.allowHighRes || mode == Anime4KManager.Mode.OFF),
-              leadingIcon = null,
-              colors = androidx.compose.material3.FilterChipDefaults.filterChipColors(
-                  containerColor = playerSheetSelectionColor(false),
-                  selectedContainerColor = playerSheetSelectionColor(true),
-                  selectedLabelColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                ),
-              onClick = { onAnime4KModeSelected(mode) },
-            )
-          }
-        }
-      }
     }
   }
 }

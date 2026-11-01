@@ -186,7 +186,6 @@ object MainScreen : Screen, TvEdgeToEdgeScreen {
     HOME,
     MUSIC,
     NETWORK,
-    JELLYFIN,
     PROFILE,
   }
 
@@ -242,7 +241,6 @@ object MainScreen : Screen, TvEdgeToEdgeScreen {
     val showMusicTab by appearancePreferences.showMusicTab.collectAsState()
     val showProfileTab by appearancePreferences.showProfileTab.collectAsState()
     val showNetworkTab by appearancePreferences.showNetworkTab.collectAsState()
-    val showJellyfinTab by appearancePreferences.showJellyfinTab.collectAsState()
     val liquidGlassEnabled by appearancePreferences.liquidGlassEnabled.collectAsState()
     val legacyNavigationBar by appearancePreferences.legacyNavigationBar.collectAsState()
     val progressiveNavigationBlur by appearancePreferences.progressiveNavigationBlur.collectAsState()
@@ -268,12 +266,11 @@ object MainScreen : Screen, TvEdgeToEdgeScreen {
 
     val bottomNavigationOrder by appearancePreferences.bottomNavigationOrder.collectAsState()
     val visibleTabs =
-      remember(showMusicTab, showProfileTab, showNetworkTab, showJellyfinTab, bottomNavigationOrder) {
+      remember(showMusicTab, showProfileTab, showNetworkTab, bottomNavigationOrder) {
         mainNavigationTabs(
           showMusic = showMusicTab,
           showProfile = showProfileTab,
           showNetwork = showNetworkTab,
-          showJellyfin = showJellyfinTab,
           order = bottomNavigationOrder,
         )
       }
@@ -666,7 +663,7 @@ object MainScreen : Screen, TvEdgeToEdgeScreen {
                             )
                             androidx.compose.material3.FilledTonalButton(
                               onClick = {
-                                backStack.navigateTo(app.video.player.ui.preferences.MediaServersPreferencesScreen)
+                                backStack.navigateTo(app.video.player.ui.preferences.PreferencesScreen)
                               },
                             ) {
                               Text(stringResource(R.string.generic_configure))
@@ -724,7 +721,7 @@ object MainScreen : Screen, TvEdgeToEdgeScreen {
                             }
                             androidx.compose.material3.TextButton(
                               onClick = {
-                                backStack.navigateTo(app.video.player.ui.preferences.MediaServersPreferencesScreen)
+                                backStack.navigateTo(app.video.player.ui.preferences.PreferencesScreen)
                               },
                             ) {
                               Text(stringResource(R.string.generic_configure))
@@ -779,7 +776,7 @@ object MainScreen : Screen, TvEdgeToEdgeScreen {
                             )
                             androidx.compose.material3.FilledTonalButton(
                               onClick = {
-                                backStack.navigateTo(app.video.player.ui.preferences.MediaServersPreferencesScreen)
+                                backStack.navigateTo(app.video.player.ui.preferences.PreferencesScreen)
                               },
                             ) {
                               Text(stringResource(R.string.generic_configure))
@@ -811,7 +808,6 @@ object MainScreen : Screen, TvEdgeToEdgeScreen {
                   }
                 }
                 MainTab.NETWORK -> NetworkStreamingScreen.Content()
-                MainTab.JELLYFIN -> app.video.player.ui.browser.jellyfin.JellyfinContent(viewModel = jellyfinViewModel)
                 MainTab.PROFILE -> app.video.player.ui.browser.profile.ProfileScreen.Content()
               }
             }
@@ -1278,7 +1274,6 @@ internal fun mainNavigationLabel(tab: MainScreen.MainTab): String =
     MainScreen.MainTab.HOME -> R.string.ui_home
     MainScreen.MainTab.MUSIC -> R.string.ui_music
     MainScreen.MainTab.NETWORK -> R.string.ui_network
-    MainScreen.MainTab.JELLYFIN -> R.string.ui_jellyfin
     MainScreen.MainTab.PROFILE -> R.string.ui_profile
   })
 
@@ -1335,24 +1330,14 @@ internal fun MainTabIcon(
     MainScreen.MainTab.HOME -> Icons.RoundedFilled.Home
     MainScreen.MainTab.MUSIC -> Icons.RoundedFilled.Audiotrack
     MainScreen.MainTab.NETWORK -> Icons.RoundedFilled.BringYourOwnIp
-    MainScreen.MainTab.JELLYFIN -> null
     MainScreen.MainTab.PROFILE -> Icons.RoundedFilled.AccountCircle
   }
-  if (icon == null) {
-    androidx.compose.material3.Icon(
-      painter = painterResource(R.drawable.ic_jellyfin),
-      contentDescription = contentDescription,
-      tint = tint,
-      modifier = Modifier.size(iconSize),
-    )
-  } else {
-    Icon(
-      icon,
-      contentDescription = contentDescription,
-      tint = tint,
-      modifier = Modifier.size(iconSize),
-    )
-  }
+  Icon(
+    icon,
+    contentDescription = contentDescription,
+    tint = tint,
+    modifier = Modifier.size(iconSize),
+  )
 }
 
 private val MainNavigationIconSize = 28.dp
@@ -1370,14 +1355,12 @@ internal fun mainNavigationTabs(
   showMusic: Boolean,
   showProfile: Boolean,
   showNetwork: Boolean,
-  showJellyfin: Boolean,
   order: List<String> = emptyList(),
 ): List<MainScreen.MainTab> {
   val available = buildList {
     add(MainScreen.MainTab.HOME)
     if (showMusic) add(MainScreen.MainTab.MUSIC)
     if (showNetwork) add(MainScreen.MainTab.NETWORK)
-    if (showJellyfin) add(MainScreen.MainTab.JELLYFIN)
     if (showProfile) add(MainScreen.MainTab.PROFILE)
   }
   val byName = available.associateBy { it.name }
