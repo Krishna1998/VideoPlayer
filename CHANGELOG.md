@@ -15,6 +15,8 @@ These notes are written in plain English and focus on what changed for real use.
   - Removed Network section, Media Servers section, TV Remote section, and AI Integration from Settings.
   - Removed Jellyfin navigation tab from main browser tabs.
   - Removed Privacy Policy, Support, and Updates from About screen.
+  - Fixed compile compatibility stubs for player post-filters.
+  - Set default app launcher icon to Crimson Black.
 
 ## 1.0.4
 
