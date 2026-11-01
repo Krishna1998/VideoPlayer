@@ -4,6 +4,11 @@ These notes are written in plain English and focus on what changed for real use.
 
 ## Unreleased
 
+## 1.0.7
+
+- Release version 1.0.7.
+- Updated seekbar position and duration/remaining timers font size to 13sp.
+
 ## 1.0.6
 
 - Release version 1.0.6.
