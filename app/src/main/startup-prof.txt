@@ -1,10 +1,10 @@
 # Only cold launcher entry points belong in the startup DEX layout. Playback is captured separately.
-Lapp/gyrolet/mpvrx/App;
-SLapp/gyrolet/mpvrx/App;-><init>()V
-SLapp/gyrolet/mpvrx/App;->onCreate()V
-Lapp/gyrolet/mpvrx/MainActivity;
-SLapp/gyrolet/mpvrx/MainActivity;->onCreate(Landroid/os/Bundle;)V
-Lapp/gyrolet/mpvrx/ui/browser/MainScreen;
-SLapp/gyrolet/mpvrx/ui/browser/MainScreen;->Content(**)**
-Lapp/gyrolet/mpvrx/ui/browser/folderlist/FolderListScreen;
-SLapp/gyrolet/mpvrx/ui/browser/folderlist/FolderListScreen;->Content(**)**
+Lapp/video/player/App;
+SLapp/video/player/App;-><init>()V
+SLapp/video/player/App;->onCreate()V
+Lapp/video/player/MainActivity;
+SLapp/video/player/MainActivity;->onCreate(Landroid/os/Bundle;)V
+Lapp/video/player/ui/browser/MainScreen;
+SLapp/video/player/ui/browser/MainScreen;->Content(**)**
+Lapp/video/player/ui/browser/folderlist/FolderListScreen;
+SLapp/video/player/ui/browser/folderlist/FolderListScreen;->Content(**)**

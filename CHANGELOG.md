@@ -4,6 +4,10 @@ These notes are written in plain English and focus on what changed for real use.
 
 ## Unreleased
 
+## 1.0.2
+
+- Release version 1.0.2.
+
 ## 1.0.1
 
 - Release version 1.0.1.

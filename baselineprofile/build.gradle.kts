@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-  namespace = "app.gyrolet.mpvrx.baselineprofile"
+  namespace = "app.video.player.baselineprofile"
   compileSdk = 37
 
   defaultConfig {

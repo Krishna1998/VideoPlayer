@@ -22,7 +22,7 @@ abstract class SmbRpcExceptionCompatibility : AsmClassVisitorFactory<Instrumenta
     ClassRemapper(nextClassVisitor, object : Remapper(Opcodes.ASM9) {
       override fun map(internalName: String): String =
         if (internalName == "java/rmi/UnmarshalException") {
-          "app/gyrolet/mpvrx/data/network/client/SmbRpcDecodeException"
+          "app/video/player/data/network/client/SmbRpcDecodeException"
         } else internalName
     })
 }
@@ -48,7 +48,7 @@ val sideloadDistributions = setOf("standard")
 // AGP cannot build an app bundle while ABI splits produce multiple APKs (issuetracker 402800800).
 val isBundleBuild =
   gradle.startParameter.taskNames.any { it.substringAfterLast(':').startsWith("bundle") }
-val releaseVersionCode = 101
+val releaseVersionCode = 102
 val versionCodeBandSize = 10_000
 val stableVersionCode = releaseVersionCode * versionCodeBandSize + (versionCodeBandSize - 1)
 val previewVersionCode =
@@ -83,21 +83,21 @@ androidComponents {
 }
 
 android {
-  namespace = "app.gyrolet.mpvrx"
+  namespace = "app.video.player"
   compileSdk = 37
   ndkVersion = "27.3.13750724"
 
   defaultConfig {
     manifestPlaceholders["measureApiKey"] = measureApiKey
     buildConfigField("boolean", "MEASURE_CONFIGURED", measureApiKey.isNotBlank().toString())
-    applicationId = "app.gyrolet.mpvrx"
+    applicationId = "app.video.player"
     minSdk = 26
     targetSdk = 36
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     // Stable occupies the top of its version band. Preview uses the next band's commit-count
     // offset, so Stable -> Preview -> newer Preview -> next Stable is always an Android upgrade.
     versionCode = stableVersionCode
-    versionName = "1.0.1"
+    versionName = "1.0.2"
 
     vectorDrawables {
       useSupportLibrary = true

@@ -20,6 +20,7 @@ local.properties
 *.ap_
 *.aab
 *.aar
+/VideoPlayer-*.zip
 
 # Release folders
 app/release/
