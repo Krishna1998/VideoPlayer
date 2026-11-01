@@ -77,6 +77,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import app.video.player.ui.preferences.components.AppListPreference as ListPreference
 import app.video.player.ui.preferences.components.AppPreference as Preference
+import app.video.player.ui.preferences.components.PreferenceAction
 import org.koin.compose.koinInject
 import java.io.File
 
@@ -611,6 +612,7 @@ object AdvancedPreferencesScreen : Screen {
                   }
                 },
                 onClick = { isConfirmDialogShown = true },
+                action = PreferenceAction.Dialog,
               )
               }
 
@@ -788,6 +790,7 @@ object AdvancedPreferencesScreen : Screen {
                   }
                 },
                 onClick = { isClearThumbsConfirmShown = true },
+                action = PreferenceAction.Dialog,
               )
               }
 

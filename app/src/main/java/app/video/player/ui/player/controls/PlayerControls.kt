@@ -135,6 +135,7 @@ import app.video.player.preferences.AiPreferences
 import app.video.player.preferences.AppearancePreferences
 import app.video.player.preferences.GesturePreferences
 import app.video.player.preferences.AudioPreferences
+import app.video.player.preferences.PlaybackControlsPlacement
 import app.video.player.preferences.PlayerButton
 import app.video.player.preferences.PlayerPreferences
 import app.video.player.preferences.allPlayerButtons
@@ -402,10 +403,10 @@ fun PlayerControls(
       liquidGlassInHdr = liquidGlassInHdr,
     )
   val forceDarkButtonBackground by appearancePreferences.forceDarkPlayerButtonsBackground.collectAsState()
-  val portraitPlaybackControlsPosition by
-    appearancePreferences.portraitPlaybackControlsPosition.collectAsState()
-  val landscapePlaybackControlsPosition by
-    appearancePreferences.landscapePlaybackControlsPosition.collectAsState()
+  val portraitPlaybackControlsPlacement by
+    appearancePreferences.portraitPlaybackControlsPlacement.collectAsState()
+  val landscapePlaybackControlsPlacement by
+    appearancePreferences.landscapePlaybackControlsPlacement.collectAsState()
   val portraitSeekbarPlacement by appearancePreferences.portraitSeekbarPlacement.collectAsState()
   val landscapeSeekbarPlacement by appearancePreferences.landscapeSeekbarPlacement.collectAsState()
   val playerButtonsBackgroundOpacity by appearancePreferences.playerButtonsBackgroundOpacity.collectAsState()
@@ -1123,8 +1124,8 @@ fun PlayerControls(
           val customButtonsPortraitRef = createRef()
 
           val playbackPosition =
-            if (isPortrait) portraitPlaybackControlsPosition else landscapePlaybackControlsPosition
-          val sharedLandscapeRow = !isPortrait && playbackPosition != PlaybackControlsPosition.Center
+            if (isPortrait) portraitPlaybackControlsPlacement else landscapePlaybackControlsPlacement
+          val sharedLandscapeRow = !isPortrait && playbackPosition != PlaybackControlsPlacement.Center
           val playbackGeometry = resolvePlaybackControlsGeometry(
             width = controlsWidth,
             spacing = spacing,
@@ -2086,7 +2087,7 @@ fun PlayerControls(
                 val horizontalMargin = if (isPortrait) spacing.large else spacing.medium
                 start.linkTo(parent.start, horizontalMargin)
                 end.linkTo(parent.end, horizontalMargin)
-                if (playbackPosition == PlaybackControlsPosition.Center) {
+                if (playbackPosition == PlaybackControlsPlacement.Center) {
                   top.linkTo(parent.top)
                   bottom.linkTo(parent.bottom)
                 } else {

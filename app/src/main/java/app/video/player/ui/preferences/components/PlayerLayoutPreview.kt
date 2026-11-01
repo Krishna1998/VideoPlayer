@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import app.video.player.R
 import app.video.player.preferences.AppearancePreferences
+import app.video.player.preferences.PlaybackControlsPlacement
 import app.video.player.preferences.PlayerButton
 import app.video.player.preferences.PlayerPreferences
 import app.video.player.preferences.SeekbarStyle
@@ -94,6 +95,9 @@ internal fun PlayerLayoutPreview(
   val opacity by appearance.playerButtonsBackgroundOpacity.collectAsState()
   val seekbarStyle by appearance.seekbarStyle.collectAsState()
   val glassEnabled by appearance.liquidGlassEnabled.collectAsState()
+  val playbackPreference =
+    if (region.isPortrait) appearance.portraitPlaybackControlsPlacement else appearance.landscapePlaybackControlsPlacement
+  val playbackControlsPlacement by playbackPreference.collectAsState()
   val wavy by koinInject<PlayerPreferences>().useWavySeekbar.collectAsState()
   val title = stringResource(region.titleRes)
   val configuration = LocalConfiguration.current
@@ -140,7 +144,7 @@ internal fun PlayerLayoutPreview(
                 PlayerControlsContentTheme {
                   PreviewScene(
                     region, topRightButtons, bottomRightButtons, bottomLeftButtons, portraitBottomButtons,
-                    preset, playlist, glassEnabled, seekbarStyle, wavy, sceneWidth,
+                    preset, playbackControlsPlacement, playlist, glassEnabled, seekbarStyle, wavy, sceneWidth,
                   )
                 }
               }
@@ -169,6 +173,7 @@ private fun PreviewScene(
   bottomLeftButtons: List<PlayerButton>,
   portraitBottomButtons: List<PlayerButton>,
   preset: VideoControlsLayoutPreset,
+  playbackControlsPlacement: PlaybackControlsPlacement,
   playlist: Boolean,
   glassEnabled: Boolean,
   seekbarStyle: SeekbarStyle,
@@ -179,10 +184,10 @@ private fun PreviewScene(
   val hasActions =
     if (region.isPortrait) portraitBottomButtons.isNotEmpty()
     else bottomRightButtons.isNotEmpty() || bottomLeftButtons.isNotEmpty()
-  val sharedLandscapeRow = !region.isPortrait && preset.playbackPosition != PlaybackControlsPosition.Center
+  val sharedLandscapeRow = !region.isPortrait && playbackControlsPlacement != PlaybackControlsPlacement.Center
   val geometry = resolvePlaybackControlsGeometry(sceneWidth, spacing, landscape = sharedLandscapeRow)
   val layout = resolveBottomControlsLayout(
-    preset.seekbarPlacement, hasActions, preset.playbackPosition, sharedLandscapeRow = sharedLandscapeRow,
+    preset.seekbarPlacement, hasActions, playbackControlsPlacement, sharedLandscapeRow = sharedLandscapeRow,
   )
   val highlightShape = MaterialTheme.shapes.medium
   val highlightColor = MaterialTheme.colorScheme.primary
@@ -222,7 +227,7 @@ private fun PreviewScene(
           )
         }
       }
-      if (!sharedLandscapeRow && preset.playbackPosition == PlaybackControlsPosition.Center) {
+      if (!sharedLandscapeRow && playbackControlsPlacement == PlaybackControlsPlacement.Center) {
         PreviewPlayback(playlist, geometry, Modifier.align(Alignment.Center))
       }
       Column(

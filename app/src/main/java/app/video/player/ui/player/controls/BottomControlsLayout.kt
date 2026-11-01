@@ -5,50 +5,23 @@ import androidx.annotation.StringRes
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.video.player.R
-import app.video.player.preferences.PlaybackControlsPosition
+import app.video.player.preferences.PlaybackControlsPlacement
 import app.video.player.preferences.SeekbarPlacement
 import app.video.player.ui.theme.Spacing
 
-internal enum class BottomSlot { Buttons, Playback, Seekbar }
+internal enum class BottomSlot { Buttons, Seekbar, Playback }
 
 internal enum class VideoControlsLayoutPreset(
   @StringRes val titleRes: Int,
   val seekbarPlacement: SeekbarPlacement,
-  val playbackPosition: PlaybackControlsPosition,
 ) {
-  CenterSeekbarAboveActions(
-    R.string.pref_layout_center_seekbar_above,
-    SeekbarPlacement.AboveButtons,
-    PlaybackControlsPosition.Center,
-  ),
-  CenterSeekbarBelowActions(
-    R.string.pref_layout_center_seekbar_below,
-    SeekbarPlacement.BelowButtons,
-    PlaybackControlsPosition.Center,
-  ),
-  PlaybackAboveSeekbar(
-    R.string.pref_layout_playback_above,
-    SeekbarPlacement.BelowButtons,
-    PlaybackControlsPosition.AboveSeekbar,
-  ),
-  PlaybackBelowSeekbar(
-    R.string.pref_layout_playback_below,
-    SeekbarPlacement.AboveButtons,
-    PlaybackControlsPosition.BelowSeekbar,
-  ),
+  SeekbarAbove(R.string.pref_layout_seekbar_above, SeekbarPlacement.AboveButtons),
+  SeekbarBelow(R.string.pref_layout_seekbar_below, SeekbarPlacement.BelowButtons),
   ;
 
   companion object {
-    // Keep existing saved keys; older three-row combinations collapse toward their playback position.
-    fun fromPreferences(
-      seekbarPlacement: SeekbarPlacement,
-      playbackPosition: PlaybackControlsPosition,
-    ): VideoControlsLayoutPreset = when (playbackPosition) {
-      PlaybackControlsPosition.AboveSeekbar -> PlaybackAboveSeekbar
-      PlaybackControlsPosition.BelowSeekbar -> PlaybackBelowSeekbar
-      PlaybackControlsPosition.Center ->
-        if (seekbarPlacement == SeekbarPlacement.AboveButtons) CenterSeekbarAboveActions else CenterSeekbarBelowActions
-    }
+    fun fromPreferences(seekbarPlacement: SeekbarPlacement): VideoControlsLayoutPreset =
+      if (seekbarPlacement == SeekbarPlacement.AboveButtons) SeekbarAbove else SeekbarBelow
   }
 }
 
@@ -79,7 +52,7 @@ internal fun resolvePlaybackControlsGeometry(
 internal fun resolveBottomControlsLayout(
   seekbarPlacement: SeekbarPlacement,
   hasButtons: Boolean = true,
-  playbackControlsPlacement: PlaybackControlsPosition = PlaybackControlsPosition.Center,
+  playbackControlsPlacement: PlaybackControlsPlacement = PlaybackControlsPlacement.Center,
   sharedLandscapeRow: Boolean = false,
 ): BottomControlsLayout =
   BottomControlsLayout(
@@ -95,9 +68,9 @@ internal fun resolveBottomControlsLayout(
         return@buildList
       }
       if (hasButtons && seekbarPlacement == SeekbarPlacement.AboveButtons) add(BottomSlot.Buttons)
-      if (playbackControlsPlacement == PlaybackControlsPosition.BelowSeekbar) add(BottomSlot.Playback)
+      if (playbackControlsPlacement == PlaybackControlsPlacement.BelowSeekbar) add(BottomSlot.Playback)
       add(BottomSlot.Seekbar)
-      if (playbackControlsPlacement == PlaybackControlsPosition.AboveSeekbar) add(BottomSlot.Playback)
+      if (playbackControlsPlacement == PlaybackControlsPlacement.AboveSeekbar) add(BottomSlot.Playback)
       if (hasButtons && seekbarPlacement == SeekbarPlacement.BelowButtons) add(BottomSlot.Buttons)
     },
   )

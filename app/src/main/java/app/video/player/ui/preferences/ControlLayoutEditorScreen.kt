@@ -54,6 +54,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import app.video.player.R
 import app.video.player.preferences.AppearancePreferences
+import app.video.player.preferences.PlaybackControlsPlacement
 import app.video.player.preferences.PlayerButton
 import app.video.player.preferences.allPlayerButtons
 import app.video.player.preferences.preference.Preference
@@ -119,19 +120,14 @@ data class ControlLayoutEditorScreen(
     val portraitButtons = remember(portraitState) { preferences.parseButtons(portraitState, mutableSetOf()) }
     val seekbarPreference =
       if (region.isPortrait) preferences.portraitSeekbarPlacement else preferences.landscapeSeekbarPlacement
-    val playbackPreference =
-      if (region.isPortrait) preferences.portraitPlaybackControlsPosition else preferences.landscapePlaybackControlsPosition
     val seekbarPlacement by seekbarPreference.collectAsState()
-    val storedPlaybackPlacement by playbackPreference.collectAsState()
-    val playbackControlsPlacement =
-      if (!region.isPortrait && storedPlaybackPlacement != PlaybackControlsPosition.Center) {
-        PlaybackControlsPosition.BelowSeekbar
-      } else storedPlaybackPlacement
-    val preset = VideoControlsLayoutPreset.fromPreferences(seekbarPlacement, playbackControlsPlacement)
+    val preset = VideoControlsLayoutPreset.fromPreferences(seekbarPlacement)
     val seekbarTitle = if (region.isPortrait) R.string.ui_portrait_seekbar_position else R.string.ui_landscape_seekbar_position
+    val playbackPreference =
+      if (region.isPortrait) preferences.portraitPlaybackControlsPlacement else preferences.landscapePlaybackControlsPlacement
+    val playbackControlsPlacement by playbackPreference.collectAsState()
     val playbackTitle =
       if (region.isPortrait) R.string.pref_layout_portrait_playback_position else R.string.pref_layout_landscape_playback_position
-    val withButtonRowLabel = stringResource(R.string.pref_layout_playback_with_buttons)
     var previewPlaylist by rememberSaveable(region) { mutableStateOf(true) }
     var portraitPreviewExpanded by rememberSaveable(region) { mutableStateOf(true) }
     val configuration = LocalConfiguration.current
@@ -259,25 +255,29 @@ data class ControlLayoutEditorScreen(
                 color = MaterialTheme.colorScheme.surfaceContainerLow,
               ) {
                 AppListPreference(
+                  modifier = Modifier.settingsSearchTarget(seekbarTitle),
+                  value = preset,
+                  onValueChange = { seekbarPreference.set(it.seekbarPlacement) },
+                  values = VideoControlsLayoutPreset.entries,
+                  valueToText = { AnnotatedString(stringResource(it.titleRes)) },
+                  title = { Text(stringResource(R.string.player_layout_preset_title)) },
+                  summary = { Text(stringResource(preset.titleRes)) },
+                )
+              }
+            }
+            item(key = "playback-placement", span = { GridItemSpan(maxLineSpan) }) {
+              androidx.compose.material3.Surface(
+                shape = MaterialTheme.shapes.large,
+                color = MaterialTheme.colorScheme.surfaceContainerLow,
+              ) {
+                AppListPreference(
                   modifier = Modifier.settingsSearchTarget(playbackTitle),
                   value = playbackControlsPlacement,
                   onValueChange = { playbackPreference.set(it) },
-                  values = if (region.isPortrait) PlaybackControlsPosition.entries else listOf(
-                    PlaybackControlsPosition.BelowSeekbar, PlaybackControlsPosition.Center,
-                  ),
-                  valueToText = {
-                    AnnotatedString(
-                      if (!region.isPortrait && it != PlaybackControlsPosition.Center) withButtonRowLabel
-                      else stringResource(it.titleRes),
-                    )
-                  },
+                  values = PlaybackControlsPlacement.entries,
+                  valueToText = { AnnotatedString(stringResource(it.titleRes)) },
                   title = { Text(stringResource(playbackTitle)) },
-                  summary = {
-                    Text(
-                      if (!region.isPortrait && playbackControlsPlacement != PlaybackControlsPosition.Center) withButtonRowLabel
-                      else stringResource(playbackControlsPlacement.titleRes),
-                    )
-                  },
+                  summary = { Text(stringResource(playbackControlsPlacement.titleRes)) },
                 )
               }
             }

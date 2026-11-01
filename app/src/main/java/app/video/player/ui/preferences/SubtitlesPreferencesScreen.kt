@@ -72,6 +72,7 @@ import kotlinx.serialization.Serializable
 import app.video.player.ui.preferences.components.AppListPreference as ListPreference
 import app.video.player.ui.preferences.components.AppPreference as Preference
 import app.video.player.ui.preferences.components.AppTextFieldPreference as TextFieldPreference
+import app.video.player.ui.preferences.components.PreferenceAction
 import org.koin.compose.koinInject
 
 @Serializable
@@ -426,6 +427,7 @@ object SubtitlesPreferencesScreen : Screen {
                 },
                 enabled = fontsFolder.isNotBlank(),
                 onClick = { reloadFontsFrom(fontsFolder) },
+                action = PreferenceAction.None,
               )
               }
 
