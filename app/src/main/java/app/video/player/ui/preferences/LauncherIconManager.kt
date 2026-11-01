@@ -143,8 +143,8 @@ internal class LauncherIcon(
       LauncherIcon(IconBackground.Wallpaper, IconMark.Black, R.mipmap.ic_launcher_wallpaper_black, R.style.Theme_mpvrx_Splash_WallpaperBlack),
     )
 
-    /** Black with the solid purple ribbon: what the app has always shipped with. */
-    val Default: LauncherIcon = of(IconBackground.Black, IconMark.Solid)!!
+    /** Crimson background with black mark: default app icon. */
+    val Default: LauncherIcon = of(IconBackground.Crimson, IconMark.Black)!!
 
     fun of(background: IconBackground, mark: IconMark): LauncherIcon? =
       entries.firstOrNull { it.background == background && it.mark == mark }
