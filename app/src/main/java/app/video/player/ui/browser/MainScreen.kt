@@ -794,10 +794,6 @@ object MainScreen : Screen, TvEdgeToEdgeScreen {
                         isMusicOnlyMode = true,
                       )
                     }
-                  } else if (musicSourceProvider == MusicSourceProvider.AUDIOBOOKS) {
-                    app.video.player.ui.browser.audiobooks.AudiobookLibraryContent(
-                      isMusicTabMode = true,
-                    )
                   } else {
                     MusicLibraryContent(
                       musicViewModel = musicLibraryViewModel,

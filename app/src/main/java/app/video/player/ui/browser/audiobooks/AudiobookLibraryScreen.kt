@@ -323,10 +323,8 @@ fun AudiobookLibraryContent(
           if (!search) query = ""
         },
         onSettingsClick = { backStack.navigateTo(PreferencesScreen) },
-        titleTrailing = if (isMusicTabMode) {
-          { app.video.player.ui.browser.music.MusicSourceDropdown() }
-        } else null,
-          preSearchActions = {
+        titleTrailing = null,
+        preSearchActions = {
             if (absState.servers.isNotEmpty()) {
               AppComboBoxChip(
                 options = AudiobookSourceProvider.entries,

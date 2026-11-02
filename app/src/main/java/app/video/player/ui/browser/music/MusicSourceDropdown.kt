@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import app.video.player.presentation.components.AppDropdownMenu as DropdownMenu
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -42,9 +41,6 @@ import app.video.player.repository.JellyfinRepository
 import app.video.player.repository.NavidromeRepository
 import app.video.player.ui.icons.Icon
 import app.video.player.ui.icons.Icons
-import app.video.player.ui.preferences.PreferencesScreen
-import app.video.player.ui.utils.LocalBackStack
-import app.video.player.ui.utils.navigateTo
 import org.koin.compose.koinInject
 
 /**
@@ -54,7 +50,6 @@ import org.koin.compose.koinInject
 fun MusicSourceDropdown(
   modifier: Modifier = Modifier,
 ) {
-  val backStack = LocalBackStack.current
   val mediaServerPreferences = koinInject<MediaServerPreferences>()
   val currentMusicSource by mediaServerPreferences.musicSourceProvider.collectAsState()
 
@@ -67,6 +62,10 @@ fun MusicSourceDropdown(
   val hasNavidrome = navidromeServers.isNotEmpty()
 
   var isDropdownOpen by remember { mutableStateOf(false) }
+
+  if (!hasJellyfin && !hasNavidrome) {
+    return
+  }
 
   Box(modifier = modifier) {
     Row(
@@ -93,14 +92,6 @@ fun MusicSourceDropdown(
             tint = MaterialTheme.colorScheme.primary,
           )
         }
-        MusicSourceProvider.AUDIOBOOKS -> {
-          Icon(
-            Icons.RoundedFilled.Audiobookshelf,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(26.dp),
-          )
-        }
         else -> {
           // Local music
         }
@@ -115,7 +106,7 @@ fun MusicSourceDropdown(
     }
 
 
-    val sourceCount = 2 + (if (hasJellyfin) 1 else 0) + (if (hasNavidrome) 1 else 0)
+    val sourceCount = 1 + (if (hasJellyfin) 1 else 0) + (if (hasNavidrome) 1 else 0)
     DropdownMenu(
       expanded = isDropdownOpen,
       onDismissRequest = { isDropdownOpen = false },
@@ -177,41 +168,6 @@ fun MusicSourceDropdown(
             },
           )
         }
-        MusicSourceOption(
-          label = stringResource(R.string.audiobooks_title),
-          selected = currentMusicSource == MusicSourceProvider.AUDIOBOOKS,
-          index = sourceCount - 1,
-          itemCount = sourceCount,
-          leadingIcon = {
-            Icon(
-              Icons.RoundedFilled.Audiobookshelf,
-              contentDescription = null,
-              tint = MaterialTheme.colorScheme.primary,
-              modifier = Modifier.size(20.dp),
-            )
-          },
-          onClick = {
-            mediaServerPreferences.musicSourceProvider.set(MusicSourceProvider.AUDIOBOOKS)
-            isDropdownOpen = false
-          },
-        )
-        HorizontalDivider(
-          modifier = Modifier.padding(vertical = 4.dp),
-          color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.45f),
-        )
-        MusicSourceOption(
-          label = stringResource(R.string.pref_media_servers_title),
-          selected = false,
-          index = 0,
-          itemCount = 1,
-          leadingIcon = {
-            Icon(Icons.RoundedFilled.Settings, contentDescription = null, modifier = Modifier.size(20.dp))
-          },
-          onClick = {
-            isDropdownOpen = false
-            backStack.navigateTo(PreferencesScreen)
-          },
-        )
       }
     }
   }

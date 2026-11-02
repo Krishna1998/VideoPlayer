@@ -15,8 +15,7 @@ import app.video.player.preferences.preference.getEnum
 enum class MusicSourceProvider(val id: String) {
   LOCAL("local"),
   JELLYFIN("jellyfin"),
-  NAVIDROME("navidrome"),
-  AUDIOBOOKS("audiobooks");
+  NAVIDROME("navidrome");
 
   companion object {
     fun fromId(id: String): MusicSourceProvider =

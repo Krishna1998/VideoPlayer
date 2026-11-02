@@ -546,9 +546,7 @@ fun MusicLibraryContent(
               onRenameClick = null,
               isSingleSelection = activeSelectionManager.isSingleSelection,
               onInfoClick = if (selectedTab == MusicTab.SONGS) showSongSelectionInfo else null,
-              titleTrailing = {
-                MusicSourceDropdown()
-              },
+              titleTrailing = null,
             )
           }
         }

@@ -14,6 +14,9 @@ These notes are written in plain English and focus on what changed for real use.
   - Retained Groq high-speed transcription engine for real-time speech-to-text (STT) and subtitle generation.
   - Restricted AI subtitle translation and speech-to-text language targets strictly to English and Hindi.
   - Enabled AI-powered bulk file renaming and online subtitle search title formatting.
+- **Music & Navigation:**
+  - Removed Audiobooks and Media Servers settings from the music source selector.
+  - Removed the music source dropdown toggle from the Music library header for a cleaner top bar.
 
 ## 1.0.9
 
