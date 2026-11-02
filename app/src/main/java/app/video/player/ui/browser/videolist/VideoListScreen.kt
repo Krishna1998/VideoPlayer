@@ -606,7 +606,7 @@ data class VideoListScreen(
           }
         },
         onDownscaleClick = { compressorDialogOpen.value = true },
-        onRenameClick = if (selectionManager.isSingleSelection) { { renameDialogOpen.value = true } } else null,
+        onRenameClick = { if (selectionManager.isSingleSelection) renameDialogOpen.value = true },
         onDeleteClick = { deleteDialogOpen.value = true },
         onAddToPlaylistClick = { addToPlaylistDialogOpen.value = true },
         onPinClick = {
