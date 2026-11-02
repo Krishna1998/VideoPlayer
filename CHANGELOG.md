@@ -7,6 +7,12 @@ These notes are written in plain English and focus on what changed for real use.
 ## 1.0.9
 
 - Release version 1.0.9.
+- **AI Integration Facility:**
+  - Added full AI Integration settings screen with multi-provider support (OpenCode Zen, Groq, OpenAI, Anthropic, OpenRouter, Together AI).
+  - Integrated AI model picker with free-tier tagging, token count info, and search filtering.
+  - Enabled AI subtitle translation with customizable prompts and multi-language auto-translate targets.
+  - Enabled real-time Speech-to-Text (STT) and subtitle generation from audio.
+  - Enabled AI-powered bulk file renaming and online subtitle search title formatting.
 - **Removed Torrent Facility:**
   - Completely removed BitTorrent streaming engine, libtorrent4j native binaries across all ABIs, `.torrent` and `magnet:` intent filters, and torrent picker screen.
   - Removed P2P streaming toggle and associated background services.
