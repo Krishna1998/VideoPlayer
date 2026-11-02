@@ -4507,7 +4507,7 @@ fun restartFromBeginning() {
       else -> setTrackSelectionId("sid", id)
     }
 
-    if (wasOff && !subtitlesPreferences.autoEnableSubtitles.get()) {
+    if (wasOff && !subtitlesPreferences.autoEnableSubtitles.get() && !subtitlesPreferences.disableSubtitlesByDefault.get()) {
       subtitlesPreferences.autoEnableSubtitles.set(true)
     }
 
@@ -4517,7 +4517,7 @@ fun restartFromBeginning() {
   fun selectPrimarySubtitle(id: Int) {
     setTrackSelectionId("sid", id)
     setTrackSelectionId("secondary-sid", null)
-    if (!subtitlesPreferences.autoEnableSubtitles.get()) {
+    if (!subtitlesPreferences.autoEnableSubtitles.get() && !subtitlesPreferences.disableSubtitlesByDefault.get()) {
       subtitlesPreferences.autoEnableSubtitles.set(true)
     }
     syncSubtitleLayout()

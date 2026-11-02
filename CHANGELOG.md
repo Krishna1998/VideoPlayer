@@ -18,7 +18,8 @@ These notes are written in plain English and focus on what changed for real use.
 - **App Logo & Splash Screen:**
   - Set default app logo to the black-gradient purple icon across application manifests, TV banners, and adaptive mipmaps.
   - Updated system and startup splash screen to the animated purple gradient logo on pure black background.
-- **Lyrics Translation & Romanization:**
+- **Subtitles & Audio Settings:**
+  - Added "Disable subtitles by default" toggle under Subtitle Settings, allowing videos to start with subtitles turned off unless explicitly selected.
   - Streamlined target languages strictly to Hindi, English, and Hinglish under Audio Settings ("Lyrics Translation & Romanization"), removing unnecessary options.
   - Added robust fallback sanitization for lyrics translation languages.
 - **Stability & Performance:**

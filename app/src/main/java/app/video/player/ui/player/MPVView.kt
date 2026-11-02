@@ -802,7 +802,7 @@ class MPVView(
     // preference. TrackSelector remains responsible for title/forced/hearing-impaired filtering.
     val preferredSubtitleLanguages =
       subtitlesPreferences.preferredLanguages.get().toMpvLanguageList()
-        .takeIf { subtitlesPreferences.autoEnableSubtitles.get() }
+        .takeIf { !subtitlesPreferences.disableSubtitlesByDefault.get() && subtitlesPreferences.autoEnableSubtitles.get() }
         .orEmpty()
 
     val fontsDirPath = "${context.filesDir.path}/fonts/"
@@ -823,6 +823,9 @@ class MPVView(
     val blendMode = subtitleBlendMode()
 
     return buildList {
+      if (subtitlesPreferences.disableSubtitlesByDefault.get()) {
+        add("sid" to "no")
+      }
       add("slang" to preferredSubtitleLanguages)
       add("sub-auto" to "no")
       add("sub-file-paths" to "")

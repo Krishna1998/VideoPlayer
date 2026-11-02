@@ -4961,6 +4961,7 @@ class PlayerActivity :
     }
 
     if (
+      !subtitlesPreferences.disableSubtitlesByDefault.get() &&
       subtitlesPreferences.autoEnableSubtitles.get() &&
       subtitlesPreferences.autoloadMatchingSubtitles.get()
     ) {

@@ -971,6 +971,15 @@ object SearchablePreferences {
       )
       add(
         SearchablePreference(
+          titleRes = R.string.pref_subtitles_disable_by_default_title,
+          summaryRes = R.string.pref_subtitles_disable_by_default_summary,
+          keywords = listOf("disable", "default", "subtitles", "off", "auto", "hide"),
+          category = "Subtitles",
+          screen = SubtitlesPreferencesScreen,
+        ),
+      )
+      add(
+        SearchablePreference(
           titleRes = R.string.player_sheets_sub_override_ass,
           summaryRes = R.string.player_sheets_sub_override_ass_subtitle,
           keywords = listOf("ass", "override", "subtitle", "ssa", "format", "style"),

@@ -255,6 +255,25 @@ object SubtitlesPreferencesScreen : Screen {
 
               PreferenceDivider()
 
+              val disableSubtitlesByDefault by preferences.disableSubtitlesByDefault.collectAsState()
+              SwitchPreference(
+                modifier = Modifier.settingsSearchTarget(R.string.pref_subtitles_disable_by_default_title),
+                value = disableSubtitlesByDefault,
+                onValueChange = {
+                  preferences.disableSubtitlesByDefault.set(it)
+                  preferences.autoEnableSubtitles.set(!it)
+                },
+                title = { Text(stringResource(R.string.pref_subtitles_disable_by_default_title)) },
+                summary = {
+                  Text(
+                    stringResource(R.string.pref_subtitles_disable_by_default_summary),
+                    color = MaterialTheme.colorScheme.outline,
+                  )
+                },
+              )
+
+              PreferenceDivider()
+
               val overrideAss by preferences.overrideAssSubs.collectAsState()
               SwitchPreference(
                 modifier = Modifier.settingsSearchTarget(R.string.player_sheets_sub_override_ass),

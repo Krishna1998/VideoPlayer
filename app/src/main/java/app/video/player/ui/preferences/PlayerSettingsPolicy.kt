@@ -93,6 +93,7 @@ private val liveAudioSettings = setOf(
 )
 
 private val liveSubtitleSettings = setOf(
+  R.string.pref_subtitles_disable_by_default_title,
   R.string.player_sheets_sub_override_ass,
   R.string.player_sheets_sub_scale_by_window,
   R.string.pref_subtitles_secondary_pinch_zoom,
