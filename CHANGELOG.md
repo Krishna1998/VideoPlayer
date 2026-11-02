@@ -4,6 +4,17 @@ These notes are written in plain English and focus on what changed for real use.
 
 ## Unreleased
 
+## 1.1.2
+
+- Release version 1.1.2.
+- **Lyrics Translation & Romanization:**
+  - Streamlined target languages strictly to Hindi, English, and Hinglish under Audio Settings ("Lyrics Translation & Romanization"), removing all other languages.
+  - Added fallback sanitization for lyrics translation target languages to ensure reliable translation behavior.
+- **Build & UI Stability:**
+  - Fixed missing `FontWeight` resolution in `RenameDialog`.
+  - Corrected callback type contract for `onRenameClick` in the selection bottom bar.
+  - Cleaned up orphaned AI search dialogs and restored subtitle sheet layout structure.
+
 ## 1.1.1
 
 - Release version 1.1.1.
@@ -18,8 +29,6 @@ These notes are written in plain English and focus on what changed for real use.
   - Completely removed AI integration, AI repository services, and AI settings screen.
   - Removed Google Gemini and Groq AI provider pipelines and client implementations.
   - Removed AI-based subtitle translation, AI formatting in subtitle search, and AI search indexing.
-- **Lyrics Translation & Romanization:**
-  - Streamlined target languages strictly to Hindi, English, and Hinglish under Audio Settings, removing all other language options.
 
 ## 1.1.0
 
