@@ -59,40 +59,26 @@ data class SupportedLanguage(
 
 object LyricsLanguageOptions {
   val ALL_LANGUAGES = listOf(
+    SupportedLanguage("hi", "Hindi (हिन्दी)"),
     SupportedLanguage("en", "English"),
     SupportedLanguage(
-      "romaji",
-      "Romaji / Romanized (Pinyin, Academic)",
-      isRomanization = true,
-      subtitle = "Pronunciation / Romaji / Pinyin",
-    ),
-    SupportedLanguage(
       "hinglish_casual",
-      "Hinglish (Colloquial)",
+      "Hinglish",
       isRomanization = true,
-      subtitle = "Casual spelling for Hindi, Punjabi, Bengali & more",
+      subtitle = "Casual spelling for Hindi, Punjabi & more",
     ),
-    SupportedLanguage("hi", "Hindi (हिन्दी)"),
-    SupportedLanguage("es", "Spanish (Español)"),
-    SupportedLanguage("fr", "French (Français)"),
-    SupportedLanguage("de", "German (Deutsch)"),
-    SupportedLanguage("ja", "Japanese (日本語)"),
-    SupportedLanguage("ko", "Korean (한국어)"),
-    SupportedLanguage("zh-CN", "Chinese (Simplified)"),
-    SupportedLanguage("it", "Italian (Italiano)"),
-    SupportedLanguage("pt", "Portuguese (Português)"),
-    SupportedLanguage("ru", "Russian (Русский)"),
-    SupportedLanguage("ar", "Arabic (العربية)"),
-    SupportedLanguage("bn", "Bengali (বাংলা)"),
-    SupportedLanguage("ta", "Tamil (தமிழ்)"),
-    SupportedLanguage("te", "Telugu (తెలుగు)"),
-    SupportedLanguage("mr", "Marathi (मराठी)"),
-    SupportedLanguage("pa", "Punjabi (ਪੰਜਾਬੀ)"),
-    SupportedLanguage("ur", "Urdu (اردو)"),
   )
 
+  fun sanitize(code: String?): String {
+    if (code.isNullOrBlank()) return "en"
+    if (code.equals("hinglish", ignoreCase = true) || code.equals("romaji", ignoreCase = true)) return "hinglish_casual"
+    return ALL_LANGUAGES.firstOrNull { it.code.equals(code, ignoreCase = true) }?.code ?: "en"
+  }
+
   fun getDisplayName(code: String): String {
-    if (code.equals("hinglish", ignoreCase = true)) return "Romaji / Romanized"
+    if (code.equals("hinglish", ignoreCase = true) || code.equals("hinglish_casual", ignoreCase = true) || code.equals("romaji", ignoreCase = true)) {
+      return "Hinglish"
+    }
     return ALL_LANGUAGES.firstOrNull { it.code.equals(code, ignoreCase = true) }?.displayName ?: code.uppercase()
   }
 }
@@ -238,13 +224,13 @@ class LyricsTranslationService(
   ): List<TranslationResult> = coroutineScope {
     if (texts.isEmpty()) return@coroutineScope emptyList()
 
-    // Special handling for Romaji / Hinglish / Romanized (formal, diacritic-preserving)
-    if (targetLang.equals("romaji", ignoreCase = true) || targetLang.equals("hinglish", ignoreCase = true)) {
+    // Special handling for Romaji (formal, diacritic-preserving)
+    if (targetLang.equals("romaji", ignoreCase = true)) {
       return@coroutineScope handleRomajiTransliteration(texts)
     }
 
     // Special handling for casual Hinglish (Hindi, Punjabi/Gurmukhi, Bengali, Tamil, etc. -> everyday Latin spelling)
-    if (targetLang.equals("hinglish_casual", ignoreCase = true)) {
+    if (targetLang.equals("hinglish_casual", ignoreCase = true) || targetLang.equals("hinglish", ignoreCase = true)) {
       return@coroutineScope handleHinglishCasualTransliteration(texts)
     }
 

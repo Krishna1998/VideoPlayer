@@ -601,7 +601,8 @@ object AudioPreferencesScreen : Screen {
               )
 
               PreferenceDivider()
-              val lyricsTargetLanguage by preferences.lyricsTargetLanguage.collectAsState()
+              val rawLyricsTargetLanguage by preferences.lyricsTargetLanguage.collectAsState()
+              val lyricsTargetLanguage = LyricsLanguageOptions.sanitize(rawLyricsTargetLanguage)
               ExpressivePreferenceItem {
               ListPreference(
                 modifier = Modifier.settingsSearchTarget(R.string.pref_lyrics_target_language),

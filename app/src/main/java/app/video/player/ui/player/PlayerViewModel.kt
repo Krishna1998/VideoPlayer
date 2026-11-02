@@ -36,6 +36,7 @@ import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.video.player.R
+import app.video.player.data.lyrics.LyricsLanguageOptions
 import app.video.player.data.network.client.NetworkMimeTypes
 import app.video.player.data.network.proxy.NetworkStreamingProxy
 import app.video.player.domain.anime4k.Anime4KManager
@@ -1285,7 +1286,7 @@ class PlayerViewModel(
         offsetMs = 0,
       )
       val autoTranslate = allowOnline && audioPreferences.lyricsAutoTranslate.get()
-      val defaultTargetLang = audioPreferences.lyricsTargetLanguage.get().ifBlank { "en" }
+      val defaultTargetLang = LyricsLanguageOptions.sanitize(audioPreferences.lyricsTargetLanguage.get())
 
       lyricsUiState.value = lyricsUiState.value.copy(
         isLoading = false,
@@ -1349,7 +1350,7 @@ class PlayerViewModel(
     if (lyricsStatePath != path) return
     val current = lyricsUiState.value
     val autoTranslate = allowOnline && audioPreferences.lyricsAutoTranslate.get()
-    val defaultTargetLang = audioPreferences.lyricsTargetLanguage.get().ifBlank { "en" }
+    val defaultTargetLang = LyricsLanguageOptions.sanitize(audioPreferences.lyricsTargetLanguage.get())
 
     if (sourceType == app.video.player.domain.lyrics.LyricsSourceType.ONLINE && current.onlineLyrics == null) {
       lyricsUiState.value = current.copy(isLoading = true)
@@ -1459,7 +1460,7 @@ class PlayerViewModel(
 
     val current = lyricsUiState.value
     val autoTranslate = audioPreferences.lyricsAutoTranslate.get()
-    val defaultTargetLang = audioPreferences.lyricsTargetLanguage.get().ifBlank { "en" }
+    val defaultTargetLang = LyricsLanguageOptions.sanitize(audioPreferences.lyricsTargetLanguage.get())
 
     lyricsLoadJob?.cancel()
     lyricsTranslateJob?.cancel()
@@ -1584,7 +1585,7 @@ class PlayerViewModel(
     if (app.video.player.BuildConfig.IS_PLAY_STORE_BUILD) return
     val current = lyricsUiState.value
     val baseLyrics = current.originalLyrics ?: current.lyrics ?: return
-    val lang = targetLang ?: audioPreferences.lyricsTargetLanguage.get().ifBlank { "en" }
+    val lang = LyricsLanguageOptions.sanitize(targetLang ?: audioPreferences.lyricsTargetLanguage.get())
     val path = currentLyricsPath() ?: return
     if (lyricsStatePath != path) return
     val generation = PlaybackSession.state.value.generation
