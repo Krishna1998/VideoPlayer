@@ -135,11 +135,6 @@ android {
 
     configureEach {
       buildConfigField("boolean", "ENABLE_YTDLP", "false")
-      externalNativeBuild {
-        cmake {
-          arguments += "-DMPVRX_ENABLE_YTDLP=OFF"
-        }
-      }
     }
   }
 
