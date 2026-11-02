@@ -55,7 +55,7 @@ data class UpdateUiState(
 
 class UpdateViewModel(application: Application) : AndroidViewModel(application) {
   private val updateManager = UpdateManager(application)
-  private val prefs = application.getSharedPreferences("mpvrx_prefs", Context.MODE_PRIVATE)
+  private val prefs = application.getSharedPreferences("videoplayer_prefs", Context.MODE_PRIVATE)
   private val _isAutoUpdateEnabled = MutableStateFlow(
     BuildConfig.ENABLE_UPDATE_FEATURE && prefs.getBoolean("auto_update", false),
   )

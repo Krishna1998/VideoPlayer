@@ -4,7 +4,7 @@
 package app.video.player
 
 /**
- * Same mpvRx UI as [MainActivity], but with the original icon on the Android system splash.
+ * Same VideoPlayer UI as [MainActivity], but with the original icon on the Android system splash.
  * This is a real target Activity rather than a launcher shim, avoiding an extra startup hop.
  */
 class ClassicMainActivity : MainActivity()

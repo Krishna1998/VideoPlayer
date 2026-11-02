@@ -1188,7 +1188,7 @@ class ThumbnailRepository(
             connectTimeout = 4000
             readTimeout = 6000
             instanceFollowRedirects = true
-            setRequestProperty("User-Agent", "mpvRx/1.0")
+            setRequestProperty("User-Agent", "VideoPlayer/1.0")
           }
         if (connection.responseCode in 200..299) {
           connection.inputStream.use { stream ->
@@ -1329,7 +1329,7 @@ class ThumbnailRepository(
   private fun networkVideoHeaders(): Map<String, String> =
     mapOf(
       // Some servers refuse requests without a UA. MediaMetadataRetriever handles the rest.
-      "User-Agent" to "Mozilla/5.0 (Android) mpvRx",
+      "User-Agent" to "Mozilla/5.0 (Android) VideoPlayer",
       "Accept" to "*/*",
     )
 

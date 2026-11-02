@@ -135,7 +135,7 @@ object NaturalColorsShaderBuilder {
   fun build(p: PostProcessingParams): String = """
 //!HOOK MAIN
 //!BIND HOOKED
-//!DESC Natural Colours (mpvRx)
+//!DESC Natural Colours (VideoPlayer)
 
 #define PP_LUMA   ${f(p.naturalLuma)}
 #define PP_CHROMA ${f(p.naturalChroma)}
@@ -165,7 +165,7 @@ object LevelsShaderBuilder {
   fun build(p: PostProcessingParams): String = """
 //!HOOK MAIN
 //!BIND HOOKED
-//!DESC Levels (mpvRx)
+//!DESC Levels (VideoPlayer)
 
 #define PP_IN_BLACK   ${f(p.levelsInputBlack)}
 #define PP_IN_WHITE   ${f(p.levelsInputWhite)}
@@ -188,7 +188,7 @@ object SharpenShaderBuilder {
   fun build(p: PostProcessingParams): String = """
 //!HOOK MAIN
 //!BIND HOOKED
-//!DESC Sharpen (mpvRx)
+//!DESC Sharpen (VideoPlayer)
 
 #define PP_AMOUNT ${f(p.sharpenAmount)}
 
@@ -210,7 +210,7 @@ object BloomShaderBuilder {
   fun build(p: PostProcessingParams): String = """
 //!HOOK MAIN
 //!BIND HOOKED
-//!DESC Bloom (mpvRx)
+//!DESC Bloom (VideoPlayer)
 
 #define PP_RADIUS ${f(p.bloomRadius)}
 #define PP_AMOUNT ${f(p.bloomAmount)}
@@ -244,7 +244,7 @@ object DenoiseShaderBuilder {
   fun build(p: PostProcessingParams): String = """
 //!HOOK MAIN
 //!BIND HOOKED
-//!DESC Denoise (mpvRx)
+//!DESC Denoise (VideoPlayer)
 
 #define PP_STRENGTH ${f(p.denoiseStrength)}
 #define PP_RADIUS   ${f(p.denoiseRadius)}
@@ -284,7 +284,7 @@ object CelShadingShaderBuilder {
   fun build(p: PostProcessingParams): String = """
 //!HOOK MAIN
 //!BIND HOOKED
-//!DESC Cel Shading (mpvRx)
+//!DESC Cel Shading (VideoPlayer)
 
 #define PP_BANDS             ${f(p.celBands)}
 #define PP_BAND_CONTRAST     ${f(p.celBandContrast)}
@@ -342,7 +342,7 @@ object FilmicCurveShaderBuilder {
   fun build(p: PostProcessingParams): String = """
 //!HOOK MAIN
 //!BIND HOOKED
-//!DESC Filmic Curve (mpvRx)
+//!DESC Filmic Curve (VideoPlayer)
 
 #define PP_EXPOSURE ${f(p.filmicExposure)}
 #define PP_TOE      ${f(p.filmicToe)}
@@ -364,7 +364,7 @@ object BlurShaderBuilder {
   fun build(p: PostProcessingParams): String = """
 //!HOOK MAIN
 //!BIND HOOKED
-//!DESC Blur (mpvRx)
+//!DESC Blur (VideoPlayer)
 
 #define PP_RADIUS       ${f(p.blurRadius)}
 #define PP_STRENGTH     ${f(p.blurStrength)}
@@ -415,7 +415,7 @@ object CartoonSoftShaderBuilder {
   fun build(p: PostProcessingParams): String = """
 //!HOOK MAIN
 //!BIND HOOKED
-//!DESC Cartoon Soft (mpvRx)
+//!DESC Cartoon Soft (VideoPlayer)
 
 #define PP_EDGE       ${f(p.cartoonSoftEdgeStrength)}
 #define PP_SHADOW     ${f(p.cartoonSoftShadowGuard)}
@@ -459,7 +459,7 @@ object ChromaticAberrationShaderBuilder {
   fun build(p: PostProcessingParams): String = """
 //!HOOK MAIN
 //!BIND HOOKED
-//!DESC Chromatic Aberration (mpvRx)
+//!DESC Chromatic Aberration (VideoPlayer)
 
 #define PP_STRENGTH ${f(p.caStrength)}
 #define PP_FALLOFF  ${f(p.caFalloff)}
@@ -483,7 +483,7 @@ object DebandShaderBuilder {
   fun build(p: PostProcessingParams): String = """
 //!HOOK MAIN
 //!BIND HOOKED
-//!DESC Deband (mpvRx)
+//!DESC Deband (VideoPlayer)
 
 #define PP_THRESHOLD ${f(p.debandThreshold)}
 #define PP_RADIUS    ${f(p.debandRadius)}
@@ -527,7 +527,7 @@ object FilmGrainShaderBuilder {
   fun build(p: PostProcessingParams): String = """
 //!HOOK MAIN
 //!BIND HOOKED
-//!DESC Film Grain (mpvRx)
+//!DESC Film Grain (VideoPlayer)
 
 #define PP_INTENSITY ${f(p.grainIntensity)}
 #define PP_SIZE      ${f(p.grainSize)}
@@ -557,7 +557,7 @@ object ScanlinesShaderBuilder {
   fun build(p: PostProcessingParams): String = """
 //!HOOK MAIN
 //!BIND HOOKED
-//!DESC Scanlines (mpvRx)
+//!DESC Scanlines (VideoPlayer)
 
 #define PP_DENSITY    ${f(p.scanlinesDensity)}
 #define PP_INTENSITY  ${f(p.scanlinesIntensity)}
@@ -582,7 +582,7 @@ object SplitToningShaderBuilder {
   fun build(p: PostProcessingParams): String = """
 //!HOOK MAIN
 //!BIND HOOKED
-//!DESC Split Toning (mpvRx)
+//!DESC Split Toning (VideoPlayer)
 
 #define PP_SHADOW_HUE          ${f(p.splitShadowHue)}
 #define PP_SHADOW_STRENGTH     ${f(p.splitShadowStrength)}
@@ -612,7 +612,7 @@ object VignetteShaderBuilder {
   fun build(p: PostProcessingParams): String = """
 //!HOOK MAIN
 //!BIND HOOKED
-//!DESC Vignette (mpvRx)
+//!DESC Vignette (VideoPlayer)
 
 #define PP_STRENGTH ${f(p.vignetteStrength)}
 #define PP_ASPECT   ${f(p.vignetteAspect)}
@@ -633,7 +633,7 @@ object WhiteBalanceShaderBuilder {
   fun build(p: PostProcessingParams): String = """
 //!HOOK MAIN
 //!BIND HOOKED
-//!DESC White Balance (mpvRx)
+//!DESC White Balance (VideoPlayer)
 
 #define PP_TEMPERATURE ${f(p.wbTemperature)}
 #define PP_TINT        ${f(p.wbTint)}
@@ -671,7 +671,7 @@ object CRTShaderBuilder {
   fun build(p: PostProcessingParams): String = """
 //!HOOK MAIN
 //!BIND HOOKED
-//!DESC CRT (mpvRx)
+//!DESC CRT (VideoPlayer)
 
 #define PP_DENSITY    ${f(p.crtDensity)}
 #define PP_ROLL_SPEED ${f(p.crtRollSpeed)}

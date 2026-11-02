@@ -62,8 +62,8 @@ import app.video.player.ui.tv.isTelevision
  * Subtitle, Advanced, AI, About and other preference pages.
  */
 internal val LocalInsidePreferenceCard = staticCompositionLocalOf { false }
-private const val ConnectedPreferenceGap = "mpvrx-settings-connected-gap"
-internal const val SelectedPreferenceTile = "mpvrx-settings-selected-tile"
+private const val ConnectedPreferenceGap = "videoplayer-settings-connected-gap"
+internal const val SelectedPreferenceTile = "videoplayer-settings-selected-tile"
 
 private data class ConnectedPreferenceFrame(val top: Int, val bottom: Int, val selected: Boolean)
 

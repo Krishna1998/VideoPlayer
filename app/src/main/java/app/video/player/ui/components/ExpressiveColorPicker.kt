@@ -309,7 +309,7 @@ private fun ChannelSlider(label: String, value: Int, enabled: Boolean, onChange:
   }
 }
 
-/** HSV wheel adapted from contributor Utsavrajputt's mpvRx PR #880. */
+/** HSV wheel adapted from contributor Utsavrajputt's VideoPlayer PR #880. */
 /** Angle selects hue, radius selects saturation, and brightness is controlled separately. */
 @Composable
 private fun HueSaturationWheel(

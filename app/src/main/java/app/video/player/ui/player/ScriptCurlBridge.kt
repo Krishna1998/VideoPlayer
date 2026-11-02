@@ -37,7 +37,7 @@ class ScriptCurlBridge(
 ) {
   companion object {
     private const val TAG = "ScriptCurlBridge"
-    private const val RESPONSE_PROPERTY = "user-data/mpvrx/curl_response"
+    private const val RESPONSE_PROPERTY = "user-data/videoplayer/curl_response"
 
     private const val DEFAULT_TIMEOUT_SECONDS = 30L
     private const val MAX_TIMEOUT_SECONDS = 120L
@@ -47,7 +47,7 @@ class ScriptCurlBridge(
     private const val MAX_BODY_BYTES = 8L * 1024 * 1024
     private const val MAX_CONCURRENT_REQUESTS = 4
     private const val MAX_PENDING_REQUESTS = 32
-    private const val USER_AGENT = "mpvRx-script-curl/1.0"
+    private const val USER_AGENT = "VideoPlayer-script-curl/1.0"
 
     private val ALLOWED_METHODS = setOf("GET", "HEAD", "POST", "PUT", "PATCH", "DELETE")
     private val METHODS_WITH_BODY = setOf("POST", "PUT", "PATCH")

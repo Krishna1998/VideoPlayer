@@ -1501,13 +1501,13 @@
   <string name="ui_playlist_created_successfully">Playlist created successfully</string>
   <string name="ui_why_do_i_see_this">Why do I see this?</string>
   <string name="ui_why_this_permission_is_needed">Why this permission is needed</string>
-  <string name="ui_mpvrx_needs_access_to_your_video_files_to_provide_its_core_funct">Video Player needs access to your video files to provide its core functionality as a media player.</string>
+  <string name="ui_videoplayer_needs_access_to_your_video_files_to_provide_its_core_funct">Video Player needs access to your video files to provide its core functionality as a media player.</string>
   <string name="ui_the_permission_is_used_exclusively_for">The permission is used exclusively for:</string>
   <string name="ui_discovering_and_displaying_your_video_files_n_playing_media_cont">• Discovering and displaying your video files\n• Playing media content\n• Loading subtitle files</string>
-  <string name="ui_mpvrx_has_always_required_storage_access_permission_as_it_s_esse">Video Player has always required storage access permission as it\'s essential for the app to find all media and subtitle files on your device, including the ones that are not supported by the system.</string>
+  <string name="ui_videoplayer_has_always_required_storage_access_permission_as_it_s_esse">Video Player has always required storage access permission as it\'s essential for the app to find all media and subtitle files on your device, including the ones that are not supported by the system.</string>
   <string name="ui_however_due_to_a_change_in_security_policy_apps_built_for_androi">However, due to a change in security policy, apps built for Android 11 and above now require additional permission to continue accessing the same.</string>
   <string name="ui_please_know_that_this_permission_is_only_used_for_the_auto_disco">Please know that this permission is only used for the auto-discovery of media/subtitle files on your device and will not allow us to access the private data files stored by other apps in any way.</string>
-  <string name="ui_mpvrx_is_an_open_source_project_you_can_review_the_source_code_a">Video Player is an open source project. You can review the source code and verify how permissions are used by visiting our GitHub repository at:</string>
+  <string name="ui_videoplayer_is_an_open_source_project_you_can_review_the_source_code_a">Video Player is an open source project. You can review the source code and verify how permissions are used by visiting our GitHub repository at:</string>
   <string name="ui_be_rest_assured_your_privacy_is_our_utmost_priority_and_we_neith">Be rest assured, your privacy is our utmost priority, and we neither access your files for other purposes nor transfer or store them to our servers. They remain safe on your device.</string>
   <string name="ui_app_permissions">App Permissions</string>
   <string name="ui_permissions_setup_subtitle">Configure permissions to enable core features and media playback.</string>
@@ -1589,7 +1589,7 @@
   <string name="ui_by_ritesh_pandit">By Krishna</string>
   <string name="ui_github">GitHub</string>
   <string name="ui_privacy_policy">Privacy policy</string>
-  <string name="privacy_policy_url" translatable="false">https://mpvrx.vercel.app/docs/reference/privacy-and-permissions</string>
+  <string name="privacy_policy_url" translatable="false">https://videoplayer.vercel.app/docs/reference/privacy-and-permissions</string>
   <string name="ui_device_info">Device Info</string>
   <string name="ui_auto_check_for_updates">Auto Check for Updates</string>
   <string name="ui_check_on_startup">Check on startup</string>
@@ -1611,7 +1611,7 @@
   <string name="update_unknown_size">Unknown size</string>
   <string name="update_beta_build_format">Beta r%1$d</string>
   <string name="ui_beta_badge_suffix">\u0020(Beta)</string>
-  <string name="ui_core_open_source_dependencies_used_by_mpvrx">Core open source dependencies used by Video Player.</string>
+  <string name="ui_core_open_source_dependencies_used_by_videoplayer">Core open source dependencies used by Video Player.</string>
   <string name="ui_already_using_latest_version">Already using latest version</string>
   <string name="ui_install_and_update_yt_dlp_for_streaming_support">Install and update yt-dlp for streaming support</string>
   <string name="ui_refresh">Refresh</string>

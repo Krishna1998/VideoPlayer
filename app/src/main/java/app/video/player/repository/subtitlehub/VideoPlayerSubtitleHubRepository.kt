@@ -35,15 +35,15 @@ import org.jsoup.nodes.Element
 import java.net.URL
 import java.net.URLEncoder
 
-class MpvRxSubtitleHubRepository(
+class VideoPlayerSubtitleHubRepository(
   private val client: OkHttpClient,
   private val json: Json,
   private val preferences: SubtitlesPreferences,
   private val fileStore: OnlineSubtitleFileStore,
 ) : OnlineSubtitleProvider {
-  override val provider: SubtitleProvider = SubtitleProvider.MPVRX_SUBTITLE_HUB
+  override val provider: SubtitleProvider = SubtitleProvider.VIDEOPLAYER_SUBTITLE_HUB
 
-  private val apiSources = MpvRxSubtitleHubApiSources(client, json, preferences)
+  private val apiSources = VideoPlayerSubtitleHubApiSources(client, json, preferences)
   private val providerSemaphore = Semaphore(MAX_CONCURRENT_PROVIDER_REQUESTS)
 
   override suspend fun search(request: OnlineSubtitleSearchRequest): Result<List<OnlineSubtitle>> =
@@ -58,7 +58,7 @@ class MpvRxSubtitleHubRepository(
         val selectedSources =
           SubtitleHubSearchMatcher.sourcesFor(
             request = request,
-            selectedSources = MpvRxSubtitleHubSources.resolveSelected(preferences.subtitleHubSources.get()),
+            selectedSources = VideoPlayerSubtitleHubSources.resolveSelected(preferences.subtitleHubSources.get()),
           )
         if (selectedSources.size == 1) {
           apiSources.requireApiKey(selectedSources.single())
@@ -71,7 +71,7 @@ class MpvRxSubtitleHubRepository(
                 val providerResults =
                   try {
                     providerSemaphore.withPermit {
-                      if (source in MpvRxSubtitleHubSources.AUTHENTICATED_SOURCES) {
+                      if (source in VideoPlayerSubtitleHubSources.AUTHENTICATED_SOURCES) {
                         apiSources.search(source, request, selectedLanguages())
                       } else {
                         when (source) {
@@ -106,7 +106,7 @@ class MpvRxSubtitleHubRepository(
       } catch (e: CancellationException) {
         throw e
       } catch (e: Exception) {
-        Log.e(TAG, "mpvRx SubtitleHub search failed", e)
+        Log.e(TAG, "VideoPlayer SubtitleHub search failed", e)
         Result.failure(e)
       }
     }
@@ -142,7 +142,7 @@ class MpvRxSubtitleHubRepository(
           Result.success(fileStore.save(response.body.bytes(), subtitle, mediaTitle))
         }
       } catch (e: Exception) {
-        Log.e(TAG, "mpvRx SubtitleHub download failed", e)
+        Log.e(TAG, "VideoPlayer SubtitleHub download failed", e)
         Result.failure(e)
       }
     }
@@ -855,10 +855,10 @@ class MpvRxSubtitleHubRepository(
     }
 
   private companion object {
-    const val TAG = "mpvRxSubtitleHub"
+    const val TAG = "VideoPlayerSubtitleHub"
     const val MAX_CONCURRENT_PROVIDER_REQUESTS = 4
     const val USER_AGENT =
-      "Mozilla/5.0 (Linux; Android 14; mpvRx) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Mobile Safari/537.36"
+      "Mozilla/5.0 (Linux; Android 14; VideoPlayer) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Mobile Safari/537.36"
     const val SUBTITLECAT_BASE_URL = "https://www.subtitlecat.com/"
     const val MOVIESUBTITLES_ORG_BASE_URL = "https://www.moviesubtitles.org/"
     const val MOVIESUBTITLESRT_BASE_URL = "https://moviesubtitlesrt.com/"

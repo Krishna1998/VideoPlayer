@@ -103,7 +103,7 @@ import app.video.player.ui.theme.AppConnectedControlShapeTokens
 import app.video.player.ui.theme.AppConnectedShapeTokens
 import app.video.player.ui.theme.ConnectedLayout
 import app.video.player.ui.theme.rememberConnectedShape
-import app.video.player.ui.theme.MpvrxTheme
+import app.video.player.ui.theme.VideoPlayerTheme
 import app.video.player.ui.theme.spacing
 import java.util.Locale
 import kotlin.math.abs
@@ -542,7 +542,7 @@ class ClipOverlayView @JvmOverloads constructor(
       isClickable = true
       setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnDetachedFromWindow)
       setContent {
-        MpvrxTheme {
+        VideoPlayerTheme {
           ClipCropControls(
             onCancel = { exitCropMode(keepSelection = false) },
             onDone = {
@@ -736,7 +736,7 @@ class ClipOverlayView @JvmOverloads constructor(
   private fun dp(value: Int): Int = (value * resources.displayMetrics.density).roundToInt()
 
   companion object {
-    private const val OVERLAY_TAG = "mpvrx_clip_overlay"
+    private const val OVERLAY_TAG = "videoplayer_clip_overlay"
     private const val STATE_POLL_MS = 250L
     private const val DEFAULT_CLIP_SECONDS = 10.0
     private const val CROP_PILL_WIDTH_DP = 97

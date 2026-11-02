@@ -17,7 +17,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import app.video.player.ui.theme.MpvrxTheme
+import app.video.player.ui.theme.VideoPlayerTheme
 
 class CastRemoteControllerActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,7 +29,7 @@ class CastRemoteControllerActivity : ComponentActivity() {
     }
 
     setContent {
-      MpvrxTheme {
+      VideoPlayerTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
           val castState by controller.castState.collectAsState()
 

@@ -42,7 +42,7 @@ class NavidromeClient(
 ) {
   companion object {
     private const val TAG = "NavidromeClient"
-    private const val CLIENT_NAME = "mpvRx"
+    private const val CLIENT_NAME = "VideoPlayer"
     private const val API_VERSION = "1.16.1"
 
     fun md5(input: String): String {

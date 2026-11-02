@@ -85,7 +85,7 @@ class SeerrRepository(
       }
       val request = Request.Builder()
         .url(cleanUrl)
-        .header("User-Agent", "mpvRx Android")
+        .header("User-Agent", "VideoPlayer Android")
         .get()
         .build()
       shortClient.newCall(request).awaitResponse().use { it.isSuccessful }
@@ -118,7 +118,7 @@ class SeerrRepository(
 
     val requestBuilder = Request.Builder()
       .url(httpUrlBuilder.build())
-      .header("User-Agent", "mpvRx Android")
+      .header("User-Agent", "VideoPlayer Android")
 
     val apiKey = preferences.apiKey.get().trim()
     if (apiKey.isNotBlank()) {

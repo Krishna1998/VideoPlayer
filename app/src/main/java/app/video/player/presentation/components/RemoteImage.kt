@@ -222,7 +222,7 @@ internal object RemoteImageLoader {
         Request
           .Builder()
           .url(httpUrl)
-          .header("User-Agent", "Mozilla/5.0 (Android) mpvRx")
+          .header("User-Agent", "Mozilla/5.0 (Android) VideoPlayer")
           .apply {
             if (!token.isNullOrBlank()) {
               header("Authorization", "Bearer $token")

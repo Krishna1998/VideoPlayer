@@ -1,10 +1,10 @@
 # Credits and citation information
 
-mpvRx is part of an open-source media ecosystem. This page preserves the project's acknowledgments and links to the people and projects being credited.
+VideoPlayer is part of an open-source media ecosystem. This page preserves the project's acknowledgments and links to the people and projects being credited.
 
-## Citing mpvRx
+## Citing VideoPlayer
 
-When mentioning, reviewing, or building on mpvRx, link to the [project repository](https://github.com/DARKNIGHT7473/VideoPlayer). Include the release tag or commit you used so others can identify the same version.
+When mentioning, reviewing, or building on VideoPlayer, link to the [project repository](https://github.com/DARKNIGHT7473/VideoPlayer). Include the release tag or commit you used so others can identify the same version.
 
 Suggested plain-text reference:
 

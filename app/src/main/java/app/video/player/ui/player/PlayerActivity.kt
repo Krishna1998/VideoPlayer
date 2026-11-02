@@ -114,7 +114,7 @@ import app.video.player.ui.player.controls.components.panels.toColorHexString
 import app.video.player.ui.player.components.VideoAmbientBackground
 import app.video.player.ui.player.components.rememberVideoAmbientFrame
 import app.video.player.ui.player.ytdlp.YtdlpManager
-import app.video.player.ui.theme.MpvrxTheme
+import app.video.player.ui.theme.VideoPlayerTheme
 import app.video.player.ui.remote.RemotePairingPrompt
 import app.video.player.utils.device.DeviceFormFactor
 import app.video.player.ui.player.controls.tvScrubStepSeconds
@@ -1310,7 +1310,7 @@ class PlayerActivity :
     fun composeControls() {
       if (isDestroyed || isFinishing) return
       binding.controls.setContent {
-        MpvrxTheme {
+        VideoPlayerTheme {
           Box(modifier = Modifier.fillMaxSize()) {
             if (playerControlsReady) {
               PlayerControls(
@@ -1422,7 +1422,7 @@ class PlayerActivity :
         setVideoAmbientPresentationActive(presentationActive)
       }
 
-      MpvrxTheme {
+      VideoPlayerTheme {
         if (presentationActive && ambientFrame.frame != null) {
           VideoAmbientBackground(
             frame = ambientFrame.frame,
@@ -4625,7 +4625,7 @@ class PlayerActivity :
       }
       else -> {
         when (property.substringBeforeLast("/")) {
-          "user-data/mpvrx" -> viewModel.handleLuaInvocation(property, value)
+          "user-data/videoplayer", "user-data/mpvrx" -> viewModel.handleLuaInvocation(property, value)
         }
       }
     }
@@ -8794,7 +8794,7 @@ private suspend fun restorePlaybackPosition(state: PlaybackStateEntity?, loadGen
     /**
      * General tag for logging from PlayerActivity.
      */
-    const val TAG = "mpvrx"
+    const val TAG = "videoplayer"
 
     const val EXTRA_PREPARED_PLAYBACK_QUEUE = "prepared_playback_queue"
     const val EXTRA_PREPARED_PLAYBACK_TOKEN = "prepared_playback_token"

@@ -217,7 +217,7 @@ class JellyfinSessionReporter(
           .url(urlString)
           .addJellyfinHeaders(apiKey)
           .header("Content-Type", "application/json")
-          .header("User-Agent", "mpvRx/${JellyfinClient.VERSION}")
+          .header("User-Agent", "VideoPlayer/${JellyfinClient.VERSION}")
           .post(jsonBody.toRequestBody(JSON_MEDIA_TYPE))
           .build()
 

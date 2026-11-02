@@ -81,7 +81,7 @@ import app.video.player.MainActivity
 import app.video.player.R
 import app.video.player.ui.icons.Icon
 import app.video.player.ui.icons.Icons
-import app.video.player.ui.theme.MpvrxTheme
+import app.video.player.ui.theme.VideoPlayerTheme
 import `is`.xyz.mpv.Utils
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -101,7 +101,7 @@ class CrashActivity : AppCompatActivity() {
     }
     prepareReport()
     setContent {
-      MpvrxTheme(loadDownloadedFonts = false) {
+      VideoPlayerTheme(loadDownloadedFonts = false) {
         val dark = MaterialTheme.colorScheme.surface.luminance() < 0.5f
         SideEffect {
           val bars = SystemBarStyle.auto(Color.Transparent.toArgb(), Color.Transparent.toArgb()) { dark }
@@ -144,7 +144,7 @@ class CrashActivity : AppCompatActivity() {
   }
 
   private fun deleteDatabase(): Boolean =
-    runCatching { deleteDatabase("mpvrx.db") }.getOrDefault(false)
+    runCatching { deleteDatabase("videoplayer.db") }.getOrDefault(false)
 
   private fun copyReport() {
     val report = reportFile ?: return
@@ -156,7 +156,7 @@ class CrashActivity : AppCompatActivity() {
         }
         val text = withContext(Dispatchers.IO) { report.readText() }
         getSystemService(ClipboardManager::class.java)
-          .setPrimaryClip(ClipData.newPlainText("mpvRx crash report", text))
+          .setPrimaryClip(ClipData.newPlainText("VideoPlayer crash report", text))
       } catch (cancellation: CancellationException) {
         throw cancellation
       } catch (_: Exception) {
@@ -197,7 +197,7 @@ class CrashActivity : AppCompatActivity() {
       }
 
       val file = withContext(Dispatchers.IO) {
-        File(activity.cacheDir, "mpvrx_logs.txt").apply { writeText(concatLogs(deviceInfo, exceptionString, logcat)) }
+        File(activity.cacheDir, "videoplayer_logs.txt").apply { writeText(concatLogs(deviceInfo, exceptionString, logcat)) }
       }
       withContext(Dispatchers.Main) { shareReportFile(activity, file) }
     }
@@ -211,7 +211,7 @@ class CrashActivity : AppCompatActivity() {
       val sendIntent = Intent(Intent.ACTION_SEND).apply {
         type = "text/plain"
         putExtra(Intent.EXTRA_STREAM, uri)
-        clipData = ClipData.newRawUri("mpvRx crash report", uri)
+        clipData = ClipData.newRawUri("VideoPlayer crash report", uri)
         addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
       }
       activity.startActivity(Intent.createChooser(sendIntent, activity.getString(R.string.crash_screen_share)))
@@ -269,7 +269,7 @@ class CrashActivity : AppCompatActivity() {
     val isDatabaseRelated =
       remember(exceptionString) {
         val details = exceptionString.lowercase(java.util.Locale.ROOT)
-        listOf("android.database.sqlite", "androidx.room", "mpvrx.db").any { it in details }
+        listOf("android.database.sqlite", "androidx.room", "videoplayer.db").any { it in details }
       }
 
     Scaffold(

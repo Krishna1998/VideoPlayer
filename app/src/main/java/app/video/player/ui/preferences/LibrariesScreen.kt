@@ -98,7 +98,7 @@ object LibrariesScreen : Screen {
                 fontWeight = FontWeight.Bold,
               )
               Text(
-                text = stringResource(R.string.ui_core_open_source_dependencies_used_by_mpvrx),
+                text = stringResource(R.string.ui_core_open_source_dependencies_used_by_videoplayer),
                 style = MaterialTheme.typography.bodyLarge,
               )
               Surface(

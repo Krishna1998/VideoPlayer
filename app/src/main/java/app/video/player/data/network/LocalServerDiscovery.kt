@@ -171,7 +171,7 @@ class LocalServerDiscovery(context: Context) {
       try {
         if (Build.VERSION.SDK_INT < 34) {
           multicastLock = context.getSystemService(WifiManager::class.java)
-            ?.createMulticastLock("mpvrx-server-discovery")?.apply {
+            ?.createMulticastLock("videoplayer-server-discovery")?.apply {
               setReferenceCounted(false)
               acquire()
             }

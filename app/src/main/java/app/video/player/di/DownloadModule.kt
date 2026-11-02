@@ -20,8 +20,8 @@ import org.koin.dsl.module
 val DownloadModule =
   module {
     single { DownloadLocations(androidContext(), get()) }
-    single { DownloadOutputReservations(get<app.video.player.database.MpvRxDatabase>().downloadItemDao()) }
-    single { AppDownloadManager(androidContext(), get<app.video.player.database.MpvRxDatabase>().downloadItemDao(), get(), get()) }
+    single { DownloadOutputReservations(get<app.video.player.database.VideoPlayerDatabase>().downloadItemDao()) }
+    single { AppDownloadManager(androidContext(), get<app.video.player.database.VideoPlayerDatabase>().downloadItemDao(), get(), get()) }
     single { YtdlpDownloadEngine(androidContext(), get(), get()) }
     single { LinkDownloadCoordinator(get(), get()) }
   }

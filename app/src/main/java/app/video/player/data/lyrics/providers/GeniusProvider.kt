@@ -32,7 +32,7 @@ import java.util.Locale
 internal object GeniusProvider : LyricsProviderClient {
   override val id: LyricsProvider = LyricsProvider.GENIUS
 
-  private const val USER_AGENT = "mpvRx"
+  private const val USER_AGENT = "VideoPlayer"
 
   override suspend fun fetch(query: LyricsFetchQuery): Lyrics? {
     for (ref in query.candidates()) {

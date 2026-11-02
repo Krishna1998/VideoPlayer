@@ -156,7 +156,7 @@ class PlaylistViewModel(
     val allVideos = MediaFileRepository.getVideosForBuckets(getApplication(), bucketIds, includeAudioOverride = true)
     val knownPaths = allVideos.mapTo(mutableSetOf()) { it.path }
 
-    // Network entries are mpvrx-network:// references with no local file to verify: they always
+    // Network entries are videoplayer-network:// references with no local file to verify: they always
     // count. Only local entries are checked against MediaStore for a file that still exists —
     // their paths are meaningless as filesystem paths, so mixing them in would drop them entirely.
     val liveLocalItems = localItems.filter { item -> item.filePath in knownPaths }

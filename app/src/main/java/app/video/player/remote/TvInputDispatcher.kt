@@ -22,7 +22,7 @@ import java.lang.ref.WeakReference
 import java.util.concurrent.FutureTask
 import java.util.concurrent.TimeUnit
 
-/** Delivers phone commands to the focused MPVRX window, dialogs included, as a hardware remote would. */
+/** Delivers phone commands to the focused VIDEOPLAYER window, dialogs included, as a hardware remote would. */
 internal object TvInputDispatcher {
   private const val MAIN_THREAD_TIMEOUT_MS = 3_000L
   private const val CTRL_META = KeyEvent.META_CTRL_ON or KeyEvent.META_CTRL_LEFT_ON
@@ -139,7 +139,7 @@ internal object TvInputDispatcher {
       return
     }
     val clipboard = context.getSystemService(ClipboardManager::class.java) ?: return
-    val clip = ClipData.newPlainText("MPVRX remote", text)
+    val clip = ClipData.newPlainText("VIDEOPLAYER remote", text)
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
       clip.description.extras = PersistableBundle().apply { putBoolean(ClipDescription.EXTRA_IS_SENSITIVE, true) }
     }

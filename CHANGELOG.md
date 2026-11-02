@@ -14,7 +14,7 @@ These notes are written in plain English and focus on what changed for real use.
   - Fixed missing `FontWeight` resolution in `RenameDialog`.
   - Corrected callback type contract for `onRenameClick` in the selection bottom bar.
   - Cleaned up orphaned AI search dialogs and restored subtitle sheet layout structure.
-  - Updated default settings export and auto-backup file names to `videoplayer_settings_YYYYMMDD_HHMMSS.xml` with full backward compatibility for importing existing `mpvrx_settings_*.xml` backups.
+  - Updated default settings export and auto-backup file names to `videoplayer_settings_YYYYMMDD_HHMMSS.xml` with full backward compatibility for importing existing legacy backup files.
 
 ## 1.1.1
 
@@ -274,13 +274,13 @@ This release brings dedicated Android TV navigation and playback controls, a pho
 
 ### Phone Remote for Android TV
 
-- **Control a TV from your phone:** Discover mpvRx TVs on the local network and send D-pad navigation, playback, volume and text input from the phone remote screen. TV key delivery also reaches focused dialogs.
+- **Control a TV from your phone:** Discover VideoPlayer TVs on the local network and send D-pad navigation, playback, volume and text input from the phone remote screen. TV key delivery also reaches focused dialogs.
 - **Pairing approval:** Compare the six-digit pairing code and approve the phone on the TV. Paired remote sessions use encrypted communication.
 
 ### App Updates
 
 - **Native installation:** Stable, Preview and Experimental updates use Android installer sessions, requesting silent self-updates on Android 12+ with confirmation when Android requires it.
-- **Optional background updates:** A separate switch downloads updates on unmetered networks and installs while mpvRx and its player are idle.
+- **Optional background updates:** A separate switch downloads updates on unmetered networks and installs while VideoPlayer and its player are idle.
 - **Reliable progress and recovery:** Downloads survive navigation and process restarts, retain resumable partials, support cancellation, and keep the sheet open while downloading or staging an install.
 - **Safer handoff:** Verify the APK identity, signing certificates and version before installation, preserve a manual installer fallback, and handle permission requests and installation results through the sheet and notifications.
 - **Translated controls:** New updater settings and status messages are available in all existing app languages.
@@ -290,7 +290,7 @@ This release brings dedicated Android TV navigation and playback controls, a pho
 
 - Added BitChord and Neo Player to the app's acknowledgments, alongside the credits for TV navigation and other upstream work.
 
-**Full changelog:** [v3.0.1...v3.0.2](https://github.com/Riteshp2001/mpvRx/compare/v3.0.1...v3.0.2)
+**Full changelog:** [v3.0.1...v3.0.2](https://github.com/Riteshp2001/VideoPlayer/compare/v3.0.1...v3.0.2)
 
 ## 3.0.1 — Smoother Browsing, More Reliable Playback
 
@@ -361,20 +361,20 @@ This update builds on 3.0.0 with smoother media browsing, more reliable local an
 **Release date:** October 18, 2026
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Riteshp2001/mpvRx/403294620e0c38b7ec965a493ff6b97efcbb4198/website/public/images/icon.png" width="160" height="160" alt="mpvRx solid purple app icon" />
+  <img src="https://raw.githubusercontent.com/Riteshp2001/VideoPlayer/403294620e0c38b7ec965a493ff6b97efcbb4198/website/public/images/icon.png" width="160" height="160" alt="VideoPlayer solid purple app icon" />
 </p>
 
-<p align="center"><strong>A fresh face. More color. Your player.</strong><br />A revamped mpvRx icon · Material 3 Expressive · Liquid Glass · Profile Hub</p>
+<p align="center"><strong>A fresh face. More color. Your player.</strong><br />A revamped VideoPlayer icon · Material 3 Expressive · Liquid Glass · Profile Hub</p>
 
-**A new chapter deserves a new face.** mpvRx 3.0.0 arrives with a revamped app icon and a refreshed interface to match. Open the player to discover connected Material 3 Expressive layouts, more control over color, and a new home for your playlists, snapshots, and watch statistics.
+**A new chapter deserves a new face.** VideoPlayer 3.0.0 arrives with a revamped app icon and a refreshed interface to match. Open the player to discover connected Material 3 Expressive layouts, more control over color, and a new home for your playlists, snapshots, and watch statistics.
 
-### 💜 Meet the new mpvRx icon
+### 💜 Meet the new VideoPlayer icon
 
 **A bold purple play mark. Softer curves. A fresh identity for 3.0.0.**
 
-The revamped icon brings the player’s identity into focus: a rounded, ribbon-like play symbol with a distinctive detached tip, finished in solid purple. It gives mpvRx a recognizable new face on your home screen and introduces the expressive look waiting inside the app.
+The revamped icon brings the player’s identity into focus: a rounded, ribbon-like play symbol with a distinctive detached tip, finished in solid purple. It gives VideoPlayer a recognizable new face on your home screen and introduces the expressive look waiting inside the app.
 
-This is the visual centerpiece of **mpvRx 3.0.0 — Expressive**. The Classic logo remains available in App icon settings if you prefer the familiar look.
+This is the visual centerpiece of **VideoPlayer 3.0.0 — Expressive**. The Classic logo remains available in App icon settings if you prefer the familiar look.
 
 ### ✨ More to explore
 
@@ -426,7 +426,7 @@ This is the visual centerpiece of **mpvRx 3.0.0 — Expressive**. The Classic lo
 
 #### Icons and Splash Screen
 
-- **Revamped mpvRx icon:** A rounded play mark with a detached tip and a solid purple finish introduces the new visual identity of 3.0.0. The Classic logo remains available.
+- **Revamped VideoPlayer icon:** A rounded play mark with a detached tip and a solid purple finish introduces the new visual identity of 3.0.0. The Classic logo remains available.
 
 - **Icon builder:** Combine supported backgrounds and logos with a live preview, connected selection tiles, and a swipe carousel. Wallpaper colors are available on Android 12 and newer; your previous icon carries over.
 - **Custom background tile:** Pick a solid color and logo, compare the requested color with the closest supported native launcher icon, then confirm the icon change. An optional home-screen shortcut preserves the exact chosen color on supported launchers.
@@ -579,7 +579,7 @@ This is the visual centerpiece of **mpvRx 3.0.0 — Expressive**. The Classic lo
 
 ### Settings and Tools
 
-- **Permission recovery:** If storage, notification, or microphone access is revoked, mpvRx asks again as soon as you return instead of leaving you to find it in system settings. All files access, which Android grants only from its settings page, opens that page directly.
+- **Permission recovery:** If storage, notification, or microphone access is revoked, VideoPlayer asks again as soon as you return instead of leaving you to find it in system settings. All files access, which Android grants only from its settings page, opens that page directly.
 - **Config editor:** Includes the mpv manual offline for documentation-driven completion, plus search and replace, go-to-line, saved drafts, syntax highlighting, and touch-friendly tools.
 - **Secure Folder settings:** A new settings screen to destroy, hide, or unhide the Secure Folder, enable biometrics behind a PIN, and choose a 4- or 6-digit PIN.
 - **Debug logs:** Logs save into your mpv configuration folder, and you can share the full log file or copy all logs.
@@ -614,7 +614,7 @@ This is the visual centerpiece of **mpvRx 3.0.0 — Expressive**. The Classic lo
 
 - **Version:** 3.0.0, with an increased Android version code so it can update existing 2.7.2 stable and preview installations signed with the same key.
 - **Packages:** Standard universal and per-architecture APKs, FongMi, No Vulkan, and Play Store universal APKs, plus a Play Store app bundle.
-- **Changes since 2.7.2:** [Full comparison](https://github.com/Riteshp2001/mpvRx/compare/v2.7.2...v3.0.0).
+- **Changes since 2.7.2:** [Full comparison](https://github.com/Riteshp2001/VideoPlayer/compare/v2.7.2...v3.0.0).
 
 ### Thanks
 
@@ -808,7 +808,7 @@ Thanks to [@ThisisWyatt](https://github.com/ThisisWyatt), [@Arnab11](https://git
 - Added compact and wide home-screen widget layouts with full-bleed artwork, title and artist metadata, Previous, Play/Pause, and Next actions.
 - Follow the app's light, dark, AMOLED, dynamic, built-in, or custom color scheme and refresh when playback, queue, theme, or widget dimensions change.
 - Use Android 12 responsive size maps with portrait and landscape fallbacks on older supported Android versions.
-- Show the mpvRx launcher icon instead of a generic music or video glyph when no artwork is available.
+- Show the VideoPlayer launcher icon instead of a generic music or video glyph when no artwork is available.
 - Add a theme-accented circular halo behind the icon, with stronger emphasis while no media is playing and a subtler fallback during active playback.
 
 #### Responsive Selection and Navigation
@@ -1174,7 +1174,7 @@ Thanks to [@ThisisWyatt](https://github.com/ThisisWyatt), [@Arnab11](https://git
 ## 2.5.0 - Frame Review, Auto Crop & Library Performance
 
 > [!IMPORTANT]
-> **Project hiatus:** Following version 2.5.0, mpvRx development will be paused until further notice.
+> **Project hiatus:** Following version 2.5.0, VideoPlayer development will be paused until further notice.
 
 ### 🎬 Frame Review, Seeking & Playback
 - **Frame-Level Review**: Added a full-player Frame Review mode with horizontal frame swipes, previous/next-frame controls, precise frame and millisecond readouts, snapshots with optional subtitles, and a transparent responsive layout.
@@ -1198,7 +1198,7 @@ Thanks to [@ThisisWyatt](https://github.com/ThisisWyatt), [@Arnab11](https://git
 ### 🎛️ Player Controls, PiP & Navigation
 - **Onboarding Never Blocks the App**: "Get started" now always enters the app, even when permissions were skipped — the finish page lists any missing permissions in an amber warning instead of the quick-tour toggle, and screens that need storage show a compact in-place "Grant access" prompt.
 - **Search Bar Respects the Status Bar**: The inline search bar (folders, videos, music, playlists, network, Jellyfin) no longer renders under the status bar and camera cutout — the system-inset padding lost in the Material search migration is back.
-- **Streaming Link Handling Toggle**: New "Open streaming site links" switch in player settings controls whether mpvRx registers for YouTube, Vimeo, Twitch, Odysee, and Bilibili links — turn it off and those links go straight to their own apps while direct media URLs keep working.
+- **Streaming Link Handling Toggle**: New "Open streaming site links" switch in player settings controls whether VideoPlayer registers for YouTube, Vimeo, Twitch, Odysee, and Bilibili links — turn it off and those links go straight to their own apps while direct media URLs keep working.
 - **Correct First Playlist Entry**: Opening any video other than the first from a folder no longer shows the opened video's name on the playlist sheet's first row — stale launch metadata from the temporary one-item queue is now cleared before the folder playlist is published.
 - **Right-Edge Action Panel**: Added a bare right-edge pull handle that opens the complete player action set in the app's movable `DraggablePanel`.
 - **Consistent Action Tiles**: Player actions use a responsive three-column tile layout with normalized icon sizes, no nested circular backgrounds, dynamic colors, and full-tile indicators for active settings such as Background Playback, HDR, Ambient, Repeat, Shuffle, transforms, speed, and zoom.
@@ -1312,8 +1312,8 @@ Thanks to [@ThisisWyatt](https://github.com/ThisisWyatt), [@Arnab11](https://git
 - **Dedicated Subtitle Preferences**: Added a focused subtitle section to Settings so subtitle controls are easier to find and manage.
 
 ### 🍿 Jellyfin & Seerr
-- **Built-In Seerr Requests**: Integrated Seerr with Jellyfin so movies and series can be discovered and requested inside mpvRx, with refined discovery cards and live request-status updates.
-- **Jellyfin Music in the mpvRx Player**: Jellyfin audio now uses the full music-player experience, with a redesigned Music section, complete album queues, swipeable tabs, home playlists, favorites, and synchronized favorite state.
+- **Built-In Seerr Requests**: Integrated Seerr with Jellyfin so movies and series can be discovered and requested inside VideoPlayer, with refined discovery cards and live request-status updates.
+- **Jellyfin Music in the VideoPlayer Player**: Jellyfin audio now uses the full music-player experience, with a redesigned Music section, complete album queues, swipeable tabs, home playlists, favorites, and synchronized favorite state.
 - **Faster Jellyfin Actions**: Added direct quick play, YouTube trailers, improved resume actions, and a browser FAB that closes predictably, follows scrolling, and blocks accidental tab gestures while open.
 - **Richer Library Browsing**: Moved libraries ahead of Continue Watching, redesigned list and episode layouts, improved season selection, and fixed tablet mini-player overlap.
 - **Jellyfin Stability**: Fixed authentication persistence, music queue resolution, cover-art loading, local artwork handling, bitmap crashes, and incorrect album playback.
@@ -1549,7 +1549,7 @@ Thanks to [@ThisisWyatt](https://github.com/ThisisWyatt), [@Arnab11](https://git
 - **Tablet Responsiveness**: Improved Secure Folder UI for tablet and foldable devices.
 
 ### 🏷️ Branding, Licensing & Cleanup
-- **App Rename**: The app is now branded **mpvRx** (renamed from "MpvRx") across UI, docs, and metadata.
+- **App Rename**: The app is now branded **VideoPlayer** (renamed from "VideoPlayer") across UI, docs, and metadata.
 - **New License**: Relicensed to **CC BY-NC 4.0** with license headers applied across the codebase.
 - **Acknowledgements**: Added credit for MpvRex and Pixel Player (UI and thumbnail pipeline inspiration) and AFinity.
 - **Code Quality**: Added ktlint formatting enforcement and fixed AAPT resource and Kotlin compiler warnings.
@@ -1678,7 +1678,7 @@ Thanks to [@ThisisWyatt](https://github.com/ThisisWyatt), [@Arnab11](https://git
 ### 🌐 Network & External Playback
 - **WebDAV PROPFIND fix**: Connection checks now use a depth-zero `PROPFIND` request instead of Sardine's `HEAD`-based `exists()` call, making it work with servers like FileBrowser Quantum that reject `HEAD` on DAV collections.
 - **WebDAV trailing slash**: Collection URLs consistently keep a trailing slash during validation and browsing.
-- **External-player discovery**: Added a MIME-only intent filter so external-player pickers can find mpvRx before attaching the final video or audio URI.
+- **External-player discovery**: Added a MIME-only intent filter so external-player pickers can find VideoPlayer before attaching the final video or audio URI.
 - **More protocol support**: Added `gopher://`, `sctp://`, and `data://` to network stream detection and intent filters.
 - **Stream compatibility improved**: Better handling of edge-case media streams and improved browsing reliability.
 
@@ -1876,7 +1876,7 @@ Thanks to [@ThisisWyatt](https://github.com/ThisisWyatt), [@Arnab11](https://git
 > # 🚀 **CURL IS NOW SUPPORTED!** 
 > ### ⚠️ **EXPERIMENTAL** — This is brand new and may or may not work properly on your device. ⚠️
 > Lua and JavaScript scripts can now make HTTP requests through the new native libcurl bridge via JNI.
-> Use it, break it, and report issues so we can make it stable!, see `MPVRX_CUSTOM_COMMANDS.d` for tutorial on how to use in Lua and JS.
+> Use it, break it, and report issues so we can make it stable!, see `VIDEOPLAYER_CUSTOM_COMMANDS.d` for tutorial on how to use in Lua and JS.
 >
 > **What this means:** You can now write scripts that fetch data from the internet — APIs, subtitles, metadata, you name it — all through libcurl compiled directly into the app.
 
@@ -1887,14 +1887,14 @@ Thanks to [@ThisisWyatt](https://github.com/ThisisWyatt), [@Arnab11](https://git
 - Added Hybrid Skip Markers. The player can now check IntroDB, TIDB, and AniSkip together and use whichever result is found first.
 - Anime4K settings are now easier to use with a collapsible section in Decoder Preferences and also Added Optimization by Sunny Vishnu .
 - Added a setting to show or hide Media Info from Android's share/open-with screen.
-- Added documentation for custom Lua/JS player commands in `MPVRX_CUSTOM_COMMANDS.md`.
+- Added documentation for custom Lua/JS player commands in `VIDEOPLAYER_CUSTOM_COMMANDS.md`.
 
 ## 1.3.8
 
 - **Integrated yt-dlp by [**SunnyVishnu3**](https://github.com/SunnyVishnu3)** — Added full yt-dlp integration for video watching audio/video from YouTube and other supported sites directly within the app (_Dont expect from me to add Download Functionality_). **Note: You need to download yt-dlp first (Settings > Advanced > yt-dlp Manager) before playing YouTube links — don't be clueless.**
 - Fixed Issue of USer defined Colors Filters were not getting Saved and not getting applied through Mpv conf by [**SunnyVishnu3**](https://github.com/SunnyVishnu3)
 - Fixed Gemini AI Error Generating / Translating Subs.
-- Fixed Crashing issue of MpvRx , in a nutshell Ambient mode and Custom lua were not initialized in Sync causing to crash player sometimes
+- Fixed Crashing issue of VideoPlayer , in a nutshell Ambient mode and Custom lua were not initialized in Sync causing to crash player sometimes
 - That's all for Today Adiosss!!
 
 ## 1.3.7
@@ -1942,7 +1942,7 @@ Thanks to [@ThisisWyatt](https://github.com/ThisisWyatt), [@Arnab11](https://git
 - Cleaned old thumbnail cache paths when clearing thumbnail cache.
 - Fixed the About and crash info screen showing `UNKNOWN` in the bundled mpv version.
 - Updated Gradle, Kotlin, Compose, Koin, Navigation 3, AndroidX, and related dependency versions through the version catalog.
-- Added SUbHub MpvRx specific Subtitle Fetching nd Downloading featured developed by me
+- Added SUbHub VideoPlayer specific Subtitle Fetching nd Downloading featured developed by me
 - Added Video COmpresser Overlay in Tree Mode also
 - Cleaned up codebase and Improved Playback bottlenecks
 - Added Window Offset to prevent Camera notch overlap issues
@@ -1990,7 +1990,7 @@ Thanks to [@ThisisWyatt](https://github.com/ThisisWyatt), [@Arnab11](https://git
 ### Stats Page 6  Fixes
 
 - **GPU estimate bar fixed**: was using cumulative drop + delay totals that drifted to 100% after long sessions and added a fixed FPS-proportional baseline (120fps with zero drops showed 70% GPU load). Now uses per-second delta counts relative to the current frame rate  0 drops = 0%, all frames dropped = 100%.
-- **CPU label corrected**: relabelled from "CPU Usage" to "App CPU (this process)" to accurately reflect that `getElapsedCpuTime()` measures only MpvRx's own process, not the whole device.
+- **CPU label corrected**: relabelled from "CPU Usage" to "App CPU (this process)" to accurately reflect that `getElapsedCpuTime()` measures only VideoPlayer's own process, not the whole device.
 - **Frame drop text now shows per-second deltas** alongside the all-time totals, so you can tell current rendering pressure at a glance.
 - **Pause-aware poll backoff**: the stats loop backs off from 1 s to 2 s intervals when playback is paused, cutting pointless JNI calls when metrics are static.
 
@@ -2028,7 +2028,7 @@ Thanks to [@ThisisWyatt](https://github.com/ThisisWyatt), [@Arnab11](https://git
 
 ## 1.3.0
 
-- The project now carries the `MpvRx` name across the app, docs, and release files.
+- The project now carries the `VideoPlayer` name across the app, docs, and release files.
 - Tree View `NEW` labels now work properly and update as you watch.
 - Single-child folders now flatten automatically so you reach files faster.
 - Subtitle matching is smarter and better at finding subtitles that line up.

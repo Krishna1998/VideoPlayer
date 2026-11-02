@@ -49,7 +49,7 @@ internal object ContainerGeometryProbe {
 
   private val executor: ExecutorService =
     Executors.newFixedThreadPool(2) { runnable ->
-      Thread(runnable, "mpvRx-geometry-probe").apply { isDaemon = true }
+      Thread(runnable, "VideoPlayer-geometry-probe").apply { isDaemon = true }
     }
   private val probes =
     object : LinkedHashMap<String, Future<ContainerGeometry?>>(CACHE_LIMIT, 0.75f, true) {

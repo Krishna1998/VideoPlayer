@@ -43,7 +43,7 @@ class XtreamStreamingProxy private constructor() : NanoHTTPD("127.0.0.1", 0), Ko
     private const val TAG = "XtreamStreamingProxy"
     private const val TOKEN_BYTES = 24
     private const val RESOLVE_TIMEOUT_SECONDS = 30L
-    private const val DEFAULT_USER_AGENT = "mpvRx/2.5"
+    private const val DEFAULT_USER_AGENT = "VideoPlayer/2.5"
 
     @Volatile
     private var instance: XtreamStreamingProxy? = null

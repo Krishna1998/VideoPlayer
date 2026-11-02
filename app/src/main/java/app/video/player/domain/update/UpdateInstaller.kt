@@ -103,7 +103,7 @@ object UpdateInstaller {
             return@withLock
           }
           val callback = Intent(context, UpdateInstallReceiver::class.java)
-            .setAction(ACTION_RESULT).setData(Uri.parse("mpvrx-update://session/$sessionId/$token"))
+            .setAction(ACTION_RESULT).setData(Uri.parse("videoplayer-update://session/$sessionId/$token"))
             .putExtra("token", token)
           // PackageInstaller fills status/confirmation extras; only this explicit receiver is mutable.
           val flags = PendingIntent.FLAG_UPDATE_CURRENT or

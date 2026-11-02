@@ -25,7 +25,7 @@ import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.spec.SecretKeySpec
 
 internal const val REMOTE_PROTOCOL_VERSION = 1
-internal const val REMOTE_SERVICE_TYPE = "_mpvrxremote._tcp"
+internal const val REMOTE_SERVICE_TYPE = "_videoplayerremote._tcp"
 internal const val REMOTE_DEFAULT_PORT = 47821
 internal const val REMOTE_NONCE_BYTES = 32
 internal const val REMOTE_SECRET_BYTES = 32
@@ -163,7 +163,7 @@ internal class RemoteChannel(private val socket: Socket) : Closeable {
  */
 internal object RemoteCrypto {
   private val random = SecureRandom()
-  private val label = "mpvrx-remote-v1".encodeToByteArray()
+  private val label = "videoplayer-remote-v1".encodeToByteArray()
 
   fun randomBytes(size: Int): ByteArray = ByteArray(size).also { random.nextBytes(it) }
 

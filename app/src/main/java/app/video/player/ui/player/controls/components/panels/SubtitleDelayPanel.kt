@@ -66,7 +66,7 @@ fun SubtitleDelayPanel(
    * mpv keeps `sub-delay` and `secondary-sub-delay` as two independent properties, but
    * setupSubtitlesOptions initialises both from the same default. Writing only `sub-delay`
    * left the secondary track stuck on the startup value, so a secondary subtitle could never
-   * be synced at all. Keep the two in lockstep, each one only while mpvRx still owns it.
+   * be synced at all. Keep the two in lockstep, each one only while VideoPlayer still owns it.
    */
   fun setSubtitleDelay(
     seconds: Float,

@@ -18,7 +18,7 @@ import app.video.player.network.SharedHttpClient
 import app.video.player.repository.IntroDbRepository
 import app.video.player.repository.subtitle.OnlineSubtitleFileStore
 import app.video.player.repository.subtitle.OnlineSubtitleOrchestrator
-import app.video.player.repository.subtitlehub.MpvRxSubtitleHubRepository
+import app.video.player.repository.subtitlehub.VideoPlayerSubtitleHubRepository
 import app.video.player.repository.wyzie.WyzieSearchRepository
 import app.video.player.ui.player.MpvConfigCache
 import app.video.player.ui.player.PlaybackSessionShaderRuntime
@@ -43,8 +43,8 @@ val domainModule =
     single { GoogleFontsRepository(androidContext(), get()) }
     single { OnlineSubtitleFileStore(androidContext(), get()) }
     single { WyzieSearchRepository(androidContext(), get(), get(), get(), get()) }
-    single { MpvRxSubtitleHubRepository(get(), get(), get(), get()) }
-    single { OnlineSubtitleOrchestrator(get<WyzieSearchRepository>(), get<MpvRxSubtitleHubRepository>()) }
+    single { VideoPlayerSubtitleHubRepository(get(), get(), get(), get()) }
+    single { OnlineSubtitleOrchestrator(get<WyzieSearchRepository>(), get<VideoPlayerSubtitleHubRepository>()) }
     single { IntroDbRepository(get(), get(), androidContext()) }
     single {
       app.video.player.domain.syncplay

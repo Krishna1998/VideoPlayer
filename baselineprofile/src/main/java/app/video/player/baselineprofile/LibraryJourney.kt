@@ -10,7 +10,7 @@ import androidx.test.uiautomator.Until
 import org.junit.Assert.assertTrue
 
 internal const val TARGET_PACKAGE = "app.video.player"
-private const val FIXTURE_FOLDER = "mpvRxBenchmark"
+private const val FIXTURE_FOLDER = "VideoPlayerBenchmark"
 private const val FIXTURE_PATH = "Movies/$FIXTURE_FOLDER/"
 private const val FIXTURE_COUNT = 32
 
@@ -27,14 +27,14 @@ internal fun prepareLibrary() {
   val resolver = context.contentResolver
   val collection = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
   val selection = "${MediaStore.Video.Media.RELATIVE_PATH} = ? AND ${MediaStore.Video.Media.DISPLAY_NAME} LIKE ?"
-  val args = arrayOf(FIXTURE_PATH, "mpvrx-benchmark-%")
+  val args = arrayOf(FIXTURE_PATH, "videoplayer-benchmark-%")
   val existing = resolver.query(collection, arrayOf(MediaStore.Video.Media._ID), selection, args, null)
     ?.use { it.count } ?: 0
   if (existing == FIXTURE_COUNT) return
   // Only our test-owned files in this dedicated fixture folder are replaced.
   resolver.delete(collection, selection, args)
   repeat(FIXTURE_COUNT) { index ->
-    val name = "mpvrx-benchmark-${(index + 1).toString().padStart(2, '0')}.mp4"
+    val name = "videoplayer-benchmark-${(index + 1).toString().padStart(2, '0')}.mp4"
     val uri = checkNotNull(resolver.insert(collection, ContentValues().apply {
       put(MediaStore.Video.Media.DISPLAY_NAME, name)
       put(MediaStore.Video.Media.MIME_TYPE, "video/mp4")
@@ -61,7 +61,7 @@ internal fun UiDevice.waitForLibrary() {
 internal fun UiDevice.browseLibrary() {
   waitForLibrary()
   checkNotNull(findObject(By.text(FIXTURE_FOLDER))).click()
-  assertTrue("The video folder must open", wait(Until.hasObject(By.textContains("mpvrx-benchmark-")), 15_000) == true)
+  assertTrue("The video folder must open", wait(Until.hasObject(By.textContains("videoplayer-benchmark-")), 15_000) == true)
   val x = displayWidth / 2
   // Same gesture and fixture count on every run; no network or random UI selection.
   repeat(3) { swipe(x, displayHeight * 3 / 4, x, displayHeight / 4, 20) }

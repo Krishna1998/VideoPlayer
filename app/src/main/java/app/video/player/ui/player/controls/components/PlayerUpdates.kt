@@ -132,7 +132,7 @@ private fun rememberPlayerUpdateOffset(): State<androidx.compose.ui.unit.Dp> {
   val areButtonsVisible = controlsShown && !controlsLocked && !brightnessSliderShown && !volumeSliderShown
   val isPortrait = LocalConfiguration.current.orientation == ORIENTATION_PORTRAIT
 
-  // Keep mpvRx's current visible-control placement intact (104dp portrait / 64dp landscape).
+  // Keep VideoPlayer's current visible-control placement intact (104dp portrait / 64dp landscape).
   // mpvRex moves its OSD toward the top when controls disappear. Applying that movement as an
   // internal offset avoids touching the carefully tuned PlayerControls constraints and padding.
   val targetOffset =

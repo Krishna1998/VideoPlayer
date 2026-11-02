@@ -27,7 +27,7 @@ internal object MeasureTelemetry {
       this.application = application
       initialized = true
       if (enabled) Measure.start()
-      // mpvRx's local crash recovery remains the topmost handler. Measure is its fallback.
+      // VideoPlayer's local crash recovery remains the topmost handler. Measure is its fallback.
       CrashMonitor.ensureInstalled(application)
     }.onFailure { Log.e(TAG, "Measure SDK initialization failed", it) }
   }
@@ -37,7 +37,7 @@ internal object MeasureTelemetry {
     if (!initialized) return false
     return runCatching {
       if (enabled) Measure.start() else Measure.stop()
-      // The SDK can install an exception handler on start; wrap it again for mpvRx.
+      // The SDK can install an exception handler on start; wrap it again for VideoPlayer.
       application?.let(CrashMonitor::ensureInstalled)
     }.onFailure { Log.e(TAG, "Could not update Measure consent", it) }.isSuccess
   }

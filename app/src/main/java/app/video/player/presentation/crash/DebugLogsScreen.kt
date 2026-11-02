@@ -86,8 +86,8 @@ import org.koin.compose.koinInject
 import java.io.File
 
 private const val DEBUG_LOG_POLL_INTERVAL_MS = 1_500L
-private const val DEBUG_LOG_TAG = "MpvRxDebugLogs"
-private const val DEBUG_LOG_FILE_PREFIX = "mpvrx-debug-"
+private const val DEBUG_LOG_TAG = "VideoPlayerDebugLogs"
+private const val DEBUG_LOG_FILE_PREFIX = "videoplayer-debug-"
 private const val DEBUG_LOG_KEEP = 5
 private const val SHARE_DIR_NAME = "shared_logs"
 
@@ -317,7 +317,7 @@ internal fun DebugLogsScreen(onNavigateBack: () -> Unit) {
                   menuExpanded = false
                   SafeClipboard.copyPlainText(
                     context = context,
-                    label = "mpvrx_debug_logs",
+                    label = "videoplayer_debug_logs",
                     text = allCapturedText(),
                   )
                 },
@@ -439,13 +439,13 @@ internal fun DebugLogsScreen(onNavigateBack: () -> Unit) {
           !hasLoadedOnce && sourceEntries.isEmpty() -> {
             DebugLogMessageState(
               title = "Loading logs…",
-              message = "Reading the current mpvRx process logcat.",
+              message = "Reading the current VideoPlayer process logcat.",
             )
           }
           readError != null && sourceEntries.isEmpty() -> {
             DebugLogMessageState(
               title = "Unable to read logs",
-              message = "Android did not return the app logcat. mpvRx will keep retrying automatically.\n\n${readError.orEmpty()}",
+              message = "Android did not return the app logcat. VideoPlayer will keep retrying automatically.\n\n${readError.orEmpty()}",
               isError = true,
             )
           }
@@ -459,7 +459,7 @@ internal fun DebugLogsScreen(onNavigateBack: () -> Unit) {
                 } else if (isPaused) {
                   "Resume to see the latest captured entries."
                 } else {
-                  "Use mpvRx normally and new app logs will appear here."
+                  "Use VideoPlayer normally and new app logs will appear here."
                 },
             )
           }
@@ -489,7 +489,7 @@ internal fun DebugLogsScreen(onNavigateBack: () -> Unit) {
                   onCopy = {
                     SafeClipboard.copyPlainText(
                       context = context,
-                      label = "mpvrx_log_entry",
+                      label = "videoplayer_log_entry",
                       text = formatDebugLogEntry(entry),
                     )
                   },

@@ -16,7 +16,7 @@ import android.util.Base64
 import android.util.Xml
 import androidx.documentfile.provider.DocumentFile
 import app.video.player.BuildConfig
-import app.video.player.database.MpvRxDatabase
+import app.video.player.database.VideoPlayerDatabase
 import app.video.player.domain.network.NetworkConnection
 import app.video.player.domain.network.NetworkProtocol
 import app.video.player.preferences.preference.PreferenceKind
@@ -44,10 +44,11 @@ import java.util.Locale
 class SettingsManager(
   private val context: Context,
   private val preferenceStore: PreferenceStore,
-  private val database: MpvRxDatabase,
+  private val database: VideoPlayerDatabase,
 ) {
   companion object {
-    private const val TAG_ROOT = "mpvRxSettings"
+    private const val TAG_ROOT = "VideoPlayerSettings"
+    private const val LEGACY_TAG_ROOT = "mpvRxSettings"
     private const val TAG_PREFERENCES = "preferences"
     private const val TAG_PREFERENCE = "preference"
     private const val TAG_DATABASE = "database"
@@ -406,7 +407,8 @@ class SettingsManager(
     // Detects the encoding (and a byte-order mark) from the file itself.
     parser.setInput(inputStream, null)
     parser.nextTag()
-    parser.require(XmlPullParser.START_TAG, null, TAG_ROOT)
+    val rootTag = parser.name
+    require(rootTag == TAG_ROOT || rootTag == LEGACY_TAG_ROOT) { "Expected root tag $TAG_ROOT or $LEGACY_TAG_ROOT, found $rootTag" }
     val formatVersion = parser.getAttributeValue(null, ATTR_FORMAT_VERSION)?.trim()?.toIntOrNull() ?: 1
     require(formatVersion >= 1) { "Unsupported settings format: $formatVersion" }
 
@@ -427,7 +429,7 @@ class SettingsManager(
           XmlPullParser.START_TAG -> {
             parents.addLast(parser.name)
             when (parser.name) {
-              TAG_ROOT -> stats.version = parser.getAttributeValue(null, ATTR_VERSION) ?: "unknown"
+              TAG_ROOT, LEGACY_TAG_ROOT -> stats.version = parser.getAttributeValue(null, ATTR_VERSION) ?: "unknown"
               TAG_PREFERENCE -> {
                 val key = parser.getAttributeValue(null, ATTR_KEY)
                 if (parents.size == 3 && parents[1] == TAG_PREFERENCES &&

@@ -53,7 +53,7 @@
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_crimson_black"
         android:supportsRtl="true"
-        android:theme="@style/Theme.mpvrx"
+        android:theme="@style/Theme.videoplayer"
         android:largeHeap="true"
         android:hardwareAccelerated="true"
         android:networkSecurityConfig="@xml/network_security_config"
@@ -94,7 +94,7 @@
 
         <meta-data
             android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
-            android:value="app.video.player.ui.cast.MpvRxCastOptionsProvider" />
+            android:value="app.video.player.ui.cast.VideoPlayerCastOptionsProvider" />
 
         <receiver
             android:name="androidx.mediarouter.media.MediaTransferReceiver"
@@ -131,7 +131,7 @@
             android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:resizeableActivity="true"
             android:supportsPictureInPicture="true"
-            android:theme="@style/Theme.mpvrx.Splash">
+            android:theme="@style/Theme.videoplayer.Splash">
         </activity>
 
         <activity
@@ -141,7 +141,7 @@
             android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:resizeableActivity="true"
             android:supportsPictureInPicture="true"
-            android:theme="@style/Theme.mpvrx.PurpleSplash" />
+            android:theme="@style/Theme.videoplayer.PurpleSplash" />
 
         <!-- Classic icon uses a separate launcher target so Android can render its matching
              system splash before any application code runs. -->
@@ -152,7 +152,7 @@
             android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:resizeableActivity="true"
             android:supportsPictureInPicture="true"
-            android:theme="@style/Theme.mpvrx.ClassicSplash" />
+            android:theme="@style/Theme.videoplayer.ClassicSplash" />
 
         <activity-alias
             android:name=".PurpleLauncher"
@@ -1226,7 +1226,7 @@
         <activity
             android:name=".ui.editor.ExternalTextEditorActivity"
             android:exported="true"
-            android:theme="@style/Theme.mpvrx"
+            android:theme="@style/Theme.videoplayer"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -1299,8 +1299,8 @@
             android:documentLaunchMode="never"
             android:resizeableActivity="true"
             android:supportsPictureInPicture="true"
-            android:theme="@style/Theme.mpvrx.Player">
-            <!-- MIME-only discovery lets external-player pickers find mpvRx before they
+            android:theme="@style/Theme.videoplayer.Player">
+            <!-- MIME-only discovery lets external-player pickers find VideoPlayer before they
                  attach the final stream URI. URI playback remains constrained below. -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -1473,23 +1473,23 @@
             android:name=".ui.cast.CastRemoteControllerActivity"
             android:exported="false"
             android:launchMode="singleTask"
-            android:theme="@style/Theme.mpvrx" />
+            android:theme="@style/Theme.videoplayer" />
         <activity
             android:name=".ui.cast.CastExpandedControlsActivity"
             android:exported="false"
             android:launchMode="singleTask"
-            android:theme="@style/Theme.mpvrx" />
+            android:theme="@style/Theme.videoplayer" />
         <activity
             android:name=".presentation.crash.CrashActivity"
             android:process=":crash"
             android:exported="false"
             android:excludeFromRecents="true"
             android:launchMode="singleTask"
-            android:theme="@style/Theme.mpvrx" />
+            android:theme="@style/Theme.videoplayer" />
         <activity
             android:name=".presentation.crash.DebugLogsActivity"
             android:exported="false"
-            android:theme="@style/Theme.mpvrx" />
+            android:theme="@style/Theme.videoplayer" />
         <provider
             android:name=".presentation.crash.CrashReportProvider"
             android:authorities="${applicationId}.crash-reports"
@@ -1504,7 +1504,7 @@
         <activity
             android:name=".ui.mediainfo.MediaInfoActivity"
             android:exported="true"
-            android:theme="@style/Theme.mpvrx"
+            android:theme="@style/Theme.videoplayer"
             android:label="@string/ui_media_info" />
 
         <activity-alias

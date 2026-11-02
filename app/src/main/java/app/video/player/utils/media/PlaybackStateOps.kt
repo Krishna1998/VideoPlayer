@@ -10,7 +10,7 @@
 package app.video.player.utils.media
 
 import android.util.Log
-import app.video.player.database.MpvRxDatabase
+import app.video.player.database.VideoPlayerDatabase
 import app.video.player.database.entities.PlaybackStateEntity
 import app.video.player.domain.media.model.Video
 import app.video.player.domain.playbackstate.repository.PlaybackStateRepository
@@ -29,7 +29,7 @@ import java.io.File
 object PlaybackStateOps {
   private const val TAG = "PlaybackStateOps"
   private val repository: PlaybackStateRepository by inject(PlaybackStateRepository::class.java)
-  private val database: MpvRxDatabase by inject(MpvRxDatabase::class.java)
+  private val database: VideoPlayerDatabase by inject(VideoPlayerDatabase::class.java)
 
   suspend fun setWatched(video: Video, watched: Boolean) = setWatched(listOf(video), watched)
 

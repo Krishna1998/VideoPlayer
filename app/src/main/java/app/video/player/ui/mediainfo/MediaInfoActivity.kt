@@ -100,7 +100,7 @@ import app.video.player.ui.theme.AppConnectedShapeTokens
 import app.video.player.ui.theme.AppConnectedControlShapeTokens
 import app.video.player.ui.theme.ConnectedLayout
 import app.video.player.ui.theme.DarkMode
-import app.video.player.ui.theme.MpvrxTheme
+import app.video.player.ui.theme.VideoPlayerTheme
 import app.video.player.ui.theme.rememberConnectedShape
 import app.video.player.utils.clipboard.SafeClipboard
 import app.video.player.utils.media.MediaInfoOps
@@ -139,7 +139,7 @@ class MediaInfoActivity : AppCompatActivity() {
         ) { isDarkMode },
       )
 
-      MpvrxTheme {
+      VideoPlayerTheme {
         Surface {
           MediaInfoScreen(
             onBack = { finish() },

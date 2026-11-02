@@ -50,7 +50,7 @@ internal object CrashReportStore {
     metadata.delete()
     val reportId = UUID.randomUUID().toString()
     writeAtomically(File(directory, EXCEPTION_FILE)) { writer ->
-      writer.appendLine("mpvRx crash report")
+      writer.appendLine("VideoPlayer crash report")
       writer.appendLine("Report ID: $reportId")
       writer.appendLine("Captured: ${SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.ROOT).format(Date())}")
       writer.appendLine("Process ID: ${Process.myPid()}")
@@ -110,7 +110,7 @@ internal object CrashReportStore {
         writer.append(previous)
         writer.appendLine()
       } else {
-        writer.appendLine("mpvRx crash report")
+        writer.appendLine("VideoPlayer crash report")
         writer.appendLine("Report ID: $reportId")
         writer.appendLine("Captured: ${SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.ROOT).format(Date())}")
         writer.appendLine()
@@ -199,7 +199,7 @@ internal object CrashReportStore {
       AtomicFile(File(directory, "metadata.json")).openRead().bufferedReader().use { JSONObject(it.readText()) }
     }.getOrNull()
     val reportId = runCatching { UUID.fromString(crashId) }.getOrNull() ?: UUID.randomUUID()
-    val report = File(directory, "mpvrx-crash-$reportId.txt")
+    val report = File(directory, "videoplayer-crash-$reportId.txt")
     val matchingCapture = crashId.isNotBlank() && metadata?.optString("reportId") == crashId
     if (matchingCapture && metadata.optBoolean("completed") && report.isFile) return report
     val hasFullException = matchingCapture && File(directory, "exception.txt").isFile
@@ -238,7 +238,7 @@ internal object CrashReportStore {
       directory,
       (metadata?.takeIf { matchingCapture } ?: JSONObject()).put("reportId", reportId.toString()).put("completed", true),
     )
-    directory.listFiles { file -> file.name.startsWith("mpvrx-crash-") && file.extension == "txt" }
+    directory.listFiles { file -> file.name.startsWith("videoplayer-crash-") && file.extension == "txt" }
       ?.sortedByDescending(File::lastModified)?.drop(5)?.forEach { it.delete() }
     return report
   }

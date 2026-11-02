@@ -1,244 +1,244 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- One system splash per launcher icon pair: the icon's background behind its logo. Android 13+ applies the
-         one for the chosen icon through LauncherIconManager; older versions keep Theme.mpvrx.Splash. -->
-    <style name="Theme.mpvrx.Splash.BlackSolid">
+         one for the chosen icon through LauncherIconManager; older versions keep Theme.videoplayer.Splash. -->
+    <style name="Theme.videoplayer.Splash.BlackSolid">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_solid_purple_animated</item>
         <item name="windowSplashScreenBackground">@color/splash_background</item>
     </style>
-    <style name="Theme.mpvrx.Splash.BlackGradient">
+    <style name="Theme.videoplayer.Splash.BlackGradient">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_purple_animated</item>
         <item name="windowSplashScreenBackground">@color/splash_background</item>
     </style>
-    <style name="Theme.mpvrx.Splash.BlackWhite">
+    <style name="Theme.videoplayer.Splash.BlackWhite">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_white_animated</item>
         <item name="windowSplashScreenBackground">@color/splash_background</item>
     </style>
-    <style name="Theme.mpvrx.Splash.WhiteSolid">
+    <style name="Theme.videoplayer.Splash.WhiteSolid">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_solid_purple_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_white</item>
     </style>
-    <style name="Theme.mpvrx.Splash.WhiteGradient">
+    <style name="Theme.videoplayer.Splash.WhiteGradient">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_purple_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_white</item>
     </style>
-    <style name="Theme.mpvrx.Splash.WhiteBlack">
+    <style name="Theme.videoplayer.Splash.WhiteBlack">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_black_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_white</item>
     </style>
-    <style name="Theme.mpvrx.Splash.CharcoalSolid">
+    <style name="Theme.videoplayer.Splash.CharcoalSolid">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_solid_purple_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_charcoal</item>
     </style>
-    <style name="Theme.mpvrx.Splash.CharcoalGradient">
+    <style name="Theme.videoplayer.Splash.CharcoalGradient">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_purple_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_charcoal</item>
     </style>
-    <style name="Theme.mpvrx.Splash.CharcoalWhite">
+    <style name="Theme.videoplayer.Splash.CharcoalWhite">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_white_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_charcoal</item>
     </style>
-    <style name="Theme.mpvrx.Splash.IndigoSolid">
+    <style name="Theme.videoplayer.Splash.IndigoSolid">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_solid_purple_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_indigo</item>
     </style>
-    <style name="Theme.mpvrx.Splash.IndigoWhite">
+    <style name="Theme.videoplayer.Splash.IndigoWhite">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_white_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_indigo</item>
     </style>
-    <style name="Theme.mpvrx.Splash.VioletSolid">
+    <style name="Theme.videoplayer.Splash.VioletSolid">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_solid_purple_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_violet</item>
     </style>
-    <style name="Theme.mpvrx.Splash.VioletWhite">
+    <style name="Theme.videoplayer.Splash.VioletWhite">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_white_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_violet</item>
     </style>
-    <style name="Theme.mpvrx.Splash.LagoonWhite">
+    <style name="Theme.videoplayer.Splash.LagoonWhite">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_white_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_lagoon</item>
     </style>
-    <style name="Theme.mpvrx.Splash.LagoonBlack">
+    <style name="Theme.videoplayer.Splash.LagoonBlack">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_black_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_lagoon</item>
     </style>
-    <style name="Theme.mpvrx.Splash.AzureSolid">
+    <style name="Theme.videoplayer.Splash.AzureSolid">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_solid_purple_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_azure</item>
     </style>
-    <style name="Theme.mpvrx.Splash.AzureGradient">
+    <style name="Theme.videoplayer.Splash.AzureGradient">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_purple_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_azure</item>
     </style>
-    <style name="Theme.mpvrx.Splash.AzureBlack">
+    <style name="Theme.videoplayer.Splash.AzureBlack">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_black_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_azure</item>
     </style>
-    <style name="Theme.mpvrx.Splash.LilacSolid">
+    <style name="Theme.videoplayer.Splash.LilacSolid">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_solid_purple_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_lilac</item>
     </style>
-    <style name="Theme.mpvrx.Splash.LilacGradient">
+    <style name="Theme.videoplayer.Splash.LilacGradient">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_purple_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_lilac</item>
     </style>
-    <style name="Theme.mpvrx.Splash.LilacBlack">
+    <style name="Theme.videoplayer.Splash.LilacBlack">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_black_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_lilac</item>
     </style>
-    <style name="Theme.mpvrx.Splash.MintSolid">
+    <style name="Theme.videoplayer.Splash.MintSolid">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_solid_purple_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_mint</item>
     </style>
-    <style name="Theme.mpvrx.Splash.MintGradient">
+    <style name="Theme.videoplayer.Splash.MintGradient">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_purple_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_mint</item>
     </style>
-    <style name="Theme.mpvrx.Splash.MintBlack">
+    <style name="Theme.videoplayer.Splash.MintBlack">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_black_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_mint</item>
     </style>
-    <style name="Theme.mpvrx.Splash.EmberWhite">
+    <style name="Theme.videoplayer.Splash.EmberWhite">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_white_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_ember</item>
     </style>
-    <style name="Theme.mpvrx.Splash.EmberBlack">
+    <style name="Theme.videoplayer.Splash.EmberBlack">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_black_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_ember</item>
     </style>
-    <style name="Theme.mpvrx.Splash.BlackClassic">
+    <style name="Theme.videoplayer.Splash.BlackClassic">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_classic_inset</item>
         <item name="windowSplashScreenBackground">@color/splash_background</item>
     </style>
-    <style name="Theme.mpvrx.Splash.WhiteClassic">
+    <style name="Theme.videoplayer.Splash.WhiteClassic">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_classic_inset</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_white</item>
     </style>
-    <style name="Theme.mpvrx.Splash.CharcoalClassic">
+    <style name="Theme.videoplayer.Splash.CharcoalClassic">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_classic_inset</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_charcoal</item>
     </style>
-    <style name="Theme.mpvrx.Splash.IndigoClassic">
+    <style name="Theme.videoplayer.Splash.IndigoClassic">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_classic_inset</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_indigo</item>
     </style>
-    <style name="Theme.mpvrx.Splash.VioletClassic">
+    <style name="Theme.videoplayer.Splash.VioletClassic">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_classic_inset</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_violet</item>
     </style>
-    <style name="Theme.mpvrx.Splash.AzureClassic">
+    <style name="Theme.videoplayer.Splash.AzureClassic">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_classic_inset</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_azure</item>
     </style>
-    <style name="Theme.mpvrx.Splash.LilacClassic">
+    <style name="Theme.videoplayer.Splash.LilacClassic">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_classic_inset</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_lilac</item>
     </style>
-    <style name="Theme.mpvrx.Splash.MintClassic">
+    <style name="Theme.videoplayer.Splash.MintClassic">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_classic_inset</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_mint</item>
     </style>
-    <style name="Theme.mpvrx.Splash.CrimsonWhite">
+    <style name="Theme.videoplayer.Splash.CrimsonWhite">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_white_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_crimson</item>
     </style>
-    <style name="Theme.mpvrx.Splash.CrimsonBlack">
+    <style name="Theme.videoplayer.Splash.CrimsonBlack">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_black_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_crimson</item>
     </style>
-    <style name="Theme.mpvrx.Splash.RoseWhite">
+    <style name="Theme.videoplayer.Splash.RoseWhite">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_white_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_rose</item>
     </style>
-    <style name="Theme.mpvrx.Splash.RoseBlack">
+    <style name="Theme.videoplayer.Splash.RoseBlack">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_black_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_rose</item>
     </style>
-    <style name="Theme.mpvrx.Splash.PeachWhite">
+    <style name="Theme.videoplayer.Splash.PeachWhite">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_white_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_peach</item>
     </style>
-    <style name="Theme.mpvrx.Splash.PeachBlack">
+    <style name="Theme.videoplayer.Splash.PeachBlack">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_black_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_peach</item>
     </style>
-    <style name="Theme.mpvrx.Splash.AmberWhite">
+    <style name="Theme.videoplayer.Splash.AmberWhite">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_white_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_amber</item>
     </style>
-    <style name="Theme.mpvrx.Splash.AmberBlack">
+    <style name="Theme.videoplayer.Splash.AmberBlack">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_black_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_amber</item>
     </style>
-    <style name="Theme.mpvrx.Splash.LemonWhite">
+    <style name="Theme.videoplayer.Splash.LemonWhite">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_white_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_lemon</item>
     </style>
-    <style name="Theme.mpvrx.Splash.LemonBlack">
+    <style name="Theme.videoplayer.Splash.LemonBlack">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_black_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_lemon</item>
     </style>
-    <style name="Theme.mpvrx.Splash.LimeWhite">
+    <style name="Theme.videoplayer.Splash.LimeWhite">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_white_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_lime</item>
     </style>
-    <style name="Theme.mpvrx.Splash.LimeBlack">
+    <style name="Theme.videoplayer.Splash.LimeBlack">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_black_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_lime</item>
     </style>
-    <style name="Theme.mpvrx.Splash.ForestWhite">
+    <style name="Theme.videoplayer.Splash.ForestWhite">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_white_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_forest</item>
     </style>
-    <style name="Theme.mpvrx.Splash.ForestBlack">
+    <style name="Theme.videoplayer.Splash.ForestBlack">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_black_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_forest</item>
     </style>
-    <style name="Theme.mpvrx.Splash.TealWhite">
+    <style name="Theme.videoplayer.Splash.TealWhite">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_white_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_teal</item>
     </style>
-    <style name="Theme.mpvrx.Splash.TealBlack">
+    <style name="Theme.videoplayer.Splash.TealBlack">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_black_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_teal</item>
     </style>
-    <style name="Theme.mpvrx.Splash.SkyWhite">
+    <style name="Theme.videoplayer.Splash.SkyWhite">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_white_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_sky</item>
     </style>
-    <style name="Theme.mpvrx.Splash.SkyBlack">
+    <style name="Theme.videoplayer.Splash.SkyBlack">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_black_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_sky</item>
     </style>
-    <style name="Theme.mpvrx.Splash.CobaltWhite">
+    <style name="Theme.videoplayer.Splash.CobaltWhite">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_white_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_cobalt</item>
     </style>
-    <style name="Theme.mpvrx.Splash.CobaltBlack">
+    <style name="Theme.videoplayer.Splash.CobaltBlack">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_black_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_cobalt</item>
     </style>
-    <style name="Theme.mpvrx.Splash.PlumWhite">
+    <style name="Theme.videoplayer.Splash.PlumWhite">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_white_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_plum</item>
     </style>
-    <style name="Theme.mpvrx.Splash.PlumBlack">
+    <style name="Theme.videoplayer.Splash.PlumBlack">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_black_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_plum</item>
     </style>
-    <style name="Theme.mpvrx.Splash.CocoaWhite">
+    <style name="Theme.videoplayer.Splash.CocoaWhite">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_white_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_cocoa</item>
     </style>
-    <style name="Theme.mpvrx.Splash.CocoaBlack">
+    <style name="Theme.videoplayer.Splash.CocoaBlack">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_black_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_cocoa</item>
     </style>
-    <style name="Theme.mpvrx.Splash.WallpaperWhite">
+    <style name="Theme.videoplayer.Splash.WallpaperWhite">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_white_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_wallpaper</item>
     </style>
-    <style name="Theme.mpvrx.Splash.WallpaperBlack">
+    <style name="Theme.videoplayer.Splash.WallpaperBlack">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_black_animated</item>
         <item name="windowSplashScreenBackground">@color/icon_bg_wallpaper</item>
     </style>

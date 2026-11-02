@@ -21,7 +21,7 @@ import java.nio.charset.StandardCharsets
 object SafeClipboard {
   const val MAX_CLIPBOARD_BYTES: Int = 512 * 1024
   private const val RETRY_BYTES: Int = 128 * 1024
-  private const val LEGACY_DEBUG_DUMP_LABEL = "mpvrx_logs"
+  private const val LEGACY_DEBUG_DUMP_LABEL = "videoplayer_logs"
 
   data class TruncatedText(
     val text: String,
@@ -82,7 +82,7 @@ object SafeClipboard {
     }
 
     fun suffixFor(copiedBytes: Int) =
-      "\n\n[MPVRX: copied first $copiedBytes of $bytes bytes. Use Share/Export for full content.]"
+      "\n\n[VIDEOPLAYER: copied first $copiedBytes of $bytes bytes. Use Share/Export for full content.]"
 
     val suffixBytes = suffixFor(0).toByteArray(StandardCharsets.UTF_8).size
     val budget = (maxBytes - suffixBytes).coerceAtLeast(0)

@@ -85,7 +85,7 @@ data class Release(
     get() {
       val channelName = ciChannelName ?: return assets
       val buildNumber = ciBuildNumber ?: return emptyList()
-      return assets.filter { it.name.startsWith("mpvRx-$channelName-r$buildNumber-", ignoreCase = true) }
+      return assets.filter { it.name.startsWith("VideoPlayer-$channelName-r$buildNumber-", ignoreCase = true) }
     }
 
   companion object {
@@ -140,7 +140,7 @@ internal const val APK_VARIANT_PLAYSTORE = "playstore"
 /** ABI splits published matching the Android ABI names. */
 internal val APK_ABIS = listOf("arm64-v8a")
 
-/** Matches a dash-separated token in an asset name such as `mpvRx-preview-r1969-arm64-v8a.apk`. */
+/** Matches a dash-separated token in an asset name such as `VideoPlayer-preview-r1969-arm64-v8a.apk`. */
 internal fun String.hasApkAssetToken(token: String): Boolean =
   Regex(
     pattern = "(?:^|-)${Regex.escape(token)}(?:-|\\.apk$)",

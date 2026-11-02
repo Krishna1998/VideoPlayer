@@ -555,8 +555,8 @@ class MPVView(
   fun applyStartupStatistics() {
     // The native core survives Activity recreation and playlist loads. A toggle on every
     // load would turn an already enabled statistics overlay off on the next file.
-    if (PlaybackSession.getPropertyString("user-data/mpvrx/startup-stats-applied") == "yes") return
-    PlaybackSession.setPropertyString("user-data/mpvrx/startup-stats-applied", "yes")
+    if (PlaybackSession.getPropertyString("user-data/videoplayer/startup-stats-applied") == "yes") return
+    PlaybackSession.setPropertyString("user-data/videoplayer/startup-stats-applied", "yes")
     advancedPreferences.enabledStatisticsPage.get().let {
       if (it in 1..5) {
         PlaybackSession.command("script-binding", "stats/display-stats-toggle")
@@ -770,21 +770,21 @@ class MPVView(
       "video-params/rotate" to MPVLib.MpvFormat.MPV_FORMAT_INT64,
       "container-fps" to MPVLib.MpvFormat.MPV_FORMAT_DOUBLE,
       "eof-reached" to MPVLib.MpvFormat.MPV_FORMAT_FLAG,
-      "user-data/mpvrx/show_text" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
-      "user-data/mpvrx/toggle_ui" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
-      "user-data/mpvrx/show_panel" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
-      "user-data/mpvrx/set_button_title" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
-      "user-data/mpvrx/reset_button_title" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
-      "user-data/mpvrx/toggle_button" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
-      "user-data/mpvrx/seek_by" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
-      "user-data/mpvrx/seek_to" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
-      "user-data/mpvrx/seek_by_with_text" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
-      "user-data/mpvrx/seek_to_with_text" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
-      "user-data/mpvrx/software_keyboard" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
+      "user-data/videoplayer/show_text" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
+      "user-data/videoplayer/toggle_ui" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
+      "user-data/videoplayer/show_panel" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
+      "user-data/videoplayer/set_button_title" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
+      "user-data/videoplayer/reset_button_title" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
+      "user-data/videoplayer/toggle_button" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
+      "user-data/videoplayer/seek_by" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
+      "user-data/videoplayer/seek_to" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
+      "user-data/videoplayer/seek_by_with_text" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
+      "user-data/videoplayer/seek_to_with_text" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
+      "user-data/videoplayer/software_keyboard" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
       // Curl bridge: scripts write a JSON request here; response is written to curl_response
-      "user-data/mpvrx/curl_request" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
+      "user-data/videoplayer/curl_request" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
       // curl_response is written by the bridge; scripts observe this property for results
-      "user-data/mpvrx/curl_response" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
+      "user-data/videoplayer/curl_response" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
       // Track console visibility state
       "user-data/mpv/console/open" to MPVLib.MpvFormat.MPV_FORMAT_FLAG,
       "sub-text" to MPVLib.MpvFormat.MPV_FORMAT_STRING,

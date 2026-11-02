@@ -12,7 +12,7 @@ package app.video.player.domain.framecapture
 import android.content.Context
 import android.net.Uri
 import androidx.room.withTransaction
-import app.video.player.database.MpvRxDatabase
+import app.video.player.database.VideoPlayerDatabase
 import app.video.player.database.dao.FrameCaptureDao
 import app.video.player.database.dao.SnapshotFolderDao
 import app.video.player.database.entities.FrameCaptureEntity
@@ -38,7 +38,7 @@ class FrameCaptureRepositoryImpl(
   private val context: Context,
   private val dao: FrameCaptureDao,
   private val folderDao: SnapshotFolderDao,
-  private val database: MpvRxDatabase,
+  private val database: VideoPlayerDatabase,
   private val networkRepository: NetworkRepository,
 ) : FrameCaptureRepository {
 

@@ -149,7 +149,7 @@ object ScreenshotSaver {
     context: Context,
     includeSubtitles: Boolean,
   ): File? {
-    val tempFile = File(context.cacheDir, "mpvrx_frame_capture.png")
+    val tempFile = File(context.cacheDir, "videoplayer_frame_capture.png")
     tempFile.delete()
     // screenshot-to-file infers PNG from the .png extension (mpv ignores screenshot-format here).
     PlaybackSession.command("screenshot-to-file", tempFile.absolutePath, if (includeSubtitles) "subtitles" else "video")
@@ -187,7 +187,7 @@ object ScreenshotSaver {
     settings: ScreenshotSettings,
     includeSubtitles: Boolean,
   ): File? {
-    val tempFile = File(context.cacheDir, "mpvrx_snapshot_native.${settings.format.extension}")
+    val tempFile = File(context.cacheDir, "videoplayer_snapshot_native.${settings.format.extension}")
     tempFile.delete()
     PlaybackSession.command("screenshot-to-file", tempFile.absolutePath, if (includeSubtitles) "subtitles" else "video")
     return awaitScreenshotFile(tempFile)
@@ -200,7 +200,7 @@ object ScreenshotSaver {
   ): File? {
     if (!settings.format.androidFallback) return null
 
-    val sourcePng = File(context.cacheDir, "mpvrx_snapshot_fallback_source.png")
+    val sourcePng = File(context.cacheDir, "videoplayer_snapshot_fallback_source.png")
     sourcePng.delete()
     PlaybackSession.command("screenshot-to-file", sourcePng.absolutePath, if (includeSubtitles) "subtitles" else "video")
     if (awaitScreenshotFile(sourcePng) == null) return null
@@ -210,7 +210,7 @@ object ScreenshotSaver {
     }
 
     val bitmap = BitmapFactory.decodeFile(sourcePng.absolutePath) ?: return null
-    val output = File(context.cacheDir, "mpvrx_snapshot_fallback.${settings.format.extension}")
+    val output = File(context.cacheDir, "videoplayer_snapshot_fallback.${settings.format.extension}")
     output.delete()
     output.outputStream().use { stream ->
       if (!bitmap.compress(settings.compressFormat(), settings.compressQuality(), stream)) {

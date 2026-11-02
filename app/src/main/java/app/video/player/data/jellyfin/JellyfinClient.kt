@@ -47,7 +47,7 @@ class JellyfinClient(
   companion object {
     const val TICKS_PER_SECOND = 10_000_000L
     private const val TAG = "JellyfinClient"
-    private const val CLIENT_NAME = "mpvRx"
+    private const val CLIENT_NAME = "VideoPlayer"
     private val DEVICE_NAME: String
       get() {
         val model = Build.MODEL.orEmpty()
@@ -78,7 +78,7 @@ class JellyfinClient(
         }
         storedId
       } else {
-        "mpvrx-android-player"
+        "videoplayer-android-player"
       }
       cachedDeviceId = id
       return id

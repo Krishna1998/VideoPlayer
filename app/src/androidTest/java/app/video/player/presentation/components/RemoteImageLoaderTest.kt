@@ -143,7 +143,7 @@ class RemoteImageLoaderTest {
         .build()
     }.build()
 
-  private fun url() = "https://mpvrx.test/${UUID.randomUUID()}.png"
+  private fun url() = "https://videoplayer.test/${UUID.randomUUID()}.png"
 
   private fun png(size: Int): ByteArray {
     val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)

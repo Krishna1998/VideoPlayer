@@ -460,7 +460,7 @@ class AppDownloadManager(
   }
 
   private fun partialFile(entity: DownloadItemEntity): File =
-    File(entity.dirPath, ".mpvrx-download-${entity.id}-${entity.timeQueued}$PART_SUFFIX")
+    File(entity.dirPath, ".videoplayer-download-${entity.id}-${entity.timeQueued}$PART_SUFFIX")
 
   /** Completed, still-on-disk download for a Jellyfin item, if any. */
   fun playableForJellyfinItem(itemId: String): AppDownload? =

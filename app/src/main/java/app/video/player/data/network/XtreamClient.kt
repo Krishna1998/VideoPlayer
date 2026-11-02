@@ -228,7 +228,7 @@ class XtreamClient(
   private class XtreamResponseException(message: String) : IOException(message)
 
   companion object {
-    private const val USER_AGENT = "mpvRx/2.7"
+    private const val USER_AGENT = "VideoPlayer/2.7"
     private const val MAX_AUTH_RESPONSE_BYTES = 512 * 1024
     private const val MAX_CATALOG_RESPONSE_BYTES = 32 * 1024 * 1024
     private const val MAX_SERIES_RESPONSE_BYTES = 4 * 1024 * 1024

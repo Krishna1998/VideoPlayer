@@ -58,7 +58,7 @@ class GlobalExceptionHandler(
       // The platform handler records the crash and normally ends the process itself.
       if (!MeasureTelemetry.isEnabled(context)) fallback?.let { runCatching { it.uncaughtException(t, e) } }
     } finally {
-      // mpvRx retains its recovery screen; Measure also receives opted-in fatal crashes.
+      // VideoPlayer retains its recovery screen; Measure also receives opted-in fatal crashes.
       if (MeasureTelemetry.isEnabled(context)) {
         fallback?.let { runCatching { it.uncaughtException(t, e) } }
       }

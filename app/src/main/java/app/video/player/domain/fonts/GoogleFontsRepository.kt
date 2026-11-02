@@ -257,16 +257,16 @@ class GoogleFontsRepository(
   private companion object {
     const val CATALOG_URL = "https://fonts.google.com/metadata/fonts"
     const val CSS_URL = "https://fonts.googleapis.com/css"
-    const val USER_AGENT = "mpvRx Google Fonts"
+    const val USER_AGENT = "VideoPlayer Google Fonts"
     const val LEGACY_ANDROID_USER_AGENT =
       "Mozilla/5.0 (Linux; U; Android 4.4; en-us) AppleWebKit/534.30 Version/4.0 Mobile Safari/534.30"
     const val DIRECTORY_NAME = "app-fonts"
     const val CATALOG_FILE_NAME = "catalog.json"
     const val LEGACY_ACTIVE_FONT_FILE_NAME = "active.ttf"
     const val MPV_FONTS_DIRECTORY_NAME = "fonts"
-    const val MPV_GOOGLE_FONT_PREFIX = "mpvrx-google-font-"
-    const val LEGACY_BUNDLED_MPV_FONT_FILE_NAME = "mpvrx-google-sans-flex.ttf"
-    const val LEGACY_ACTIVE_MPV_FONT_FILE_NAME = "mpvrx-app-font.ttf"
+    const val MPV_GOOGLE_FONT_PREFIX = "videoplayer-google-font-"
+    const val LEGACY_BUNDLED_MPV_FONT_FILE_NAME = "videoplayer-google-sans-flex.ttf"
+    const val LEGACY_ACTIVE_MPV_FONT_FILE_NAME = "videoplayer-app-font.ttf"
     const val CATALOG_MAX_AGE_DAYS = 7L
     const val MAX_FONT_BYTES = 10 * 1024 * 1024
     val TTF_URL_REGEX = Regex("url\\((https://fonts\\.gstatic\\.com/[^)]+\\.ttf)\\)")

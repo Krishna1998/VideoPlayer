@@ -49,7 +49,7 @@ import app.video.player.preferences.preference.collectAsState
 import org.koin.compose.koinInject
 
 /**
- * mpvRx motion policy — respects system reduce-motion accessibility setting.
+ * VideoPlayer motion policy — respects system reduce-motion accessibility setting.
  * Spatial feedback is removed when Android animations are disabled.
  */
 @Stable

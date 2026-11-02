@@ -16,7 +16,7 @@ import java.io.File
 
 /** Runtime custom colors use a pinned shortcut; app-drawer icons remain packaged. */
 internal object CustomIconShortcut {
-  private const val ID = "mpvrx.custom-background"
+  private const val ID = "videoplayer.custom-background"
   private const val PREFERENCES = "custom_icon_shortcut"
   private const val LEGACY_IMAGE_FILE = "custom_launcher_background.png"
 

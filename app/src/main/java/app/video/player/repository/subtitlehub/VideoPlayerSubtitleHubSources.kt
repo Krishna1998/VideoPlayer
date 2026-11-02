@@ -9,7 +9,7 @@
 
 package app.video.player.repository.subtitlehub
 
-object MpvRxSubtitleHubSources {
+object VideoPlayerSubtitleHubSources {
   const val BETASERIES_KEY = "betaseries"
   const val JIMAKU_KEY = "jimaku"
   const val SUBDL_KEY = "subdl_com"

@@ -741,7 +741,7 @@ fun PermissionDeniedState(
         ) {
           if (isPlayStoreBuild) {
             Text(
-              text = stringResource(R.string.ui_mpvrx_needs_access_to_your_video_files_to_provide_its_core_funct),
+              text = stringResource(R.string.ui_videoplayer_needs_access_to_your_video_files_to_provide_its_core_funct),
               style = MaterialTheme.typography.bodyMedium,
               color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -767,7 +767,7 @@ fun PermissionDeniedState(
             )
           } else {
             Text(
-              text = stringResource(R.string.ui_mpvrx_has_always_required_storage_access_permission_as_it_s_esse),
+              text = stringResource(R.string.ui_videoplayer_has_always_required_storage_access_permission_as_it_s_esse),
               style = MaterialTheme.typography.bodyMedium,
               color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -784,7 +784,7 @@ fun PermissionDeniedState(
           }
 
           Text(
-            text = stringResource(R.string.ui_mpvrx_is_an_open_source_project_you_can_review_the_source_code_a),
+            text = stringResource(R.string.ui_videoplayer_is_an_open_source_project_you_can_review_the_source_code_a),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
           )

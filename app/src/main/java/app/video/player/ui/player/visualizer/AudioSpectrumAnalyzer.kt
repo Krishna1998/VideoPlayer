@@ -14,7 +14,7 @@ import kotlin.math.hypot
 import kotlin.math.sqrt
 
 /**
- * Audio spectrum analyzer for mpvRx using [android.media.audiofx.Visualizer].
+ * Audio spectrum analyzer for VideoPlayer using [android.media.audiofx.Visualizer].
  *
  * Captures live time-domain PCM waveforms and frequency-domain FFT bytes from the output mix / session ID
  * to drive [AudioFeatures] for 60 FPS visualizer rendering.

@@ -15,7 +15,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import app.video.player.BuildConfig
-import app.video.player.database.MpvRxDatabase
+import app.video.player.database.VideoPlayerDatabase
 import app.video.player.domain.browser.FileSystemItem
 import app.video.player.domain.browser.PathComponent
 import app.video.player.domain.media.model.Video
@@ -64,7 +64,7 @@ object MediaFileRepository : KoinComponent {
   private val appearancePreferences: AppearancePreferences by inject()
   private val browserPreferences: BrowserPreferences by inject()
   private val playbackStateRepository: PlaybackStateRepository by inject()
-  private val database: MpvRxDatabase by inject()
+  private val database: VideoPlayerDatabase by inject()
 
   internal fun currentScanOptions(
     includeAudioOverride: Boolean? = null,

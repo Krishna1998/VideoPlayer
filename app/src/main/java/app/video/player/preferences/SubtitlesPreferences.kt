@@ -14,7 +14,7 @@ import androidx.compose.ui.graphics.toArgb
 import app.video.player.preferences.preference.PreferenceStore
 import app.video.player.preferences.preference.getEnum
 import app.video.player.repository.subtitle.OnlineSubtitleSearchMode
-import app.video.player.repository.subtitlehub.MpvRxSubtitleHubSources
+import app.video.player.repository.subtitlehub.VideoPlayerSubtitleHubSources
 import app.video.player.ui.icons.AppIcon
 import app.video.player.ui.icons.Icons
 import app.video.player.ui.player.controls.components.panels.SubtitlesBorderStyle
@@ -65,7 +65,7 @@ class SubtitlesPreferences(
   val subdlLanguages = preferenceStore.getStringSet("subdl_languages", setOf("en"))
   val subtitleSearchLanguages = subdlLanguages
   val onlineSubtitleSearchMode = preferenceStore.getOnlineSubtitleSearchMode()
-  val subtitleHubSources = preferenceStore.getStringSet("subtitle_hub_sources", MpvRxSubtitleHubSources.DEFAULT)
+  val subtitleHubSources = preferenceStore.getStringSet("subtitle_hub_sources", VideoPlayerSubtitleHubSources.DEFAULT)
   val betaSeriesApiKey = preferenceStore.getString("betaseries_api_key", "")
   val jimakuApiKey = preferenceStore.getString("jimaku_api_key", "")
   val subDlApiKey = preferenceStore.getString("subdl_api_key", "")
@@ -95,6 +95,7 @@ private fun PreferenceStore.getOnlineSubtitleSearchMode() =
       when (stored) {
         OnlineSubtitleSearchMode.WYZIE.name -> OnlineSubtitleSearchMode.WYZIE
         OnlineSubtitleSearchMode.SUBHUB.name,
+        "VIDEOPLAYER_SUBTITLE_HUB",
         "MPVRX_SUBTITLE_HUB",
         -> OnlineSubtitleSearchMode.SUBHUB
         OnlineSubtitleSearchMode.HYBRID.name,

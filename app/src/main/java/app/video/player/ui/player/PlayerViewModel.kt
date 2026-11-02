@@ -2250,21 +2250,21 @@ fun restartFromBeginning() {
   private var customButtonsScriptPaths: Map<CustomButtonScriptLanguage, String> = emptyMap()
   @Volatile
   private var customButtonsScriptVersions: Map<CustomButtonScriptLanguage, String> = emptyMap()
-  private val legacyCustomButtonsLoadedFlagProperty = "user-data/mpvrx/custombuttons_loaded"
-  private val legacyCustomButtonsVersionProperty = "user-data/mpvrx/custombuttons_version"
+  private val legacyCustomButtonsLoadedFlagProperty = "user-data/videoplayer/custombuttons_loaded"
+  private val legacyCustomButtonsVersionProperty = "user-data/videoplayer/custombuttons_version"
   private val customButtonScriptTargets =
     listOf(
       CustomButtonScriptTarget(
         language = CustomButtonScriptLanguage.LUA,
         fileName = "custombuttons.lua",
-        loadedFlagProperty = "user-data/mpvrx/custombuttons_lua_loaded",
-        versionProperty = "user-data/mpvrx/custombuttons_lua_version",
+        loadedFlagProperty = "user-data/videoplayer/custombuttons_lua_loaded",
+        versionProperty = "user-data/videoplayer/custombuttons_lua_version",
       ),
       CustomButtonScriptTarget(
         language = CustomButtonScriptLanguage.JS,
         fileName = "custombuttons.js",
-        loadedFlagProperty = "user-data/mpvrx/custombuttons_js_loaded",
-        versionProperty = "user-data/mpvrx/custombuttons_js_version",
+        loadedFlagProperty = "user-data/videoplayer/custombuttons_js_loaded",
+        versionProperty = "user-data/videoplayer/custombuttons_js_version",
       ),
     )
   private val customButtonScriptTargetsByLanguage =
@@ -3389,7 +3389,7 @@ fun restartFromBeginning() {
     const val AUTO_CROP_THUMBNAIL_SIZE = 640
     const val AUTO_CROP_READY_TIMEOUT_MS = 15_000L
     const val AUTO_CROP_CACHE_CAPACITY = 20
-    const val AUTO_CROP_FILTER_LABEL = "mpvrx_autocrop_detect"
+    const val AUTO_CROP_FILTER_LABEL = "videoplayer_autocrop_detect"
     const val AUTO_CROP_DETECT_LIMIT = "24/255"
     const val AUTO_CROP_DETECT_ROUND = 2
     const val AUTO_CROP_ACTIVE_DETECT_TIMEOUT_MS = 1_600L
@@ -4706,7 +4706,7 @@ fun restartFromBeginning() {
     var lastSentPosition: Float? = null
     val owner = currentCoroutineContext()[Job]
     val networkFrame = framePreview && PlaybackSession.state.value.currentItem?.let {
-      it.networkSource != null || it.originalUri.startsWith("mpvrx-network://")
+      it.networkSource != null || it.originalUri.startsWith("videoplayer-network://") || it.originalUri.startsWith("mpvrx-network://")
     } == true
     val intervalMs = if (networkFrame) NETWORK_FRAME_PREVIEW_SEEK_INTERVAL_MS else PREVIEW_SEEK_INTERVAL_MS
     try {
@@ -5752,7 +5752,7 @@ fun restartFromBeginning() {
       "seek_to" -> seekToWithText(data.toInt(), null)
       "software_keyboard" -> handleSoftwareKeyboard(data)
       // Curl bridge: dispatch the HTTP request asynchronously; response is written
-      // back to user-data/mpvrx/curl_response for the script to observe.
+      // back to user-data/videoplayer/curl_response for the script to observe.
       "curl_request" -> scriptCurlBridge.handleRequest(data)
     }
 
@@ -6357,7 +6357,7 @@ fun restartFromBeginning() {
           retriever.setDataSource(
             localUrl,
             mapOf(
-              "User-Agent" to "Mozilla/5.0 (Android) mpvRx",
+              "User-Agent" to "Mozilla/5.0 (Android) VideoPlayer",
               "Accept" to "*/*",
             ),
           )
@@ -6766,9 +6766,9 @@ fun restartFromBeginning() {
 
     // Use labeled video filter for mirroring to avoid state desync
     if (newMirrorState) {
-      PlaybackSession.command("vf", "add", "@mpvrx_hflip:hflip")
+      PlaybackSession.command("vf", "add", "@videoplayer_hflip:hflip")
     } else {
-      PlaybackSession.command("vf", "remove", "@mpvrx_hflip")
+      PlaybackSession.command("vf", "remove", "@videoplayer_hflip")
     }
     playerUpdate.value =
       PlayerUpdates.ShowText(
@@ -6784,9 +6784,9 @@ fun restartFromBeginning() {
 
     // Use labeled video filter for vflip to avoid state desync
     if (newState) {
-      PlaybackSession.command("vf", "add", "@mpvrx_vflip:vflip")
+      PlaybackSession.command("vf", "add", "@videoplayer_vflip:vflip")
     } else {
-      PlaybackSession.command("vf", "remove", "@mpvrx_vflip")
+      PlaybackSession.command("vf", "remove", "@videoplayer_vflip")
     }
 
     playerUpdate.value =

@@ -5,7 +5,7 @@ import java.io.File
 
 /** Keep app-generated scripts out of mpv's user-script autoload directory and cache inventory. */
 internal object MpvScriptAssets {
-  fun generatedDirectory(filesDir: File): File = File(filesDir, "mpvrx-generated-scripts")
+  fun generatedDirectory(filesDir: File): File = File(filesDir, "videoplayer-generated-scripts")
 
   fun userScriptNames(filesDir: File): Set<String> =
     File(filesDir, "scripts").listFiles()

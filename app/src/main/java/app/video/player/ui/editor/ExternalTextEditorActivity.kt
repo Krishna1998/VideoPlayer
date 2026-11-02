@@ -1,7 +1,7 @@
 /*
  * SPDX-License-Identifier: AGPL-3.0-or-later
  *
- * Android's Open-with entry point for mpvRx-specific configs and text scripts.
+ * Android's Open-with entry point for VideoPlayer-specific configs and text scripts.
  * It intentionally does not route documents through PlayerActivity or execute imported code.
  */
 package app.video.player.ui.editor
@@ -44,7 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import app.video.player.preferences.AdvancedPreferences
 import app.video.player.ui.player.MpvConfigCache
-import app.video.player.ui.theme.MpvrxTheme
+import app.video.player.ui.theme.VideoPlayerTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -78,7 +78,7 @@ class ExternalTextEditorActivity : AppCompatActivity() {
     val canWrite = (sourceIntent.flags and Intent.FLAG_GRANT_WRITE_URI_PERMISSION) != 0 ||
       source.scheme == "file"
     setContent {
-      MpvrxTheme {
+      VideoPlayerTheme {
         ExternalTextEditorScreen(
           uri = source,
           fileName = fileName,
@@ -213,8 +213,8 @@ private fun ExternalTextEditorScreen(
   if (showImport) {
     AlertDialog(
       onDismissRequest = { showImport = false },
-      title = { Text("Import $fileName into mpvRx?") },
-      text = { Text("This replaces the currently active $fileName configuration inside mpvRx.") },
+      title = { Text("Import $fileName into VideoPlayer?") },
+      text = { Text("This replaces the currently active $fileName configuration inside VideoPlayer.") },
       confirmButton = {
         TextButton(onClick = {
           showImport = false
@@ -271,7 +271,7 @@ private fun ExternalTextEditorScreen(
             }
             if (isMpvConfig || isInputConfig) {
               OutlinedButton(enabled = !busy, onClick = { showImport = true }) {
-                Text("Import to mpvRx")
+                Text("Import to VideoPlayer")
               }
             }
           }

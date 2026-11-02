@@ -86,7 +86,7 @@ import app.video.player.ui.browser.components.MiniPlayer
 import app.video.player.ui.theme.AppMotion
 import app.video.player.ui.theme.DarkMode
 import app.video.player.ui.theme.AppWallpaperHost
-import app.video.player.ui.theme.MpvrxTheme
+import app.video.player.ui.theme.VideoPlayerTheme
 import app.video.player.ui.theme.rememberThemeTransitionState
 import android.view.SurfaceHolder
 import android.view.SurfaceView
@@ -298,7 +298,7 @@ open class MainActivity : AppCompatActivity() {
           }
         }
       } else {
-        MpvrxTheme(transitionState = themeTransitionState) {
+        VideoPlayerTheme(transitionState = themeTransitionState) {
           AppWallpaperHost {
             val musicSheet = rememberInAppMusicSheetState()
             // Reserve the system button area once for every destination and overlay.

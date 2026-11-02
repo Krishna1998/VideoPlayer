@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLong
 import kotlin.concurrent.thread
 
-/** Listens only on Android TV while MPVRX is in the foreground; every new phone is approved on the TV. */
+/** Listens only on Android TV while VIDEOPLAYER is in the foreground; every new phone is approved on the TV. */
 object TvRemoteServer {
   data class PairingRequest(
     val id: Long,
@@ -72,7 +72,7 @@ object TvRemoteServer {
     val appContext = context.applicationContext
     if (!RemoteControlStore(appContext).serverEnabled) return
     synchronized(lock) { wantRunning = true }
-    thread(name = "mpvrx-remote-start", isDaemon = true) { start(appContext) }
+    thread(name = "videoplayer-remote-start", isDaemon = true) { start(appContext) }
   }
 
   fun onAppBackground(context: Context) {
@@ -105,7 +105,7 @@ object TvRemoteServer {
       serverSocket = server
       registration = register(context, server.localPort)
       _address.value = localAddress(context)?.let { "$it:${server.localPort}" }
-      thread(name = "mpvrx-remote-accept", isDaemon = true) { acceptLoop(context, server) }
+      thread(name = "videoplayer-remote-accept", isDaemon = true) { acceptLoop(context, server) }
     }
   }
 
@@ -155,7 +155,7 @@ object TvRemoteServer {
         continue
       }
       sessions[client] = ""
-      thread(name = "mpvrx-remote-session", isDaemon = true) {
+      thread(name = "videoplayer-remote-session", isDaemon = true) {
         try {
           serve(context, client)
         } catch (error: Exception) {

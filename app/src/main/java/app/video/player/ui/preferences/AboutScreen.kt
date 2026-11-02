@@ -285,7 +285,7 @@ object AboutScreen : Screen {
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(12.dp))
                     .clickable {
-                      SafeClipboard.copyPlainText(context, "mpvrx_device_info", collectDeviceInfo())
+                      SafeClipboard.copyPlainText(context, "videoplayer_device_info", collectDeviceInfo())
                     },
               ) {
                 Row(

@@ -76,7 +76,7 @@ import app.video.player.domain.network.NetworkConnection
   exportSchema = true,
 )
 @TypeConverters(NetworkProtocolConverter::class, NetworkStreamEntryTypeConverter::class)
-abstract class MpvRxDatabase : RoomDatabase() {
+abstract class VideoPlayerDatabase : RoomDatabase() {
   abstract fun videoDataDao(): PlaybackStateDao
 
   abstract fun recentlyPlayedDao(): RecentlyPlayedDao
@@ -109,3 +109,5 @@ abstract class MpvRxDatabase : RoomDatabase() {
 
   abstract fun snapshotFolderDao(): SnapshotFolderDao
 }
+
+typealias MpvRxDatabase = VideoPlayerDatabase

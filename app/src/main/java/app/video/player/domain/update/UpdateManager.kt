@@ -64,7 +64,7 @@ class UpdateManager(
     if (selectUpdateAsset(release) == null) {
       return null
     }
-    val prefs = context.getSharedPreferences("mpvrx_prefs", Context.MODE_PRIVATE)
+    val prefs = context.getSharedPreferences("videoplayer_prefs", Context.MODE_PRIVATE)
     val ignoredVersion =
       prefs.getString(ignoredVersionKey(channel), null)
         ?: if (channel == AppUpdateChannel.STABLE) prefs.getString(LEGACY_IGNORED_VERSION_KEY, null) else null
@@ -136,7 +136,7 @@ class UpdateManager(
       return
     }
 
-    val prefs = context.getSharedPreferences("mpvrx_prefs", Context.MODE_PRIVATE)
+    val prefs = context.getSharedPreferences("videoplayer_prefs", Context.MODE_PRIVATE)
     prefs
       .edit()
       .putString(ignoredVersionKey(channel), version)
@@ -196,7 +196,7 @@ class UpdateManager(
   private fun selectBestApkAsset(assets: List<Asset>): Asset? {
     val compatibleAssets =
       assets.filter { asset ->
-        asset.name.startsWith("mpvRx-", ignoreCase = true) &&
+        asset.name.startsWith("VideoPlayer-", ignoreCase = true) &&
           asset.name.endsWith(".apk", ignoreCase = true) &&
           asset.name.matchesApkVariant(BuildConfig.UPDATE_APK_VARIANT)
       }
@@ -407,7 +407,7 @@ class UpdateManager(
   private fun pruneOtherDownloads(keep: Set<String>) {
     File(context.externalCacheDir ?: context.cacheDir, "updates").listFiles()?.forEach { file ->
       val isUpdateDownload =
-        file.name.startsWith("mpvRx-", ignoreCase = true) &&
+        file.name.startsWith("VideoPlayer-", ignoreCase = true) &&
           (file.name.endsWith(".apk") || file.name.endsWith(PART_SUFFIX))
       if (isUpdateDownload && file.name !in keep) file.delete()
     }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Splash rendition of the black mpvRx ribbon: the solid purple splash artwork with its own fill, animated alike. -->
+<!-- Splash rendition of the black VideoPlayer ribbon: the solid purple splash artwork with its own fill, animated alike. -->
 <animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
  xmlns:aapt="http://schemas.android.com/aapt">
  <aapt:attr name="android:drawable">
@@ -23,6 +23,6 @@
  </group>
 </vector>
  </aapt:attr>
- <target android:name="logo_main" android:animation="@animator/mpvrx_splash_main"/>
- <target android:name="logo_tip" android:animation="@animator/mpvrx_splash_tip"/>
+ <target android:name="logo_main" android:animation="@animator/videoplayer_splash_main"/>
+ <target android:name="logo_tip" android:animation="@animator/videoplayer_splash_tip"/>
 </animated-vector>

@@ -5,7 +5,7 @@ replace the old `HSP` wildcard over every app method. Compose and other AndroidX
 their own profiles. These checked-in app rules are conservative defaults, not measured profiles.
 
 The `baselineprofile` test-only module captures cold launcher startup separately from library
-navigation and scrolling. It creates 32 local video fixtures in its own `Movies/mpvRxBenchmark/`
+navigation and scrolling. It creates 32 local video fixtures in its own `Movies/VideoPlayerBenchmark/`
 folder. The 34 KB clip was generated with FFmpeg's `testsrc2`; it contains no third-party media.
 Use a disposable API 33+ device/emulator for capture. No account or media server is required.
 
