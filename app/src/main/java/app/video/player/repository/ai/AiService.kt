@@ -27,12 +27,7 @@ import java.util.Locale
 class AiService(
   private val context: Context,
   private val preferences: AiPreferences,
-  private val openCodeClient: AiClient,
   private val groqClient: AiClient,
-  private val openAiClient: AiClient,
-  private val anthropicClient: AiClient,
-  private val openRouterClient: AiClient,
-  private val togetherClient: AiClient,
   private val geminiClient: AiClient,
   private val json: Json,
 ) {
@@ -42,12 +37,7 @@ class AiService(
 
   private val clients: Map<AiProvider, AiClient> =
     mapOf(
-      AiProvider.OPENCODE to openCodeClient,
       AiProvider.GROQ to groqClient,
-      AiProvider.OPENAI to openAiClient,
-      AiProvider.ANTHROPIC to anthropicClient,
-      AiProvider.OPENROUTER to openRouterClient,
-      AiProvider.TOGETHER to togetherClient,
       AiProvider.GEMINI to geminiClient,
     )
 
@@ -89,8 +79,8 @@ class AiService(
 
   suspend fun fetchSpeechModelsForProvider(provider: AiProvider): Result<List<AiModelInfo>> =
     withContext(Dispatchers.IO) {
-      if (provider !in setOf(AiProvider.GROQ, AiProvider.OPENAI, AiProvider.OPENROUTER)) {
-        return@withContext Result.failure(IllegalArgumentException("$provider does not provide speech-to-text in mpvRx"))
+      if (provider != AiProvider.GROQ) {
+        return@withContext Result.failure(IllegalArgumentException("$provider does not provide speech-to-text in Video Player"))
       }
       val apiKey = getApiKey(provider)
       if (apiKey.isBlank()) {
@@ -111,17 +101,6 @@ class AiService(
         listOf(
           AiModelInfo("whisper-large-v3-turbo", "Whisper Large V3 Turbo"),
           AiModelInfo("whisper-large-v3", "Whisper Large V3"),
-        )
-      AiProvider.OPENAI ->
-        listOf(
-          AiModelInfo("gpt-4o-mini-transcribe", "GPT-4o Mini Transcribe"),
-          AiModelInfo("gpt-4o-transcribe", "GPT-4o Transcribe"),
-          AiModelInfo("whisper-1", "Whisper"),
-        )
-      AiProvider.OPENROUTER ->
-        listOf(
-          AiModelInfo("openai/whisper-large-v3-turbo", "Whisper Large V3 Turbo"),
-          AiModelInfo("openai/whisper-large-v3", "Whisper Large V3"),
         )
       else -> emptyList()
     }
@@ -325,12 +304,7 @@ class AiService(
 
   fun getApiKey(provider: AiProvider): String =
     when (provider) {
-      AiProvider.OPENCODE -> preferences.openCodeApiKey.get()
       AiProvider.GROQ -> preferences.groqApiKey.get()
-      AiProvider.OPENAI -> preferences.openaiApiKey.get()
-      AiProvider.ANTHROPIC -> preferences.anthropicApiKey.get()
-      AiProvider.OPENROUTER -> preferences.openrouterApiKey.get()
-      AiProvider.TOGETHER -> preferences.togetherApiKey.get()
       AiProvider.GEMINI -> preferences.geminiApiKey.get()
     }
 

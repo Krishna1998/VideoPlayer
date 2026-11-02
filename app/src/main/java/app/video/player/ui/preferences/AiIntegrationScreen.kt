@@ -96,12 +96,7 @@ object AiIntegrationScreen : Screen {
 
     val enabled by preferences.enabled.collectAsState()
     val provider by preferences.provider.collectAsState()
-    val openCodeKey by preferences.openCodeApiKey.collectAsState()
     val groqKey by preferences.groqApiKey.collectAsState()
-    val openaiKey by preferences.openaiApiKey.collectAsState()
-    val anthropicKey by preferences.anthropicApiKey.collectAsState()
-    val openrouterKey by preferences.openrouterApiKey.collectAsState()
-    val togetherKey by preferences.togetherApiKey.collectAsState()
     val geminiKey by preferences.geminiApiKey.collectAsState()
     val selectedModel by preferences.selectedModelFor(provider).collectAsState()
     val customPromptEnabled by preferences.customPromptEnabled.collectAsState()
@@ -131,12 +126,7 @@ object AiIntegrationScreen : Screen {
     val json = koinInject<Json>()
     val activeApiKey =
       when (provider) {
-        AiProvider.OPENCODE -> openCodeKey
         AiProvider.GROQ -> groqKey
-        AiProvider.OPENAI -> openaiKey
-        AiProvider.ANTHROPIC -> anthropicKey
-        AiProvider.OPENROUTER -> openrouterKey
-        AiProvider.TOGETHER -> togetherKey
         AiProvider.GEMINI -> geminiKey
       }
 
@@ -275,14 +265,6 @@ object AiIntegrationScreen : Screen {
 val apiKeyInfo =
                   @Suppress("REDUNDANT_ELSE_IN_WHEN")
                   when (provider) {
-                  AiProvider.OPENCODE ->
-                    ApiKeyInfo(
-                      "OpenCode API Key",
-                      "Get your key from opencode.ai/auth",
-                      "sk-...",
-                      openCodeKey,
-                      preferences.openCodeApiKey::set,
-                    )
                   AiProvider.GROQ ->
                     ApiKeyInfo(
                       "Groq API Key",
@@ -290,38 +272,6 @@ val apiKeyInfo =
                       "gsk_...",
                       groqKey,
                       preferences.groqApiKey::set,
-                    )
-                  AiProvider.OPENAI ->
-                    ApiKeyInfo(
-                      "OpenAI API Key",
-                      "Get your key from platform.openai.com/api-keys",
-                      "sk-...",
-                      openaiKey,
-                      preferences.openaiApiKey::set,
-                    )
-                  AiProvider.ANTHROPIC ->
-                    ApiKeyInfo(
-                      "Anthropic API Key",
-                      "Get your key from console.anthropic.com",
-                      "sk-ant-...",
-                      anthropicKey,
-                      preferences.anthropicApiKey::set,
-                    )
-                  AiProvider.OPENROUTER ->
-                    ApiKeyInfo(
-                      "OpenRouter API Key",
-                      "Get your key from openrouter.ai/keys",
-                      "sk-or-...",
-                      openrouterKey,
-                      preferences.openrouterApiKey::set,
-                    )
-                  AiProvider.TOGETHER ->
-                    ApiKeyInfo(
-                      "Together API Key",
-                      "Get your key from api.together.xyz/settings/api-keys",
-                      "...",
-                      togetherKey,
-                      preferences.togetherApiKey::set,
                     )
                   AiProvider.GEMINI ->
                     ApiKeyInfo(
@@ -772,7 +722,7 @@ val apiKeyInfo =
 
               item {
                 PreferenceCard {
-                  val sttProviders = listOf(AiProvider.GROQ, AiProvider.OPENAI, AiProvider.OPENROUTER)
+                  val sttProviders = listOf(AiProvider.GROQ)
                   val sttProvider by preferences.sttProvider.collectAsState()
                   val sttModel by preferences.sttModelFor(sttProvider).collectAsState()
 
@@ -858,8 +808,6 @@ val apiKeyInfo =
                     apiKey =
                       when (sttProvider) {
                         AiProvider.GROQ -> groqKey
-                        AiProvider.OPENAI -> openaiKey
-                        AiProvider.OPENROUTER -> openrouterKey
                         else -> ""
                       },
                     onSelectModel = { preferences.sttModelFor(sttProvider).set(it) },

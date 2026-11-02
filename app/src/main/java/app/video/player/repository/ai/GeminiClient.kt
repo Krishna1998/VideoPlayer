@@ -144,3 +144,4 @@ class GeminiClient(
 
   private fun JsonObject.string(key: String): String? = (get(key) as? JsonPrimitive)?.contentOrNull
 }
+

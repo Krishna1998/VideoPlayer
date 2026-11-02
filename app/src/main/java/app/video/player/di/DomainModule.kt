@@ -19,17 +19,11 @@ import app.video.player.preferences.AiPreferences
 import app.video.player.repository.IntroDbRepository
 import app.video.player.repository.ai.AiClient
 import app.video.player.repository.ai.AiService
-import app.video.player.repository.ai.AnthropicClient
 import app.video.player.repository.ai.GeminiClient
 import app.video.player.repository.ai.GroqClient
 import app.video.player.repository.ai.GroqSpeechClient
-import app.video.player.repository.ai.OpenAiClient
-import app.video.player.repository.ai.OpenCodeClient
-import app.video.player.repository.ai.OpenRouterClient
-import app.video.player.repository.ai.OpenRouterSpeechClient
 import app.video.player.repository.ai.RealtimeSubtitleService
 import app.video.player.repository.ai.SubtitleGenerationService
-import app.video.player.repository.ai.TogetherClient
 import app.video.player.repository.subtitle.OnlineSubtitleFileStore
 import app.video.player.repository.subtitle.OnlineSubtitleOrchestrator
 import app.video.player.repository.subtitlehub.MpvRxSubtitleHubRepository
@@ -62,34 +56,18 @@ val domainModule =
     single { MpvRxSubtitleHubRepository(get(), get(), get(), get()) }
     single { OnlineSubtitleOrchestrator(get<WyzieSearchRepository>(), get<MpvRxSubtitleHubRepository>()) }
     single { IntroDbRepository(get(), get(), androidContext()) }
-    single { OpenCodeClient(get(), get()) }
     single { GroqClient(get(), get()) }
-    single { OpenAiClient(get(), get()) }
-    single { AnthropicClient(get(), get()) }
-    single { OpenRouterClient(get(), get()) }
-    single { TogetherClient(get(), get()) }
     single { GeminiClient(get(), get()) }
     single { GroqSpeechClient(get(), get()) }
-    single { OpenRouterSpeechClient(get(), get()) }
-    single<AiClient>(named("opencode")) { OpenCodeClient(get(), get()) }
     single<AiClient>(named("groq")) { GroqClient(get(), get()) }
-    single<AiClient>(named("openai")) { OpenAiClient(get(), get()) }
-    single<AiClient>(named("anthropic")) { AnthropicClient(get(), get()) }
-    single<AiClient>(named("openrouter")) { OpenRouterClient(get(), get()) }
-    single<AiClient>(named("together")) { TogetherClient(get(), get()) }
     single<AiClient>(named("gemini")) { GeminiClient(get(), get()) }
-    single { SubtitleGenerationService(androidContext(), get(), get(), get(), get(), get()) }
-    single { RealtimeSubtitleService(androidContext(), get(), get(), get(), get(), get(), get()) }
+    single { SubtitleGenerationService(androidContext(), get(), get(), get(), get()) }
+    single { RealtimeSubtitleService(androidContext(), get(), get(), get(), get(), get()) }
     single {
       AiService(
         androidContext(),
         get<AiPreferences>(),
-        get<AiClient>(named("opencode")),
         get<AiClient>(named("groq")),
-        get<AiClient>(named("openai")),
-        get<AiClient>(named("anthropic")),
-        get<AiClient>(named("openrouter")),
-        get<AiClient>(named("together")),
         get<AiClient>(named("gemini")),
         get<Json>(),
       )

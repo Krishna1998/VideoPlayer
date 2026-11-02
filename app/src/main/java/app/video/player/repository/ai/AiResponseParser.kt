@@ -43,68 +43,6 @@ internal object AiResponseParser {
     return completed(provider, text, reasoning, collectSources(root, message))
   }
 
-  fun openAiResponses(
-    json: Json,
-    body: String,
-    provider: String,
-  ): AiGeneratedContent {
-    val root = parseObject(json, body, provider)
-    throwEmbeddedError(root, provider)
-    val text =
-      root["output_text"].stringValue()
-        ?: root["output"]
-          .asArray()
-          .orEmpty()
-          .flatMap {
-            it
-              .asObject()
-              ?.get("content")
-              .asArray()
-              .orEmpty()
-          }.mapNotNull { part ->
-            val obj = part.asObject()
-            if (obj?.get("type").stringValue() in setOf("output_text", "text")) extractText(obj?.get("text")) else null
-          }.joinToString("\n")
-          .trim()
-          .ifBlank { null }
-    val reasoning =
-      root["output"]
-        .asArray()
-        .orEmpty()
-        .mapNotNull { item ->
-          val obj = item.asObject()
-          if (obj?.get("type").stringValue() == "reasoning") extractText(obj) else null
-        }.joinToString("\n")
-        .trim()
-        .ifBlank { null }
-    return completed(provider, text, reasoning, collectSources(root))
-  }
-
-  fun anthropic(
-    json: Json,
-    body: String,
-    provider: String,
-  ): AiGeneratedContent {
-    val root = parseObject(json, body, provider)
-    throwEmbeddedError(root, provider)
-    val blocks = root["content"].asArray().orEmpty().mapNotNull { it.asObject() }
-    val text =
-      blocks
-        .filter { it["type"].stringValue() == "text" }
-        .mapNotNull { it["text"].stringValue() }
-        .joinToString("\n")
-        .trim()
-        .ifBlank { null }
-    val reasoning =
-      blocks
-        .filter { it["type"].stringValue() in setOf("thinking", "redacted_thinking") }
-        .mapNotNull { extractText(it["thinking"] ?: it["data"]) }
-        .joinToString("\n")
-        .trim()
-        .ifBlank { null }
-    return completed(provider, text, reasoning, collectSources(root))
-  }
-
   fun google(
     json: Json,
     body: String,

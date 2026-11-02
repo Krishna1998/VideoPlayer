@@ -39,19 +39,6 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 
-@kotlinx.serialization.Serializable
-private data class OpenAiTranscriptionResponse(
-  val text: String? = null,
-  val segments: List<OpenAiTranscriptionSegment> = emptyList(),
-)
-
-@kotlinx.serialization.Serializable
-private data class OpenAiTranscriptionSegment(
-  val start: Double = 0.0,
-  val end: Double = 0.0,
-  val text: String? = null,
-)
-
 internal data class RealtimeSubtitleRequest(
   val mediaInput: RealtimeMediaInput,
   val videoDurationMs: Long,
@@ -64,7 +51,6 @@ class RealtimeSubtitleService(
   private val context: Context,
   private val preferences: AiPreferences,
   private val groqSpeechClient: GroqSpeechClient,
-  private val openRouterSpeechClient: OpenRouterSpeechClient,
   private val okHttpClient: OkHttpClient,
   private val json: Json,
   private val aiService: AiService,
@@ -331,96 +317,9 @@ class RealtimeSubtitleService(
         if (key.isBlank()) return Result.failure(IllegalStateException("Groq API key is not configured"))
         groqSpeechClient.transcribe(key, audioFile, language, sttModel)
       }
-
-      AiProvider.OPENAI -> {
-        val key = preferences.openaiApiKey.get()
-        if (key.isBlank()) return Result.failure(IllegalStateException("OpenAI API key is not configured"))
-        transcribeOpenAiCompatible(
-          baseUrl = "https://api.openai.com/v1/audio/transcriptions",
-          apiKey = key,
-          model = sttModel.takeIf { it.startsWith("whisper") || it.contains("transcribe") } ?: "whisper-1",
-          audioFile = audioFile,
-          language = language,
-        )
-      }
-
-      AiProvider.OPENROUTER -> {
-        val key = preferences.openrouterApiKey.get()
-        if (key.isBlank()) return Result.failure(IllegalStateException("OpenRouter API key is not configured"))
-        openRouterSpeechClient.transcribe(key, audioFile, language, sttModel)
-      }
-
       else -> Result.failure(IllegalStateException("$provider does not support speech-to-text"))
     }
   }
-
-  private suspend fun transcribeOpenAiCompatible(
-    baseUrl: String,
-    apiKey: String,
-    model: String,
-    audioFile: File,
-    language: String?,
-  ): Result<SpeechTranscript> =
-    withContext(Dispatchers.IO) {
-      try {
-        val fileSizeMb = audioFile.length() / (1024 * 1024)
-        if (audioFile.length() > MAX_CHUNK_SIZE_BYTES) {
-          throw Exception("Audio file too large ($fileSizeMb MB) for transcription API limit. Try a shorter video.")
-        }
-
-        val apiClient =
-          okHttpClient.withAiUploadTimeouts()
-
-        val bodyBuilder =
-          MultipartBody
-            .Builder()
-            .setType(MultipartBody.FORM)
-            .addFormDataPart("model", model)
-            .addFormDataPart("response_format", if (model.startsWith("whisper", ignoreCase = true)) "verbose_json" else "json")
-            .addFormDataPart("temperature", "0")
-            .addFormDataPart("file", audioFile.name, audioFile.asRequestBody(audioMediaType(audioFile)))
-
-        if (!language.isNullOrBlank()) {
-          bodyBuilder.addFormDataPart("language", language)
-        }
-
-        val request =
-          Request
-            .Builder()
-            .url(baseUrl)
-            .header("Authorization", "Bearer $apiKey")
-            .post(bodyBuilder.build())
-            .build()
-
-        apiClient.newCall(request).awaitResponse().use { response ->
-          val body = response.body.string()
-          if (!response.isSuccessful) {
-            throw Exception("OpenAI transcription failed: HTTP ${response.code} ${body.take(240)}")
-          }
-
-          val parsed = json.decodeFromString(OpenAiTranscriptionResponse.serializer(), body)
-          Result.success(
-            SpeechTranscript(
-              text = parsed.text.orEmpty().trim(),
-              segments =
-                parsed.segments.mapNotNull { segment ->
-                  val text = segment.text?.trim().orEmpty()
-                  if (text.isBlank()) return@mapNotNull null
-                  SpeechSegment(
-                    startMs = (segment.start * 1000).toLong(),
-                    endMs = (segment.end * 1000).toLong(),
-                    text = text,
-                  )
-                },
-            ),
-          )
-        }
-      } catch (cancellation: CancellationException) {
-        throw cancellation
-      } catch (error: Exception) {
-        Result.failure(error)
-      }
-    }
 
   private data class TranscribedChunk(
     val startMs: Long,

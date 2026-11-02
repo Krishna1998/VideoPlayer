@@ -30,19 +30,6 @@ data class SubtitleGenerationProgress(
   val stage: String,
 )
 
-@kotlinx.serialization.Serializable
-private data class SttResponse(
-  val text: String? = null,
-  val segments: List<SttSegment> = emptyList(),
-)
-
-@kotlinx.serialization.Serializable
-private data class SttSegment(
-  val start: Double = 0.0,
-  val end: Double = 0.0,
-  val text: String? = null,
-)
-
 data class GeneratedSubtitle(
   val content: String,
   val extension: String,
@@ -52,7 +39,6 @@ class SubtitleGenerationService(
   private val context: Context,
   private val preferences: AiPreferences,
   private val groqSpeechClient: GroqSpeechClient,
-  private val openRouterSpeechClient: OpenRouterSpeechClient,
   private val okHttpClient: OkHttpClient,
   private val json: Json,
 ) {
@@ -177,86 +163,9 @@ class SubtitleGenerationService(
           groqSpeechClient.transcribe(key, audioFile, language, sttModel)
         }
       }
-      AiProvider.OPENAI -> {
-        val key = preferences.openaiApiKey.get()
-        if (key.isBlank()) {
-          Result.failure(Exception("OpenAI API key not configured."))
-        } else {
-          transcribeOpenAiCompatible(
-            "https://api.openai.com/v1/audio/transcriptions",
-            key,
-            sttModel.takeIf { it.startsWith("whisper") || it.contains("transcribe") } ?: "whisper-1",
-            audioFile,
-            language,
-          )
-        }
-      }
-      AiProvider.OPENROUTER -> {
-        val key = preferences.openrouterApiKey.get()
-        if (key.isBlank()) {
-          Result.failure(Exception("OpenRouter API key not configured."))
-        } else {
-          openRouterSpeechClient.transcribe(key, audioFile, language, sttModel)
-        }
-      }
-      else -> Result.failure(Exception("Only online providers (Groq, OpenAI, OpenRouter) are supported."))
+      else -> Result.failure(Exception("Only online provider Groq is supported for speech-to-text."))
     }
   }
-
-  private suspend fun transcribeOpenAiCompatible(
-    baseUrl: String,
-    apiKey: String,
-    model: String,
-    audioFile: File,
-    language: String?,
-  ): Result<SpeechTranscript> =
-    withContext(Dispatchers.IO) {
-      runCatchingCancellable {
-        val apiClient =
-          okHttpClient.withAiUploadTimeouts()
-
-        val bodyBuilder =
-          MultipartBody
-            .Builder()
-            .setType(MultipartBody.FORM)
-            .addFormDataPart("model", model)
-            .addFormDataPart("response_format", if (model.startsWith("whisper", ignoreCase = true)) "verbose_json" else "json")
-            .addFormDataPart("temperature", "0")
-            .addFormDataPart("file", audioFile.name, audioFile.asRequestBody(audioMediaType(audioFile)))
-
-        if (!language.isNullOrBlank()) bodyBuilder.addFormDataPart("language", language)
-
-        val request =
-          Request
-            .Builder()
-            .url(baseUrl)
-            .header("Authorization", "Bearer $apiKey")
-            .post(bodyBuilder.build())
-            .build()
-
-        apiClient.newCall(request).awaitResponse().use { response ->
-          val responseBody = response.body.string()
-          if (!response.isSuccessful) {
-            throw Exception("STT failed: HTTP ${response.code} ${responseBody.take(240)}")
-          }
-
-          val parsed = json.decodeFromString(SttResponse.serializer(), responseBody)
-          SpeechTranscript(
-            text = parsed.text.orEmpty().trim(),
-            segments =
-              parsed.segments.mapNotNull { segment ->
-                val text = segment.text?.trim().orEmpty()
-                if (text.isBlank()) return@mapNotNull null
-                SpeechSegment(
-                  startMs = (segment.start * 1000).toLong(),
-                  endMs = (segment.end * 1000).toLong(),
-                  text = text,
-                )
-              },
-          )
-        }
-      }
-    }
 
   private fun createHeuristicSegments(text: String): List<SpeechSegment> {
     val words = text.split(Regex("\\s+")).filter { it.isNotBlank() }

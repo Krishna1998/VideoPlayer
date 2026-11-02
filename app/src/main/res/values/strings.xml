@@ -777,7 +777,7 @@
   <string name="pref_section_storage">Storage</string>
   <string name="pref_section_ai">AI</string>
   <string name="pref_section_ai_title">AI Integration</string>
-  <string name="pref_section_ai_summary">AI rename, subtitle translation, speech-to-text (OpenCode/Groq/OpenAI/Gemini)</string>
+  <string name="pref_section_ai_summary">AI rename, subtitle translation, speech-to-text (Groq/Gemini)</string>
   <string name="pref_section_advanced">Advanced</string>
   <string name="pref_section_about">About</string>
 
