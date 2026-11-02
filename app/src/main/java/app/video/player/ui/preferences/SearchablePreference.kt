@@ -1286,6 +1286,7 @@ object SearchablePreferences {
               "anthropic",
               "together",
               "openrouter",
+              "gemini",
               "machine learning",
               "intelligence",
             ),
@@ -1297,7 +1298,7 @@ object SearchablePreferences {
       add(
         SearchablePreference(
           titleRes = R.string.pref_ai_provider_title,
-          summary = "Choose OpenCode, Groq, OpenAI, Anthropic, OpenRouter, or Together",
+          summary = "Choose OpenCode, Groq, OpenAI, Anthropic, OpenRouter, Together, or Gemini",
           keywords =
             listOf(
               "provider",
@@ -1307,6 +1308,7 @@ object SearchablePreferences {
               "anthropic",
               "together",
               "openrouter",
+              "gemini",
               "local",
               "offline",
               "api",
@@ -1319,7 +1321,7 @@ object SearchablePreferences {
         SearchablePreference(
           titleRes = R.string.search_api_key_config_title,
           summary = "Enter and verify your AI provider API key",
-          keywords = listOf("api key", "key", "authentication", "token", "verify", "opencode", "groq", "openai"),
+          keywords = listOf("api key", "key", "authentication", "token", "verify", "opencode", "groq", "openai", "gemini"),
           category = "AI",
           screen = AiIntegrationScreen,
         ),
@@ -1328,7 +1330,7 @@ object SearchablePreferences {
         SearchablePreference(
           titleRes = R.string.search_ai_model_selection_title,
           summary = "Fetch and select which AI model to use",
-          keywords = listOf("model", "llm", "opencode", "gpt", "claude", "mixtral", "deepseek", "selection"),
+          keywords = listOf("model", "llm", "opencode", "gpt", "claude", "gemini", "mixtral", "deepseek", "selection"),
           category = "AI",
           screen = AiIntegrationScreen,
         ),
@@ -1862,7 +1864,7 @@ object SearchablePreferences {
         summaryRes = R.string.pref_section_ai_summary,
         keywords =
           listOf(
-            "enable provider opencode groq openai anthropic openrouter together api key model verify",
+            "enable provider opencode groq openai anthropic openrouter together gemini api key model verify",
             "rename subtitle format translation speech text stt realtime whisper language output prompt custom auto translate",
           ),
         category = "AI",

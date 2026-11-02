@@ -8,7 +8,7 @@ These notes are written in plain English and focus on what changed for real use.
 
 - Release version 1.0.9.
 - **AI Integration Facility:**
-  - Added full AI Integration settings screen with multi-provider support (OpenCode Zen, Groq, OpenAI, Anthropic, OpenRouter, Together AI).
+  - Added full AI Integration settings screen with multi-provider support (Google Gemini, OpenCode Zen, Groq, OpenAI, Anthropic, OpenRouter, Together AI).
   - Integrated AI model picker with free-tier tagging, token count info, and search filtering.
   - Enabled AI subtitle translation focused strictly on English and Hindi, with customizable prompts and auto-translate targets.
   - Enabled real-time Speech-to-Text (STT) and subtitle generation from audio in English and Hindi.

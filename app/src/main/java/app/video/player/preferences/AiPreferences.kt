@@ -28,6 +28,7 @@ enum class AiProvider(
   ANTHROPIC("Anthropic"),
   OPENROUTER("OpenRouter"),
   TOGETHER("Together"),
+  GEMINI("Gemini"),
 }
 
 /** Always off and ignores restored values, so a distribution can omit a feature outright. */
@@ -70,6 +71,7 @@ class AiPreferences(
   val anthropicApiKey = preferenceStore.getString("ai_anthropic_api_key", "")
   val openrouterApiKey = preferenceStore.getString("ai_openrouter_api_key", "")
   val togetherApiKey = preferenceStore.getString("ai_together_api_key", "")
+  val geminiApiKey = preferenceStore.getString("ai_gemini_api_key", "")
 
   val selectedModel = preferenceStore.getString("ai_selected_model", "")
 
@@ -81,6 +83,7 @@ class AiPreferences(
   private val anthropicSelectedModel = preferenceStore.getString("ai_selected_model_anthropic", "")
   private val openRouterSelectedModel = preferenceStore.getString("ai_selected_model_openrouter", "")
   private val togetherSelectedModel = preferenceStore.getString("ai_selected_model_together", "")
+  private val geminiSelectedModel = preferenceStore.getString("ai_selected_model_gemini", "")
 
   private val openCodeAvailableModels = preferenceStore.getString("ai_available_models_opencode", "[]")
   private val groqAvailableModels = preferenceStore.getString("ai_available_models_groq", "[]")
@@ -88,6 +91,7 @@ class AiPreferences(
   private val anthropicAvailableModels = preferenceStore.getString("ai_available_models_anthropic", "[]")
   private val openRouterAvailableModels = preferenceStore.getString("ai_available_models_openrouter", "[]")
   private val togetherAvailableModels = preferenceStore.getString("ai_available_models_together", "[]")
+  private val geminiAvailableModels = preferenceStore.getString("ai_available_models_gemini", "[]")
 
   val subtitleGenerationOutputFormat = preferenceStore.getString("ai_subtitle_generation_output_format", "srt")
 
@@ -151,6 +155,7 @@ class AiPreferences(
       AiProvider.ANTHROPIC -> anthropicSelectedModel
       AiProvider.OPENROUTER -> openRouterSelectedModel
       AiProvider.TOGETHER -> togetherSelectedModel
+      AiProvider.GEMINI -> geminiSelectedModel
     }
 
   fun availableModelsFor(provider: AiProvider): Preference<String> =
@@ -161,6 +166,7 @@ class AiPreferences(
       AiProvider.ANTHROPIC -> anthropicAvailableModels
       AiProvider.OPENROUTER -> openRouterAvailableModels
       AiProvider.TOGETHER -> togetherAvailableModels
+      AiProvider.GEMINI -> geminiAvailableModels
     }
 
   fun sttModelFor(provider: AiProvider): Preference<String> =

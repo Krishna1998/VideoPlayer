@@ -33,6 +33,7 @@ class AiService(
   private val anthropicClient: AiClient,
   private val openRouterClient: AiClient,
   private val togetherClient: AiClient,
+  private val geminiClient: AiClient,
   private val json: Json,
 ) {
   companion object {
@@ -47,6 +48,7 @@ class AiService(
       AiProvider.ANTHROPIC to anthropicClient,
       AiProvider.OPENROUTER to openRouterClient,
       AiProvider.TOGETHER to togetherClient,
+      AiProvider.GEMINI to geminiClient,
     )
 
   @Serializable
@@ -329,6 +331,7 @@ class AiService(
       AiProvider.ANTHROPIC -> preferences.anthropicApiKey.get()
       AiProvider.OPENROUTER -> preferences.openrouterApiKey.get()
       AiProvider.TOGETHER -> preferences.togetherApiKey.get()
+      AiProvider.GEMINI -> preferences.geminiApiKey.get()
     }
 
   suspend fun translateSubtitle(

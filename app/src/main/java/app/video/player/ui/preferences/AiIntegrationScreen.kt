@@ -102,6 +102,7 @@ object AiIntegrationScreen : Screen {
     val anthropicKey by preferences.anthropicApiKey.collectAsState()
     val openrouterKey by preferences.openrouterApiKey.collectAsState()
     val togetherKey by preferences.togetherApiKey.collectAsState()
+    val geminiKey by preferences.geminiApiKey.collectAsState()
     val selectedModel by preferences.selectedModelFor(provider).collectAsState()
     val customPromptEnabled by preferences.customPromptEnabled.collectAsState()
     val customPrompt by preferences.customPrompt.collectAsState()
@@ -136,6 +137,7 @@ object AiIntegrationScreen : Screen {
         AiProvider.ANTHROPIC -> anthropicKey
         AiProvider.OPENROUTER -> openrouterKey
         AiProvider.TOGETHER -> togetherKey
+        AiProvider.GEMINI -> geminiKey
       }
 
     fun loadModels() {
@@ -320,6 +322,14 @@ val apiKeyInfo =
                       "...",
                       togetherKey,
                       preferences.togetherApiKey::set,
+                    )
+                  AiProvider.GEMINI ->
+                    ApiKeyInfo(
+                      "Gemini API Key",
+                      "Get your key from aistudio.google.com/app/apikey",
+                      "AIzaSy...",
+                      geminiKey,
+                      preferences.geminiApiKey::set,
                     )
                   else -> null
                 }
