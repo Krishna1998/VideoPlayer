@@ -33,6 +33,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -176,6 +178,20 @@ class PlaylistRepository(
         ?: return@map false
       val items = playlistDao.getPlaylistItems(favPlaylist.id)
       items.any { isPathMatching(it.filePath, filePath) }
+    }
+
+  fun observeFavoriteAudioPaths(): Flow<Set<String>> =
+    playlistDao.observeAllPlaylists().flatMapLatest { playlists ->
+      val favPlaylist = playlists.find {
+        it.name.equals(FAVORITES_PLAYLIST_NAME, ignoreCase = true) && it.isAudio
+      }
+      if (favPlaylist != null) {
+        playlistDao.observePlaylistItems(favPlaylist.id).map { items ->
+          items.map { it.filePath }.toSet()
+        }
+      } else {
+        flowOf(emptySet())
+      }
     }
 
   suspend fun isFavorite(filePath: String, isAudio: Boolean = true): Boolean {

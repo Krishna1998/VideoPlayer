@@ -55,9 +55,6 @@ fun TopLeftPlayerControlsLandscape(
   onBackPress: () -> Unit,
   onOpenSheet: (Sheets) -> Unit,
   viewModel: PlayerViewModel,
-  isTranslatingSub: Boolean = false,
-  translationStatus: String = "",
-  translatingTrackName: String = "",
 ) {
   PlayerButtonTheme {
     val playlistModeEnabled = viewModel.hasPlaylistSupport()
@@ -200,31 +197,6 @@ fun TopLeftPlayerControlsLandscape(
         }
       }
 
-      androidx.compose.animation.AnimatedVisibility(
-        visible = isTranslatingSub,
-        enter = androidx.compose.animation.fadeIn() + androidx.compose.animation.slideInVertically { -it },
-        exit = androidx.compose.animation.fadeOut() + androidx.compose.animation.slideOutVertically { -it },
-      ) {
-        Row(
-          verticalAlignment = Alignment.CenterVertically,
-          modifier = Modifier.padding(start = MaterialTheme.spacing.medium, top = 12.dp),
-          horizontalArrangement = Arrangement.spacedBy(4.dp),
-        ) {
-          Icon(
-            imageVector = Icons.RoundedFilled.Translate,
-            contentDescription = null,
-            modifier = Modifier.size(14.dp),
-            tint = MaterialTheme.colorScheme.tertiary,
-          )
-          Text(
-            text = "Translating ${translatingTrackName.ifBlank { "subs" }} ${translationStatus.ifBlank { "" }}",
-            style = MaterialTheme.typography.labelSmall,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            color = MaterialTheme.colorScheme.tertiary,
-          )
-        }
-      }
     }
   }
 }

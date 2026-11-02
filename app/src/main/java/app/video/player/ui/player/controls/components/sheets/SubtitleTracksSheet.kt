@@ -26,7 +26,6 @@ import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
@@ -46,8 +45,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import app.video.player.R
 import app.video.player.presentation.components.PlayerSheet
-import app.video.player.presentation.components.AppPickerSheet
-import app.video.player.presentation.components.PlayerSheetSearchField
 import app.video.player.presentation.components.PlayerSheetAction
 import app.video.player.presentation.components.PlayerSheetSectionHeader
 import app.video.player.ui.icons.Icons
@@ -94,16 +91,6 @@ fun SubtitlesSheet(
   onRemoveSubtitle: (Int) -> Unit,
   onOpenOnlineSearch: () -> Unit,
   onDismissRequest: () -> Unit,
-  onTranslateSubtitle: (TrackNode, String) -> Unit,
-  onCancelTranslation: () -> Unit,
-  isTranslating: Boolean,
-  translationProgress: Float,
-  translationStatus: String,
-  translationEnabled: Boolean,
-  translatingTrackId: Int? = null,
-  translatingTrackName: String = "",
-  autoTranslateLanguages: String = "",
-  aiEnabled: Boolean = true,
   subtitlesOff: Boolean = false,
   onDisableSubtitles: () -> Unit = {},
   delayControlEnabled: Boolean = true,
@@ -133,101 +120,6 @@ fun SubtitlesSheet(
 
       list.toImmutableList()
     }
-
-  val configuredLanguages =
-    remember(autoTranslateLanguages) {
-      autoTranslateLanguages.split(",").filter { it.isNotBlank() }
-    }
-
-  val allLanguages =
-    remember {
-      listOf(
-        "English",
-        "Hindi",
-      )
-    }
-
-  val codeToName =
-    remember {
-      mapOf(
-        "en" to "English",
-        "hi" to "Hindi",
-      )
-    }
-
-  var langSearch by remember { mutableStateOf("") }
-  var showLanguagePicker by remember { androidx.compose.runtime.mutableStateOf<TrackNode?>(null) }
-
-  if (showLanguagePicker != null) {
-    val languagesToShow =
-      remember(configuredLanguages, langSearch) {
-        val source =
-          if (configuredLanguages.size >= 2) {
-            configuredLanguages.mapNotNull { codeToName[it] }
-          } else {
-            allLanguages
-          }
-        if (langSearch.isBlank()) {
-          source
-        } else {
-          source.filter { it.contains(langSearch, ignoreCase = true) }
-        }
-      }
-    AppPickerSheet(
-      onDismissRequest = {
-        showLanguagePicker = null
-        langSearch = ""
-      },
-      title = androidx.compose.ui.res.stringResource(app.video.player.R.string.ui_translate_to),
-      scrollContent = false,
-      actions = {
-        androidx.compose.material3.TextButton(onClick = {
-          showLanguagePicker = null
-          langSearch = ""
-        }) {
-          Text(
-            androidx.compose.ui.res
-              .stringResource(app.video.player.R.string.generic_cancel),
-          )
-        }
-      },
-    ) {
-        Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)) {
-          PlayerSheetSearchField(
-            query = langSearch,
-            onQueryChange = { langSearch = it },
-            placeholder =
-              androidx.compose.ui.res
-                .stringResource(app.video.player.R.string.ui_search_language),
-          )
-          LazyColumn(modifier = Modifier.height(280.dp)) {
-            items(languagesToShow, key = { it }) { lang ->
-              Text(
-                text = lang,
-                modifier =
-                  Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                      showLanguagePicker?.let { track -> onTranslateSubtitle(track, lang) }
-                      showLanguagePicker = null
-                      langSearch = ""
-                    }.padding(MaterialTheme.spacing.medium),
-              )
-            }
-            if (languagesToShow.isEmpty()) {
-              item {
-                Text(
-                  androidx.compose.ui.res
-                    .stringResource(app.video.player.R.string.ui_no_languages_found),
-                  color = MaterialTheme.colorScheme.outline,
-                  modifier = Modifier.padding(MaterialTheme.spacing.medium),
-                )
-              }
-            }
-          }
-        }
-    }
-  }
 
   PlayerSheet(
     onDismissRequest = onDismissRequest,
@@ -260,79 +152,33 @@ fun SubtitlesSheet(
         )
       }
 
-      if (aiEnabled && isTranslating) {
-        item(key = "translation_progress") {
-        Column(
-          modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp),
-          verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-          Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth(),
-          ) {
-            Text(
-              "${translationStatus.ifBlank {
-                "Translating"
-              }} $translatingTrackName... ${(translationProgress * 100).toInt()}%",
-              style = MaterialTheme.typography.bodySmall,
-              color = MaterialTheme.colorScheme.primary,
-              modifier = Modifier.weight(1f),
-              maxLines = 2,
-              overflow = TextOverflow.Ellipsis,
-            )
-            PlayerSheetAction(
-              icon = Icons.RoundedFilled.Close,
-              label = stringResource(R.string.ui_cancel_translation),
-              onClick = onCancelTranslation,
+      items(
+        items,
+        key = { item ->
+          when (item) {
+            is SubtitleItem.Track -> item.node.id
+            is SubtitleItem.Header -> item.title
+            is SubtitleItem.Off -> "off"
+            is SubtitleItem.Divider -> "divider"
+          }
+        },
+        contentType = { item -> item.javaClass.simpleName },
+      ) { item ->
+        when (item) {
+          is SubtitleItem.Track -> {
+            val track = item.node
+            SubtitleTrackRow(
+              track = track,
+              isSelected = isSubtitleSelected(track.id),
+              selectionIndicator = subtitleSelectionIndicator(track.id),
+              isExternal = track.external == true,
+              onToggle = { onToggleSubtitle(track.id) },
+              onRemove = { onRemoveSubtitle(track.id) },
+              groupIndex = item.groupIndex,
+              groupSize = item.groupSize,
             )
           }
-          LinearProgressIndicator(
-            progress = { translationProgress.coerceIn(0f, 1f) },
-            modifier = Modifier.fillMaxWidth(),
-          )
-        }
-        }
-      }
-
-        items(
-          items,
-          key = { item ->
-            when (item) {
-              is SubtitleItem.Track -> item.node.id
-              is SubtitleItem.Header -> item.title
-              is SubtitleItem.Off -> "off"
-              is SubtitleItem.Divider -> "divider"
-            }
-          },
-          contentType = { item -> item.javaClass.simpleName },
-        ) { item ->
-          when (item) {
-            is SubtitleItem.Track -> {
-              val track = item.node
-              SubtitleTrackRow(
-                track = track,
-                isSelected = isSubtitleSelected(track.id),
-                selectionIndicator = subtitleSelectionIndicator(track.id),
-                isExternal = track.external == true,
-                onToggle = { onToggleSubtitle(track.id) },
-                onRemove = { onRemoveSubtitle(track.id) },
-                onTranslate = {
-                  if (translationEnabled) {
-                    if (configuredLanguages.size == 1) {
-                      val langName = codeToName[configuredLanguages.first()] ?: configuredLanguages.first()
-                      onTranslateSubtitle(track, langName)
-                    } else {
-                      showLanguagePicker = track
-                    }
-                  }
-                },
-                translationEnabled = translationEnabled,
-                isCurrentlyTranslating = track.id == translatingTrackId,
-                groupIndex = item.groupIndex,
-                groupSize = item.groupSize,
-              )
-            }
-            is SubtitleItem.Header -> {
+          is SubtitleItem.Header -> {
               PlayerSheetSectionHeader(item.title)
             }
             is SubtitleItem.Off -> {
@@ -374,7 +220,7 @@ fun SubtitlesSheet(
                 }
               }
             }
-            SubtitleItem.Divider -> {
+            is SubtitleItem.Divider -> {
               HorizontalDivider(
                 modifier =
                   Modifier.padding(
@@ -399,9 +245,6 @@ fun SubtitleTrackRow(
   isExternal: Boolean,
   onToggle: () -> Unit,
   onRemove: () -> Unit,
-  onTranslate: () -> Unit,
-  translationEnabled: Boolean,
-  isCurrentlyTranslating: Boolean = false,
   groupIndex: Int? = null,
   groupSize: Int? = null,
   modifier: Modifier = Modifier,
@@ -457,21 +300,7 @@ fun SubtitleTrackRow(
         )
         TrackBadgeFlow(badges = badges, selected = isSelected)
       }
-      if (isCurrentlyTranslating) {
-        androidx.compose.material3.CircularProgressIndicator(
-          modifier = Modifier.size(MaterialTheme.spacing.large),
-          strokeWidth = MaterialTheme.spacing.smaller,
-        )
-      }
       if (isExternal) {
-        if (translationEnabled) {
-          PlayerSheetAction(
-            icon = Icons.RoundedFilled.Translate,
-            label = stringResource(R.string.ui_translate),
-            onClick = onTranslate,
-            enabled = !isCurrentlyTranslating,
-          )
-        }
         PlayerSheetAction(Icons.RoundedFilled.Delete, stringResource(R.string.ui_remove), onRemove)
       }
     }

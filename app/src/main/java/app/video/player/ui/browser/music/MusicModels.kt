@@ -15,7 +15,8 @@ enum class MusicTab(@StringRes val titleRes: Int) {
   ALBUMS(R.string.ui_albums),
   ARTISTS(R.string.ui_artists),
   PLAYLISTS(R.string.ui_playlists),
-  FOLDERS(R.string.search_category_folders);
+  FOLDERS(R.string.search_category_folders),
+  FAVORITES(R.string.ui_favorites);
 
   companion object {
     val defaultTabs = entries.toList()
@@ -85,7 +86,7 @@ enum class MusicSortField(val displayName: String) {
 
 internal val MusicTab.availableSortFields: List<MusicSortField>
   get() = when (this) {
-    MusicTab.SONGS -> listOf(
+    MusicTab.SONGS, MusicTab.FAVORITES -> listOf(
       MusicSortField.TITLE, MusicSortField.ARTIST, MusicSortField.ALBUM,
       MusicSortField.DURATION, MusicSortField.DATE_ADDED, MusicSortField.YEAR,
     )

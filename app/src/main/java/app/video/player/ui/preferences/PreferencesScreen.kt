@@ -359,19 +359,6 @@ object PreferencesScreen : Screen {
           ),
       ),
       SettingsSection(
-        title = stringResource(R.string.pref_section_ai),
-        tint = colorScheme.onSurfaceVariant,
-        items =
-          listOf(
-            SettingsDestination(
-              title = stringResource(R.string.pref_section_ai_title),
-              summary = stringResource(R.string.pref_section_ai_summary),
-              icon = Icons.RoundedFilled.AutoAwesome,
-              screen = AiIntegrationScreen,
-            ),
-          ),
-      ),
-      SettingsSection(
         title = stringResource(R.string.pref_section_advanced),
         tint = colorScheme.onSurfaceVariant,
         items =

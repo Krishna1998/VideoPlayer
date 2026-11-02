@@ -227,19 +227,6 @@ private val settingsSearchListAnchors: Map<Screen, List<SettingsSearchListAnchor
         SettingsSearchListAnchor(titleRes = R.string.pref_preferred_encodings_title, itemIndex = 5),
         SettingsSearchListAnchor(titleRes = R.string.pref_subtitles_clear_downloads, itemIndex = 5),
       ),
-    AiIntegrationScreen to
-      listOf(
-        SettingsSearchListAnchor(titleRes = R.string.pref_section_ai_title, itemIndex = 0),
-        SettingsSearchListAnchor(titleRes = R.string.pref_ai_provider_title, itemIndex = 3),
-        SettingsSearchListAnchor(titleRes = R.string.pref_ai_enabled_title, itemIndex = 1),
-        SettingsSearchListAnchor(titleRes = R.string.search_api_key_config_title, itemIndex = 4),
-        SettingsSearchListAnchor(titleRes = R.string.search_ai_model_selection_title, itemIndex = 6),
-        SettingsSearchListAnchor(titleRes = R.string.pref_ai_rename_title, itemIndex = 9),
-        SettingsSearchListAnchor(titleRes = R.string.pref_ai_search_title, itemIndex = 9),
-        SettingsSearchListAnchor(titleRes = R.string.pref_translation_section, itemIndex = 12),
-        SettingsSearchListAnchor(titleRes = R.string.pref_enable_translation_title, itemIndex = 13),
-        SettingsSearchListAnchor(titleRes = R.string.search_custom_ai_prompts_title, itemIndex = 14),
-      ),
 
     AdvancedPreferencesScreen to
       listOf(

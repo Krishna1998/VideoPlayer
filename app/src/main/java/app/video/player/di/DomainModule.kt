@@ -15,22 +15,15 @@ import app.video.player.domain.hdr.HdrToysManager
 import app.video.player.domain.hdr.MpvShaderRuntime
 import app.video.player.network.AndroidCookieJar
 import app.video.player.network.SharedHttpClient
-import app.video.player.preferences.AiPreferences
 import app.video.player.repository.IntroDbRepository
-import app.video.player.repository.ai.AiClient
-import app.video.player.repository.ai.AiService
-import app.video.player.repository.ai.GeminiClient
-import app.video.player.repository.ai.GroqClient
 import app.video.player.repository.subtitle.OnlineSubtitleFileStore
 import app.video.player.repository.subtitle.OnlineSubtitleOrchestrator
 import app.video.player.repository.subtitlehub.MpvRxSubtitleHubRepository
 import app.video.player.repository.wyzie.WyzieSearchRepository
 import app.video.player.ui.player.MpvConfigCache
 import app.video.player.ui.player.PlaybackSessionShaderRuntime
-import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
-import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import java.util.concurrent.TimeUnit
 
@@ -53,19 +46,6 @@ val domainModule =
     single { MpvRxSubtitleHubRepository(get(), get(), get(), get()) }
     single { OnlineSubtitleOrchestrator(get<WyzieSearchRepository>(), get<MpvRxSubtitleHubRepository>()) }
     single { IntroDbRepository(get(), get(), androidContext()) }
-    single { GroqClient(get(), get()) }
-    single { GeminiClient(get(), get()) }
-    single<AiClient>(named("groq")) { GroqClient(get(), get()) }
-    single<AiClient>(named("gemini")) { GeminiClient(get(), get()) }
-    single {
-      AiService(
-        androidContext(),
-        get<AiPreferences>(),
-        get<AiClient>(named("groq")),
-        get<AiClient>(named("gemini")),
-        get<Json>(),
-      )
-    }
     single {
       app.video.player.domain.syncplay
         .SyncplayManager(androidContext())

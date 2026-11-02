@@ -220,14 +220,12 @@ class PlayerViewModel(
   private val gesturePreferences: GesturePreferences by inject()
   private val audioPreferences: AudioPreferences by inject()
   private val subtitlesPreferences: SubtitlesPreferences by inject()
-  private val aiPreferences: app.video.player.preferences.AiPreferences by inject()
   private val advancedPreferences: AdvancedPreferences by inject()
   private val decoderPreferences: DecoderPreferences by inject()
   private val anime4kManager: Anime4KManager by inject()
   private val hdrToysManager: HdrToysManager by inject()
   private val json: Json by inject()
   private val playbackBookmarkDao: app.video.player.database.dao.PlaybackBookmarkDao by inject()
-  private val aiService: app.video.player.repository.ai.AiService by inject()
   private val wyzieRepository: WyzieSearchRepository by inject()
   private val onlineSubtitleOrchestrator: OnlineSubtitleOrchestrator by inject()
   private val introDbRepository: IntroDbRepository by inject()
@@ -303,21 +301,6 @@ class PlayerViewModel(
 
   private val _isOnlineSectionExpanded = MutableStateFlow(true)
   val isOnlineSectionExpanded: StateFlow<Boolean> = _isOnlineSectionExpanded.asStateFlow()
-
-  private val _isTranslatingSub = MutableStateFlow(false)
-  val isTranslatingSub: StateFlow<Boolean> = _isTranslatingSub.asStateFlow()
-
-  private val _translatingTrackId = MutableStateFlow<Int?>(null)
-  val translatingTrackId: StateFlow<Int?> = _translatingTrackId.asStateFlow()
-
-  private val _translatingTrackName = MutableStateFlow("")
-  val translatingTrackName: StateFlow<String> = _translatingTrackName.asStateFlow()
-
-  private val _translationProgress = MutableStateFlow(0f)
-  val translationProgress: StateFlow<Float> = _translationProgress.asStateFlow()
-
-  private val _translationStatus = MutableStateFlow("")
-  val translationStatus: StateFlow<String> = _translationStatus.asStateFlow()
 
   private var playlistMetadataJob: Job? = null
   private var controlsVisibleForPolling = false
@@ -3652,176 +3635,9 @@ fun restartFromBeginning() {
     }
   }
 
-  private var translationJob: Job? = null
-
   /** Reopen a picked subtitle using its original content URI instead of mpv's private fd path. */
   internal fun clipSubtitleSource(externalPath: String): String =
     mpvPathToUriMap[externalPath] ?: externalPath
-
-  fun translateSubtitle(
-    track: TrackNode,
-    targetLanguage: String,
-  ) {
-    val externalPath = track.externalFilename ?: return
-    val uriString = mpvPathToUriMap[externalPath] ?: externalPath
-
-    // Convert file path to proper URI if needed
-    val uri =
-      if (uriString.startsWith("/")) {
-        File(uriString).toUri()
-      } else {
-        Uri.parse(uriString)
-      }
-
-    translationJob?.cancel()
-    translationJob =
-      viewModelScope.launch(Dispatchers.IO) {
-        _isTranslatingSub.value = true
-        _translatingTrackId.value = track.id
-        _translatingTrackName.value =
-          getFileNameFromUri(uri)?.let { it.substringBeforeLast(".") }?.lowercase() ?: "subtitle"
-        _translationProgress.value = 0f
-        _translationStatus.value = "Preparing translation"
-
-        try {
-          val content =
-            appContext.contentResolver.openInputStream(uri)?.use {
-              it.readBytes().decodeToString()
-            } ?: throw Exception("Could not read subtitle file")
-
-          val originalFileName = getFileNameFromUri(uri) ?: "subtitle.srt"
-          val extension = originalFileName.substringAfterLast('.', "srt")
-
-          val result =
-            aiService.translateSubtitle(content, targetLanguage, extension) { progress ->
-              _translationProgress.value = progress.progress
-              _translationStatus.value =
-                buildString {
-                  append(if (progress.isResuming) "Resuming" else "Translating")
-                  append(" ${progress.completedChunks}/${progress.totalChunks}")
-                }
-            }
-
-          result
-            .onSuccess { translatedContent ->
-              val baseName = originalFileName.substringBeforeLast(".").ifBlank { "subtitle" }
-              val sanitizedLang = targetLanguage.replace(" ", "_").ifBlank { "translated" }
-              val newFileName = "$baseName.$sanitizedLang.AI.$extension"
-
-              val savedUri =
-                saveTranslatedSubtitle(uri, newFileName, extension, targetLanguage, translatedContent)
-                  ?: throw Exception("Could not save translated subtitle")
-
-              withContext(Dispatchers.Main) {
-                addSubtitle(savedUri, select = true)
-                showToast("Translation complete: $newFileName")
-              }
-            }.onFailure { error ->
-              withContext(Dispatchers.Main) {
-                showToast("Translation failed: ${error.message}")
-              }
-            }
-        } catch (e: Exception) {
-          withContext(Dispatchers.Main) {
-            showToast("Error: ${e.message}")
-          }
-        } finally {
-          _isTranslatingSub.value = false
-          _translatingTrackId.value = null
-          _translatingTrackName.value = ""
-          _translationProgress.value = 0f
-          _translationStatus.value = ""
-          translationJob = null
-        }
-      }
-  }
-
-  fun cancelTranslation() {
-    translationJob?.cancel()
-    translationJob = null
-    _isTranslatingSub.value = false
-    _translatingTrackId.value = null
-    _translatingTrackName.value = ""
-    _translationProgress.value = 0f
-    _translationStatus.value = ""
-    val cacheDir = java.io.File(appContext.filesDir, "ai_translation_cache")
-    if (cacheDir.exists()) {
-      cacheDir.listFiles()?.forEach { it.delete() }
-      cacheDir.delete()
-    }
-    showToast("Translation cancelled")
-  }
-
-  private fun saveTranslatedSubtitle(
-    originalUri: Uri,
-    newFileName: String,
-    extension: String,
-    targetLanguage: String,
-    translatedContent: String,
-  ): Uri? {
-    if (originalUri.scheme == "file") {
-      val parent = originalUri.path?.let { File(it).parentFile }
-      if (parent?.exists() == true) {
-        val saved = File(parent, newFileName).also { it.writeText(translatedContent) }.toUri()
-        // Clean up common buggy patterns: .AI.ext, lang.AI.ext, ..AI.ext
-        listOf(
-          ".AI.$extension",
-          "$targetLanguage.AI.$extension",
-          "..AI.$extension",
-        ).filter { it.isNotBlank() }.forEach { pattern ->
-          val buggy = File(parent, pattern)
-          if (buggy.exists() && buggy.name != newFileName) buggy.delete()
-        }
-        return saved
-      }
-    }
-
-    if (originalUri.scheme == "content") {
-      val sourceDocument = DocumentFile.fromSingleUri(appContext, originalUri)
-      val parentDocument = sourceDocument?.parentFile
-      if (parentDocument?.canWrite() == true) {
-        val mimeType =
-          MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
-            ?: "text/plain"
-        val targetDocument =
-          parentDocument.findFile(newFileName)
-            ?: parentDocument.createFile(mimeType, newFileName)
-
-        if (targetDocument != null) {
-          appContext.contentResolver.openOutputStream(targetDocument.uri)?.use { output ->
-            output.write(translatedContent.toByteArray())
-          }
-          // Clean up common buggy patterns
-          listOf(
-            ".AI.$extension",
-            "$targetLanguage.AI.$extension",
-            "..AI.$extension",
-          ).filter { it.isNotBlank() }.forEach { pattern ->
-            parentDocument.findFile(pattern)?.let { buggy ->
-              if (buggy.uri != targetDocument.uri) buggy.delete()
-            }
-          }
-          return targetDocument.uri
-        }
-      }
-    }
-
-    val fallbackDir = appContext.getExternalFilesDir(null) ?: appContext.filesDir
-    val backupFile =
-      File(File(fallbackDir, "Subtitles"), newFileName).apply {
-        parentFile?.mkdirs()
-      }
-    backupFile.writeText(translatedContent)
-    // Clean up common buggy patterns in fallback dir
-    val backupParent = backupFile.parentFile
-    if (backupParent != null) {
-      listOf(".AI.$extension", "$targetLanguage.AI.$extension", "..AI.$extension").filter { it.isNotBlank() }.forEach { pattern ->
-        val buggy = File(backupParent, pattern)
-        if (buggy.exists() && buggy.name != newFileName) buggy.delete()
-      }
-    }
-    return backupFile.toUri()
-  }
 
   private fun scanLocalSubtitles(mediaTitle: String) {
     viewModelScope.launch(Dispatchers.IO) {

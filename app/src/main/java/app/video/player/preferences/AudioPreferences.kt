@@ -59,15 +59,15 @@ class AudioPreferences(
   val audioWavySeekbar = preferenceStore.getBoolean("audio_wavy_seekbar", true)
   val enabledMusicTabs = preferenceStore.getStringSet(
     "enabled_music_tabs",
-    setOf("SONGS", "ALBUMS", "ARTISTS", "PLAYLISTS", "FOLDERS"),
+    setOf("SONGS", "ALBUMS", "ARTISTS", "PLAYLISTS", "FOLDERS", "FAVORITES"),
   )
   val musicTabOrder = preferenceStore.getObject(
     key = "music_tab_order",
-    defaultValue = listOf("SONGS", "ALBUMS", "ARTISTS", "PLAYLISTS", "FOLDERS"),
+    defaultValue = listOf("SONGS", "ALBUMS", "ARTISTS", "PLAYLISTS", "FOLDERS", "FAVORITES"),
     serializer = { list -> list.joinToString(",") },
     deserializer = { str ->
       val parsed = str.split(",").map { it.trim() }.filter { it.isNotEmpty() }
-      val missing = listOf("SONGS", "ALBUMS", "ARTISTS", "PLAYLISTS", "FOLDERS") - parsed.toSet()
+      val missing = listOf("SONGS", "ALBUMS", "ARTISTS", "PLAYLISTS", "FOLDERS", "FAVORITES") - parsed.toSet()
       parsed + missing
     },
   )

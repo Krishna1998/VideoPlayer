@@ -129,7 +129,6 @@ import androidx.constraintlayout.compose.Dimension
 import app.video.player.R
 import app.video.player.ui.components.SwipeDismissibleToast
 import app.video.player.preferences.AdvancedPreferences
-import app.video.player.preferences.AiPreferences
 import app.video.player.preferences.AppearancePreferences
 import app.video.player.preferences.GesturePreferences
 import app.video.player.preferences.AudioPreferences
@@ -385,8 +384,6 @@ fun PlayerControls(
   val isTelevision = DeviceFormFactor.isTelevision(LocalContext.current)
   val advancedPreferences = koinInject<AdvancedPreferences>()
   val appearancePreferences = koinInject<AppearancePreferences>()
-  val aiPreferences = koinInject<AiPreferences>()
-  val aiEnabled by aiPreferences.enabled.collectAsState()
   val liquidGlassPreference by appearancePreferences.liquidGlassEnabled.collectAsState()
   val liquidGlassInHdr by appearancePreferences.liquidGlassInHdr.collectAsState()
   val hdrOutputPreference by koinInject<DecoderPreferences>().hdrScreenOutput.collectAsState()
@@ -1346,10 +1343,6 @@ fun PlayerControls(
           val holdForMultipleSpeed by playerPreferences.holdForMultipleSpeed.collectAsState()
           val currentPlayerUpdate by viewModel.playerUpdate.collectAsState()
           val isHorizontalSeekActive = currentPlayerUpdate is PlayerUpdates.HorizontalSeek
-          val isTranslatingSub by viewModel.isTranslatingSub.collectAsState()
-          val translationProgress by viewModel.translationProgress.collectAsState()
-          val translationStatus by viewModel.translationStatus.collectAsState()
-          val translatingTrackName by viewModel.translatingTrackName.collectAsState()
 
           // Overlay visibility — Groups 2 & 5
           val showHoldSpeedOverlay by playerPreferences.showHoldSpeedOverlay.collectAsState()
@@ -2252,16 +2245,12 @@ fun PlayerControls(
                   }
                 },
           ) {
-            val showAiIndicators = aiEnabled
             if (isPortrait) {
               TopPlayerControlsPortrait(
                 mediaTitle = mediaTitle,
                 onBackPress = onBackPress,
                 onOpenSheet = onOpenSheet,
                 viewModel = viewModel,
-                isTranslatingSub = showAiIndicators && isTranslatingSub,
-                translationStatus = translationStatus,
-                translatingTrackName = translatingTrackName,
               )
             } else {
               TopLeftPlayerControlsLandscape(
@@ -2269,9 +2258,6 @@ fun PlayerControls(
                 onBackPress = onBackPress,
                 onOpenSheet = onOpenSheet,
                 viewModel = viewModel,
-                isTranslatingSub = showAiIndicators && isTranslatingSub,
-                translationStatus = translationStatus,
-                translatingTrackName = translatingTrackName,
               )
             }
           }
