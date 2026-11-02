@@ -76,8 +76,8 @@ class SettingsManager(
     private const val LAST_BACKUP_SIGNATURE = "last_signature"
     private const val LAST_BACKUP_TIME = "last_time"
     private const val AUTO_BACKUP_RETENTION = 7
-    private val AUTO_BACKUP_FILE_REGEX = Regex("""mpvrx_settings_[0-9]{8}_[0-9]{6}(?: \([0-9]+\))?\.xml""")
-    private val BACKUP_TIMESTAMP_REGEX = Regex("""mpvrx_settings_([0-9]{8}_[0-9]{6})""", RegexOption.IGNORE_CASE)
+    private val AUTO_BACKUP_FILE_REGEX = Regex("""(?:videoplayer|mpvrx)_settings_[0-9]{8}_[0-9]{6}(?: \([0-9]+\))?\.xml""")
+    private val BACKUP_TIMESTAMP_REGEX = Regex("""(?:videoplayer|mpvrx)_settings_([0-9]{8}_[0-9]{6})""", RegexOption.IGNORE_CASE)
     private const val MAX_BACKUP_BYTES = 64L * 1024 * 1024
     private const val MAX_TEXT_LENGTH = 4 * 1024 * 1024
     private const val MAX_SET_SIZE = 10_000
@@ -145,7 +145,7 @@ class SettingsManager(
           val state = context.getSharedPreferences(AUTO_BACKUP_STATE, Context.MODE_PRIVATE)
           if (signature == state.getString(LAST_BACKUP_SIGNATURE, null)) return@withContext Result.success(null)
 
-          val temporary = root.createFile("text/xml", ".mpvrx-settings-${System.currentTimeMillis()}.tmp")
+          val temporary = root.createFile("text/xml", ".videoplayer-settings-${System.currentTimeMillis()}.tmp")
             ?: error("Unable to create backup")
           var finalized = false
           try {
@@ -191,7 +191,8 @@ class SettingsManager(
         val candidates = (root.listFiles().asSequence() + backupFolder?.listFiles().orEmpty().asSequence())
           .filter { file ->
             file.isFile && file.name?.let { name ->
-              name.startsWith("mpvrx_settings_", ignoreCase = true) && name.endsWith(".xml", ignoreCase = true)
+              (name.startsWith("videoplayer_settings_", ignoreCase = true) || name.startsWith("mpvrx_settings_", ignoreCase = true)) &&
+                name.endsWith(".xml", ignoreCase = true)
             } == true
           }
           .sortedWith(
@@ -675,7 +676,7 @@ class SettingsManager(
 
   fun getDefaultExportFilename(): String {
     val dateFormat = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ROOT)
-    return "mpvrx_settings_${dateFormat.format(Date())}.xml"
+    return "videoplayer_settings_${dateFormat.format(Date())}.xml"
   }
 
   data class ImportStats(

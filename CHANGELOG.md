@@ -14,6 +14,7 @@ These notes are written in plain English and focus on what changed for real use.
   - Fixed missing `FontWeight` resolution in `RenameDialog`.
   - Corrected callback type contract for `onRenameClick` in the selection bottom bar.
   - Cleaned up orphaned AI search dialogs and restored subtitle sheet layout structure.
+  - Updated default settings export and auto-backup file names to `videoplayer_settings_YYYYMMDD_HHMMSS.xml` with full backward compatibility for importing existing `mpvrx_settings_*.xml` backups.
 
 ## 1.1.1
 
