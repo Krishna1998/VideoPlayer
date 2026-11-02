@@ -122,7 +122,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.viewmodel.compose.viewModel
 import app.video.player.R
-import app.video.player.domain.framecapture.FrameCapture
 import app.video.player.domain.media.model.Video
 import app.video.player.domain.thumbnail.ThumbnailRepository
 import app.video.player.preferences.AdvancedPreferences
@@ -143,10 +142,6 @@ import app.video.player.ui.browser.playlist.playlistGridColumnLimit
 import app.video.player.ui.browser.recentlyplayed.RecentlyPlayedItem
 import app.video.player.ui.browser.recentlyplayed.RecentlyPlayedScreen
 import app.video.player.ui.browser.recentlyplayed.RecentlyPlayedViewModel
-import app.video.player.ui.framecapture.SnapshotDetailScreen
-import app.video.player.ui.framecapture.SnapshotLibraryViewModel
-import app.video.player.ui.framecapture.SnapshotScreen
-import app.video.player.ui.framecapture.toDetailItem
 import app.video.player.ui.icons.AppIcon
 import app.video.player.ui.icons.Icon
 import app.video.player.ui.icons.Icons
@@ -177,7 +172,7 @@ private const val AVATAR_SIZE_PX = 512
 private val SHELF_VIDEO_CARD_WIDTH = 214.dp
 private val SHELF_AUDIO_CARD_WIDTH = 120.dp
 
-/** Personal hub that folds Recents, Playlists and Snapshots into one bottom-navigation tab. */
+/** Personal hub that folds Recents and Playlists into one bottom-navigation tab. */
 @Serializable
 object ProfileScreen : Screen {
   @OptIn(ExperimentalMaterial3Api::class)
@@ -220,7 +215,6 @@ object ProfileScreen : Screen {
 
     val recentsViewModel: RecentlyPlayedViewModel = viewModel(factory = RecentlyPlayedViewModel.factory(application))
     val playlistViewModel: PlaylistViewModel = viewModel(factory = PlaylistViewModel.factory(application))
-    val snapshotViewModel: SnapshotLibraryViewModel = viewModel(factory = SnapshotLibraryViewModel.factory(application))
 
     LifecycleResumeEffect(playlistViewModel) {
       playlistViewModel.refresh()
@@ -229,14 +223,11 @@ object ProfileScreen : Screen {
 
     val recentItems by recentsViewModel.recentItems.collectAsState()
     val playlists by playlistViewModel.playlistsWithCount.collectAsState()
-    val snapshotLibrary by snapshotViewModel.library.collectAsState()
-    val snapshotThumbnails by snapshotViewModel.thumbnailCache.collectAsState()
 
     val recentShelf = remember(recentItems) { recentItems.take(SHELF_LIMIT) }
     val recentVideos =
       remember(recentShelf) { recentShelf.filterIsInstance<RecentlyPlayedItem.VideoItem>().map { it.video } }
     val playbackInfo = rememberSwipePlaybackInfo(recentVideos)
-    val snapshots = remember(snapshotLibrary.allCaptures) { snapshotLibrary.allCaptures.sortedByDescending { it.capturedAt } }
 
     var activeVideoItem by remember { mutableStateOf<RecentlyPlayedItem.VideoItem?>(null) }
     var playlistToDelete by remember { mutableStateOf<app.video.player.database.entities.PlaylistEntity?>(null) }
@@ -360,7 +351,6 @@ object ProfileScreen : Screen {
               name = profileName,
               recentCount = recentItems.size,
               playlistCount = playlists.size,
-              snapshotCount = snapshots.size,
               collapseProgress = heroCollapseProgress,
               onEditProfile = {
                 haptics.tick()
@@ -368,7 +358,6 @@ object ProfileScreen : Screen {
               },
               onRecents = { backStack.navigateTo(RecentlyPlayedScreen) },
               onPlaylists = { backStack.navigateTo(PlaylistScreen) },
-              onSnapshots = { backStack.navigateTo(SnapshotScreen) },
             )
           }
 
@@ -487,43 +476,6 @@ object ProfileScreen : Screen {
             }
           }
 
-          item(key = "snapshots_header") {
-            SectionHeader(
-              title = stringResource(R.string.ui_snapshots),
-              count = snapshots.size,
-              onViewAll = { backStack.navigateTo(SnapshotScreen) },
-            )
-          }
-          item(key = "snapshots_shelf") {
-            if (snapshots.isEmpty()) {
-              ShelfEmptyCard(
-                icon = Icons.RoundedFilled.Image,
-                title = stringResource(R.string.snapshot_empty_title),
-                message = stringResource(R.string.snapshot_empty_message),
-              )
-            } else {
-              LazyRow(
-                contentPadding = PaddingValues(horizontal = horizontalShelfPadding),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-              ) {
-                itemsIndexed(snapshots.take(SHELF_LIMIT), key = { _, capture -> capture.id }) { index, capture ->
-                  LaunchedEffect(capture.id) { snapshotViewModel.loadThumbnail(capture) }
-                  SnapshotShelfCard(
-                    capture = capture,
-                    thumbnail = snapshotThumbnails[capture.id],
-                    onClick = {
-                      backStack.navigateTo(
-                        SnapshotDetailScreen(
-                          captures = snapshots.map { it.toDetailItem() },
-                          initialIndex = index,
-                        ),
-                      )
-                    },
-                  )
-                }
-              }
-            }
-          }
           item(key = "watch_statistics") {
             ProfileWatchStatistics()
           }
@@ -652,18 +604,16 @@ private fun ProfileOverviewCard(
   name: String,
   recentCount: Int,
   playlistCount: Int,
-  snapshotCount: Int,
   collapseProgress: Float,
   onEditProfile: () -> Unit,
   onRecents: () -> Unit,
   onPlaylists: () -> Unit,
-  onSnapshots: () -> Unit,
 ) {
   val configuration = LocalConfiguration.current
   val isTablet = configuration.smallestScreenWidthDp >= 600
   val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
   val editLabel = stringResource(R.string.profile_edit)
-  val totalItems = recentCount + playlistCount + snapshotCount
+  val totalItems = recentCount + playlistCount
   val avatarScale = 1f - 0.25f * collapseProgress
   val avatarAlpha = (1f - collapseProgress * 1.5f).coerceIn(0f, 1f)
 
@@ -757,10 +707,6 @@ private fun ProfileOverviewCard(
       add(ProfileShortcutDestination(
         Icons.RoundedFilled.Subscriptions, stringResource(R.string.ui_playlists), playlistCount,
         MaterialTheme.colorScheme.secondary, onPlaylists,
-      ))
-      add(ProfileShortcutDestination(
-        Icons.RoundedFilled.Image, stringResource(R.string.ui_snapshots), snapshotCount,
-        MaterialTheme.colorScheme.tertiary, onSnapshots,
       ))
     }
     BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
@@ -1114,22 +1060,6 @@ private fun RecentVideoCard(
         trackColor = Color.Black.copy(alpha = 0.35f),
       )
     }
-  }
-}
-
-@Composable
-private fun SnapshotShelfCard(
-  capture: FrameCapture,
-  thumbnail: Bitmap?,
-  onClick: () -> Unit,
-) {
-  ShelfCard(title = capture.videoTitle, subtitle = null, onClick = onClick, isAudio = false) {
-    if (thumbnail != null) {
-      Image(thumbnail.asImageBitmap(), contentDescription = null, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize())
-    } else {
-      Icon(Icons.RoundedFilled.Image, contentDescription = null, tint = MaterialTheme.colorScheme.secondary, modifier = Modifier.size(36.dp))
-    }
-    FrameBadge(capture.formattedPosition, Modifier.align(Alignment.BottomEnd))
   }
 }
 

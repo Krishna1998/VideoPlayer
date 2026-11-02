@@ -13,6 +13,8 @@ These notes are written in plain English and focus on what changed for real use.
   - Renamed core database schemas, Room entities, dependency injection modules, and repositories.
   - Standardized custom URL schemes (`videoplayer-zip://`, `videoplayer-network://`, `videoplayer-xtream://`) and credential ciphers.
   - Cleaned up obsolete legacy namespaces, prefixes, and temporary fallbacks across the codebase.
+- **Profile Tab:**
+  - Completely removed the Snapshots shelf, shortcuts, and background loading from the Profile tab, streamlining the personal hub to Recents, Playlists, and Watch Statistics.
 - **App Logo & Splash Screen:**
   - Set default app logo to the black-gradient purple icon across application manifests, TV banners, and adaptive mipmaps.
   - Updated system and startup splash screen to the animated purple gradient logo on pure black background.

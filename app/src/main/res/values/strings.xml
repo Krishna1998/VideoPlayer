@@ -2395,7 +2395,7 @@
   <string name="ui_snapshots">Snapshots</string>
   <string name="ui_profile">Profile</string>
   <string name="pref_nav_profile_title">Show Profile tab</string>
-  <string name="pref_nav_profile_summary">Combine Recents, Playlists and Snapshots into a single tab</string>
+  <string name="pref_nav_profile_summary">Combine Recents and Playlists into a single tab</string>
   <string name="profile_view_all">View all</string>
   <string name="profile_edit">Edit profile</string>
   <string name="profile_display_name">Display name</string>
