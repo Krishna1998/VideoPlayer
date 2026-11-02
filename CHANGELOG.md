@@ -4,6 +4,22 @@ These notes are written in plain English and focus on what changed for real use.
 
 ## Unreleased
 
+## 2.0.0
+
+- Release version 2.0.0.
+- **Complete Rebranding to VideoPlayer:**
+  - Transitioned the entire project and architecture to **VideoPlayer**.
+  - Updated all app branding assets, splash animations, and metadata.
+  - Renamed core database schemas, Room entities, dependency injection modules, and repositories.
+  - Standardized custom URL schemes (`videoplayer-zip://`, `videoplayer-network://`, `videoplayer-xtream://`) and credential ciphers.
+  - Cleaned up obsolete legacy namespaces, prefixes, and temporary fallbacks across the codebase.
+- **Lyrics Translation & Romanization:**
+  - Streamlined target languages strictly to Hindi, English, and Hinglish under Audio Settings ("Lyrics Translation & Romanization"), removing unnecessary options.
+  - Added robust fallback sanitization for lyrics translation languages.
+- **Stability & Performance:**
+  - Resolved UI dialog compilation errors and type contract mismatches.
+  - Updated settings export and auto-backup naming conventions to `videoplayer_settings_YYYYMMDD_HHMMSS.xml`.
+
 ## 1.1.2
 
 - Release version 1.1.2.
