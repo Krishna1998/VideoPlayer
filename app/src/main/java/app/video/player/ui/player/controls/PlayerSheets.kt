@@ -186,16 +186,6 @@ fun PlayerSheets(
         )
       }
 
-      val isTranslating by viewModel.isTranslatingSub.composeCollectAsState()
-      val translationProgress by viewModel.translationProgress.composeCollectAsState()
-      val translationStatus by viewModel.translationStatus.composeCollectAsState()
-      val translatingTrackId by viewModel.translatingTrackId.composeCollectAsState()
-      val translatingTrackName by viewModel.translatingTrackName.composeCollectAsState()
-      val aiPreferences = koinInject<app.video.player.preferences.AiPreferences>()
-      val aiEnabled by aiPreferences.enabled.collectAsState()
-      val translationEnabled by aiPreferences.subtitleTranslationEnabled.collectAsState()
-      val autoTranslateLanguages by aiPreferences.autoTranslateLanguages.collectAsState()
-
       val subtitlesOff = subtitles.none { isSubtitleSelected(it.id) }
 
       SubtitlesSheet(
@@ -223,16 +213,6 @@ fun PlayerSheets(
         delayControlEnabled = setOf("sub-delay", "sub-speed").any { it !in configOwnedOptions },
         onOpenOnlineSearch = { onShowSheet(Sheets.OnlineSubtitleSearch) },
         onDismissRequest = onDismissRequest,
-        onTranslateSubtitle = { track, lang -> viewModel.translateSubtitle(track, lang) },
-        onCancelTranslation = { viewModel.cancelTranslation() },
-        isTranslating = isTranslating,
-        translationProgress = translationProgress,
-        translationStatus = translationStatus,
-        translationEnabled = aiEnabled && translationEnabled,
-        translatingTrackId = translatingTrackId,
-        translatingTrackName = translatingTrackName,
-        autoTranslateLanguages = autoTranslateLanguages,
-        aiEnabled = aiEnabled,
         subtitlesOff = subtitlesOff,
         onDisableSubtitles = {
           setTrackSelectionId("sid", null)

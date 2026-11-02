@@ -517,7 +517,6 @@ class SettingsManager(
       { koin.get<BrowserPreferences>() },
       { koin.get<FoldersPreferences>() },
       { koin.get<NetworkBookmarkPreferences>() },
-      { koin.get<AiPreferences>() },
       { koin.get<YtdlPreferences>() },
       { koin.get<SecureFolderPreferences>() },
       { koin.get<SeerrPreferences>() },

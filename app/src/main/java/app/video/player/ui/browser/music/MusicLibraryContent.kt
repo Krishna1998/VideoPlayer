@@ -219,6 +219,8 @@ fun MusicLibraryContent(
   val albums by musicViewModel.filteredAlbums.collectAsState()
   val artists by musicViewModel.filteredArtists.collectAsState()
   val playlists by musicViewModel.playlists.collectAsState()
+  val favoriteSongs by musicViewModel.filteredFavoriteSongs.collectAsState()
+  val favoriteSongPaths by musicViewModel.favoriteSongPaths.collectAsState()
 
   val selectedAlbum by musicViewModel.selectedAlbum.collectAsState()
   val selectedArtist by musicViewModel.selectedArtist.collectAsState()
@@ -284,11 +286,21 @@ fun MusicLibraryContent(
     }
   )
 
+  val favoriteSelectionManager = rememberSelectionManager(
+    items = favoriteSongs,
+    getId = { it.id },
+    onDeleteItems = { selectedSongs, _ ->
+      musicViewModel.deleteSongs(context, selectedSongs)
+    },
+    onOperationComplete = { musicViewModel.scanLibrary(context) }
+  )
+
   val activeSelectionManager = when (selectedTab) {
     MusicTab.SONGS -> songSelectionManager
     MusicTab.ALBUMS -> albumSelectionManager
     MusicTab.ARTISTS -> artistSelectionManager
     MusicTab.PLAYLISTS -> playlistSelectionManager
+    MusicTab.FAVORITES -> favoriteSelectionManager
     // Folders tab reuses FolderListScreen, which owns its own selection state.
     MusicTab.FOLDERS -> songSelectionManager
   }
@@ -301,7 +313,8 @@ fun MusicLibraryContent(
   fun selectedMusicVideos(): List<Video> {
     val items = activeSelectionManager.getSelectedItems()
     return when (selectedTab) {
-      MusicTab.SONGS -> (items as List<MusicSong>).map { song -> song.toVideo() }
+      MusicTab.SONGS,
+      MusicTab.FAVORITES -> (items as List<MusicSong>).map { song -> song.toVideo() }
       MusicTab.ALBUMS -> {
         val selectedAlbums = items as List<MusicAlbum>
         selectedAlbums
@@ -369,6 +382,8 @@ fun MusicLibraryContent(
   val artistsGridState = rememberLazyGridState()
   val playlistsListState = rememberLazyListState()
   val playlistsGridState = rememberLazyGridState()
+  val favoritesListState = rememberLazyListState()
+  val favoritesGridState = rememberLazyGridState()
 
   val activeTab = visibleTabs.getOrNull(pagerState.currentPage) ?: MusicTab.SONGS
   val activeListState = when (activeTab) {
@@ -376,6 +391,7 @@ fun MusicLibraryContent(
     MusicTab.ALBUMS -> albumsListState
     MusicTab.ARTISTS -> artistsListState
     MusicTab.PLAYLISTS -> playlistsListState
+    MusicTab.FAVORITES -> favoritesListState
     MusicTab.FOLDERS -> null
   }
   val activeGridState = when (activeTab) {
@@ -383,6 +399,7 @@ fun MusicLibraryContent(
     MusicTab.ALBUMS -> albumsGridState
     MusicTab.ARTISTS -> artistsGridState
     MusicTab.PLAYLISTS -> playlistsGridState
+    MusicTab.FAVORITES -> favoritesGridState
     MusicTab.FOLDERS -> null
   }
 
@@ -426,6 +443,7 @@ fun MusicLibraryContent(
     MusicTab.ALBUMS -> albums.size
     MusicTab.ARTISTS -> artists.size
     MusicTab.PLAYLISTS -> playlists.size
+    MusicTab.FAVORITES -> favoriteSongs.size
     MusicTab.FOLDERS -> 0
   }
 
@@ -495,7 +513,7 @@ fun MusicLibraryContent(
               onInvertSelection = { activeSelectionManager.invertSelection() },
               onDeselectAll = { activeSelectionManager.clear() },
               onDeleteClick = null,
-              onShareClick = if (selectedTab == MusicTab.SONGS) {
+              onShareClick = if (selectedTab == MusicTab.SONGS || selectedTab == MusicTab.FAVORITES) {
                 {
                   @Suppress("UNCHECKED_CAST")
                   val selected = activeSelectionManager.getSelectedItems() as List<MusicSong>
@@ -507,7 +525,8 @@ fun MusicLibraryContent(
               onPlayClick = {
                 val items = activeSelectionManager.getSelectedItems()
                 when (selectedTab) {
-                  MusicTab.SONGS -> {
+                  MusicTab.SONGS,
+                  MusicTab.FAVORITES -> {
                     @Suppress("UNCHECKED_CAST")
                     musicViewModel.playAllSongs(context, items as List<MusicSong>, shuffle = false)
                   }
@@ -545,7 +564,7 @@ fun MusicLibraryContent(
               },
               onRenameClick = null,
               isSingleSelection = activeSelectionManager.isSingleSelection,
-              onInfoClick = if (selectedTab == MusicTab.SONGS) showSongSelectionInfo else null,
+              onInfoClick = if (selectedTab == MusicTab.SONGS || selectedTab == MusicTab.FAVORITES) showSongSelectionInfo else null,
               titleTrailing = null,
             )
           }
@@ -747,6 +766,34 @@ fun MusicLibraryContent(
                 selectionManager = songSelectionManager,
                 listState = songsListState,
                 gridState = songsGridState,
+                favoritePaths = favoriteSongPaths,
+                onToggleFavorite = { musicViewModel.toggleFavorite(it) },
+                onSongsChanged = { musicViewModel.scanLibrary(context) },
+              )
+
+              MusicTab.FAVORITES -> SongsTabContent(
+                songs = favoriteSongs,
+                viewMode = viewMode,
+                recentlyPlayedFilePath = recentlyPlayedFilePath,
+                isPlaybackActive = isPlaybackActive,
+                coverArtSizeDp = coverArtSizeDp,
+                gridCoverArtSizeDp = gridCoverArtSizeDp,
+                onSongClick = { song ->
+                  if (favoriteSelectionManager.isInSelectionMode) {
+                    favoriteSelectionManager.toggleFromUser(song)
+                  } else {
+                    musicViewModel.playSong(context, song, favoriteSongs)
+                  }
+                },
+                onSongLongClick = { song ->
+                  favoriteSelectionManager.toggle(song)
+                },
+                selectionManager = favoriteSelectionManager,
+                listState = favoritesListState,
+                gridState = favoritesGridState,
+                favoritePaths = favoriteSongPaths,
+                onToggleFavorite = { musicViewModel.toggleFavorite(it) },
+                emptyText = "No favorite songs found",
                 onSongsChanged = { musicViewModel.scanLibrary(context) },
               )
 
@@ -911,6 +958,22 @@ fun MusicLibraryContent(
                   musicViewModel.playSong(context, target, songs)
                 }
               )
+              val isFav = song.path in favoriteSongPaths
+              ListItem(
+                content = { Text(if (isFav) stringResource(R.string.generic_remove_from_favorites) else stringResource(R.string.notification_add_to_favorites)) },
+                leadingContent = {
+                  Icon(
+                    imageVector = if (isFav) Icons.RoundedFilled.Favorite else Icons.RoundedFilled.FavoriteBorder,
+                    contentDescription = null,
+                    tint = if (isFav) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface,
+                  )
+                },
+                modifier = Modifier.clickable {
+                  val target = song
+                  selectedSongForOptions = null
+                  musicViewModel.toggleFavorite(target)
+                }
+              )
               ListItem(
                 content = { Text("Add to Playlist") },
                 leadingContent = { Icon(Icons.RoundedFilled.PlaylistAdd, contentDescription = null) },
@@ -964,9 +1027,10 @@ fun MusicLibraryContent(
         // Multi Selection Delete Confirmation Dialog
         if (showDeleteSelectedDialog) {
           val count = activeSelectionManager.selectedCount
-          val itemType = if (selectedTab == MusicTab.SONGS) "song" else "playlist"
+          val itemType = if (selectedTab == MusicTab.SONGS || selectedTab == MusicTab.FAVORITES) "song" else "playlist"
           val itemNames = when (selectedTab) {
-            MusicTab.SONGS -> {
+            MusicTab.SONGS,
+            MusicTab.FAVORITES -> {
               @Suppress("UNCHECKED_CAST")
               (activeSelectionManager.getSelectedItems() as List<MusicSong>).map { it.title }
             }
@@ -988,8 +1052,8 @@ fun MusicLibraryContent(
             itemCount = count,
             itemType = itemType,
             itemNames = itemNames,
-            itemPaths = if (selectedTab == MusicTab.SONGS) {
-              songSelectionManager.getSelectedItems().map { it.uri.toString() }
+            itemPaths = if (selectedTab == MusicTab.SONGS || selectedTab == MusicTab.FAVORITES) {
+              (activeSelectionManager.getSelectedItems() as List<MusicSong>).map { it.uri.toString() }
             } else emptyList(),
           )
         }
@@ -1273,7 +1337,7 @@ fun MusicLibraryContent(
         showCopy = false,
         showMove = false,
         showRename = false,
-        showDelete = selectedTab == MusicTab.SONGS || selectedTab == MusicTab.PLAYLISTS,
+        showDelete = selectedTab == MusicTab.SONGS || selectedTab == MusicTab.PLAYLISTS || selectedTab == MusicTab.FAVORITES,
         showAddToPlaylist = selectedTab != MusicTab.PLAYLISTS && selectedTab != MusicTab.FOLDERS,
         modifier = Modifier.padding(bottom = 0.dp)
       )
@@ -1412,10 +1476,13 @@ private fun SongsTabContent(
   selectionManager: app.video.player.ui.browser.selection.SelectionManager<MusicSong, Long>,
   listState: LazyListState = rememberLazyListState(),
   gridState: LazyGridState = rememberLazyGridState(),
+  favoritePaths: Set<String> = emptySet(),
+  onToggleFavorite: ((MusicSong) -> Unit)? = null,
+  emptyText: String = "No songs found",
   onSongsChanged: () -> Unit,
 ) {
   if (songs.isEmpty()) {
-    EmptyMusicState(text = "No songs found")
+    EmptyMusicState(text = emptyText)
     return
   }
 
@@ -1455,6 +1522,8 @@ private fun SongsTabContent(
               selectionManager.isSelected(songs[neighbor])
             },
             isPlaying = song.isNowPlaying(),
+            isFavorite = song.path in favoritePaths,
+            onFavoriteClick = onToggleFavorite?.let { action -> { action(song) } },
             onClick = { onSongClick(song) },
             onLongClick = { onSongLongClick(song) }
           )
@@ -1487,6 +1556,8 @@ private fun SongsTabContent(
             },
             isPlaying = song.isNowPlaying(),
             coverArtSizeDp = coverArtSizeDp,
+            isFavorite = song.path in favoritePaths,
+            onFavoriteClick = onToggleFavorite?.let { action -> { action(song) } },
             onClick = { onSongClick(song) },
             onLongClick = { onSongLongClick(song) },
             isWatched = isWatched,
@@ -1516,6 +1587,8 @@ private fun SongGridCard(
   isSelected: Boolean = false,
   selectionNeighbors: MediaSelectionNeighbors = MediaSelectionNeighbors(),
   isPlaying: Boolean = false,
+  isFavorite: Boolean = false,
+  onFavoriteClick: (() -> Unit)? = null,
   onClick: () -> Unit,
   onLongClick: () -> Unit,
   modifier: Modifier = Modifier,
@@ -1579,6 +1652,24 @@ private fun SongGridCard(
           }
         }
         SelectionIndicator(isSelected, Modifier.align(Alignment.TopEnd).padding(6.dp))
+        if (onFavoriteClick != null) {
+          IconButton(
+            onClick = onFavoriteClick,
+            modifier = Modifier
+              .align(Alignment.TopStart)
+              .padding(4.dp)
+              .size(28.dp),
+          ) {
+            Icon(
+              imageVector = if (isFavorite) Icons.RoundedFilled.Favorite else Icons.RoundedFilled.FavoriteBorder,
+              contentDescription = stringResource(
+                if (isFavorite) R.string.generic_remove_from_favorites else R.string.notification_add_to_favorites,
+              ),
+              tint = if (isFavorite) MaterialTheme.colorScheme.error else Color.White.copy(alpha = 0.85f),
+              modifier = Modifier.size(18.dp),
+            )
+          }
+        }
       }
 
       Spacer(modifier = Modifier.height(4.dp))
@@ -1627,6 +1718,8 @@ private fun SongListItem(
   selectionNeighbors: MediaSelectionNeighbors = MediaSelectionNeighbors(),
   isPlaying: Boolean = false,
   coverArtSizeDp: Int = 48,
+  isFavorite: Boolean = false,
+  onFavoriteClick: (() -> Unit)? = null,
   onClick: () -> Unit,
   onLongClick: (() -> Unit)? = null,
   isWatched: Boolean? = null,
@@ -1644,6 +1737,8 @@ private fun SongListItem(
     isSelected = isSelected,
     selectionNeighbors = selectionNeighbors,
     coverArtSizeDp = coverArtSizeDp,
+    isFavorite = isFavorite,
+    onFavoriteClick = onFavoriteClick,
     onClick = onClick,
     onLongClick = onLongClick,
     swipeIdentity = song.path,

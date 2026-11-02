@@ -94,6 +94,10 @@ class MusicLibraryViewModel : ViewModel(), KoinComponent {
   }.flowOn(Dispatchers.Default)
     .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
+  val favoriteSongPaths: StateFlow<Set<String>> =
+    playlistRepository.observeFavoriteAudioPaths()
+      .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptySet())
+
   val viewMode: StateFlow<MusicViewMode> = browserPreferences.musicViewMode.stateIn(viewModelScope)
 
   private val _selectedAlbum = MutableStateFlow<MusicAlbum?>(null)
@@ -171,6 +175,13 @@ class MusicLibraryViewModel : ViewModel(), KoinComponent {
       MusicSortField.TRACK_COUNT -> result.sortedBy { it.title.lowercase() }
     }
     if (order == MusicSortOrder.DESCENDING) sorted.reversed() else sorted
+  }.flowOn(Dispatchers.Default)
+    .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+  val filteredFavoriteSongs: StateFlow<List<MusicSong>> = combine(
+    filteredSongs, favoriteSongPaths
+  ) { songList, favPaths ->
+    songList.filter { it.path in favPaths }
   }.flowOn(Dispatchers.Default)
     .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
@@ -313,6 +324,12 @@ class MusicLibraryViewModel : ViewModel(), KoinComponent {
 
   fun setTab(tab: MusicTab) {
     _selectedTab.value = tab
+  }
+
+  fun toggleFavorite(song: MusicSong) {
+    viewModelScope.launch {
+      playlistRepository.toggleFavorite(song.path, song.title, isAudio = true)
+    }
   }
 
   fun setSearchQuery(query: String) {

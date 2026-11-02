@@ -1272,93 +1272,6 @@ object SearchablePreferences {
         ),
       )
 
-      // AI / Intelligence
-      add(
-        SearchablePreference(
-          titleRes = R.string.pref_section_ai_title,
-          summary = "AI-powered rename, subtitle formatting, subtitle translation",
-          keywords =
-            listOf(
-              "ai",
-              "groq",
-              "gemini",
-              "machine learning",
-              "intelligence",
-            ),
-          category = "AI",
-          screen = AiIntegrationScreen,
-          targetRes = R.string.pref_section_ai_title,
-        ),
-      )
-      add(
-        SearchablePreference(
-          titleRes = R.string.pref_ai_provider_title,
-          summary = "Choose Groq or Gemini",
-          keywords =
-            listOf(
-              "provider",
-              "groq",
-              "gemini",
-              "api",
-            ),
-          category = "AI",
-          screen = AiIntegrationScreen,
-        ),
-      )
-      add(
-        SearchablePreference(
-          titleRes = R.string.search_api_key_config_title,
-          summary = "Enter and verify your AI provider API key",
-          keywords = listOf("api key", "key", "authentication", "token", "verify", "groq", "gemini"),
-          category = "AI",
-          screen = AiIntegrationScreen,
-        ),
-      )
-      add(
-        SearchablePreference(
-          titleRes = R.string.search_ai_model_selection_title,
-          summary = "Fetch and select which AI model to use",
-          keywords = listOf("model", "llm", "groq", "gemini", "whisper", "selection"),
-          category = "AI",
-          screen = AiIntegrationScreen,
-        ),
-      )
-      add(
-        SearchablePreference(
-          titleRes = R.string.pref_ai_rename_title,
-          summary = "Use AI to generate clean filenames for bulk rename operations",
-          keywords = listOf("rename", "bulk", "filename", "clean", "ai", "organize"),
-          category = "AI",
-          screen = AiIntegrationScreen,
-        ),
-      )
-      add(
-        SearchablePreference(
-          titleRes = R.string.pref_ai_search_title,
-          summary = "Auto-format video titles for Wyzie/SubHub subtitle search",
-          keywords = listOf("subtitle", "search", "format", "wyzie", "subhub", "title", "ai"),
-          category = "AI",
-          screen = AiIntegrationScreen,
-        ),
-      )
-      add(
-        SearchablePreference(
-          titleRes = R.string.pref_translation_section,
-          summary = "Translate external subtitles using AI with auto-translate target languages",
-          keywords = listOf("translation", "translate", "subtitle", "language", "auto", "target"),
-          category = "AI",
-          screen = AiIntegrationScreen,
-        ),
-      )
-      add(
-        SearchablePreference(
-          titleRes = R.string.search_custom_ai_prompts_title,
-          summary = "Customize system instructions for translation and title formatting",
-          keywords = listOf("prompt", "custom", "system prompt", "instructions", "format", "translation"),
-          category = "AI",
-          screen = AiIntegrationScreen,
-        ),
-      )
 
 
 
@@ -1564,25 +1477,6 @@ object SearchablePreferences {
         SearchEntrySpec(R.string.clear_font_directory, listOf("subtitle", "font", "clear", "folder"), R.string.pref_subtitles_fonts_dir),
       )
 
-      addSearchEntries(
-        category = "AI",
-        screen = AiIntegrationScreen,
-        anchorItemIndex = 0,
-        SearchEntrySpec(R.string.pref_ai_enabled_title, listOf("ai", "enable", "disable", "features")),
-        SearchEntrySpec(R.string.pref_enable_translation_title, listOf("subtitle", "translation", "enable", "language")),
-        SearchEntrySpec(R.string.ui_auto_translate_target_languages, listOf("subtitle", "translation", "target", "languages"), R.string.pref_translation_section),
-        SearchEntrySpec(R.string.pref_override_instructions_title, listOf("ai", "prompt", "override", "instructions", "custom")),
-      )
-      addSearchEntries(
-        category = "AI",
-        screen = AiIntegrationScreen,
-        anchorItemIndex = 14,
-        SearchEntrySpec(R.string.pref_custom_translation_prompt_label, listOf("ai", "custom", "translation", "prompt"), R.string.pref_override_instructions_title),
-        SearchEntrySpec(R.string.pref_custom_format_prompt_label, listOf("ai", "custom", "subtitle", "format", "prompt"), R.string.pref_override_instructions_title),
-        SearchEntrySpec(R.string.pref_verify_key, listOf("ai", "api", "key", "verify"), R.string.search_api_key_config_title),
-        SearchEntrySpec(R.string.pref_fetch_models, listOf("ai", "model", "fetch"), R.string.search_ai_model_selection_title),
-        SearchEntrySpec(R.string.pref_check_model_access, listOf("ai", "model", "verify", "access"), R.string.search_ai_model_selection_title),
-      )
 
       addSearchEntries(
         category = "Advanced",
@@ -1822,17 +1716,6 @@ object SearchablePreferences {
           ),
         category = "Folders",
         screen = FoldersPreferencesScreen,
-      ),
-      SearchablePreference(
-        titleRes = R.string.pref_section_ai_title,
-        summaryRes = R.string.pref_section_ai_summary,
-        keywords =
-          listOf(
-            "enable provider groq gemini api key model verify",
-            "rename subtitle format translation prompt custom auto translate",
-          ),
-        category = "AI",
-        screen = AiIntegrationScreen,
       ),
 
       SearchablePreference(

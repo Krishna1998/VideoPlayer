@@ -775,9 +775,7 @@
   <string name="pref_section_playback">Playback</string>
   <string name="pref_section_gestures_controls">Gestures &amp; Controls</string>
   <string name="pref_section_storage">Storage</string>
-  <string name="pref_section_ai">AI</string>
-  <string name="pref_section_ai_title">AI Integration</string>
-  <string name="pref_section_ai_summary">AI rename, subtitle translation (Groq/Gemini)</string>
+
   <string name="pref_section_advanced">Advanced</string>
   <string name="pref_section_about">About</string>
 
@@ -962,41 +960,6 @@
   <string name="pref_section_logging">Logging, diagnostics &amp; privacy</string>
   <string name="pref_export_failed_toast">Export failed: %1$s</string>
 
-  <!-- ═══════════════════════════════════════════════════════════ -->
-  <!-- AI Integration                                             -->
-  <!-- ═══════════════════════════════════════════════════════════ -->
-  <string name="pref_ai_features_section">AI Features</string>
-  <string name="pref_ai_enabled_title">Enable AI Features</string>
-  <string name="pref_ai_provider_section">Provider</string>
-  <string name="pref_ai_provider_title">AI Provider</string>
-  <string name="pref_api_config_section">API Configuration</string>
-  <string name="pref_api_key_saved">API key saved on device</string>
-  <string name="pref_hide_key">Hide Key</string>
-  <string name="pref_show_key">Show Key</string>
-  <string name="pref_verify_key">Verify Key</string>
-  <string name="pref_model_section">Model</string>
-  <string name="pref_available_models_header">Available Models</string>
-  <string name="pref_fetch_models">Fetch Models</string>
-  <string name="pref_verify_model_header">Verify Model</string>
-  <string name="pref_check_model_access">Check Model Access</string>
-  <string name="pref_ai_features_subsection">Features</string>
-  <string name="pref_ai_rename_title">AI-Powered Rename</string>
-  <string name="pref_ai_rename_summary">Use AI to generate clean filenames for bulk rename operations</string>
-  <string name="pref_ai_search_title">AI Search</string>
-  <string name="pref_ai_search_summary">Auto-format video titles for Wyzie/SubHub subtitle search</string>
-  <string name="pref_translation_section">Subtitle Translation</string>
-  <string name="pref_enable_translation_title">Enable Translation</string>
-  <string name="pref_enable_translation_summary">Translate external subtitles using AI</string>
-  <string name="pref_custom_prompt_section">Custom Prompt</string>
-  <string name="pref_override_instructions_title">Override Default Instructions</string>
-  <string name="pref_custom_prompts_header">Custom Prompts</string>
-  <string name="pref_custom_prompts_description">Leave a field blank to use the built-in instruction for that task. If you have an older global prompt saved, it will be used as a fallback.</string>
-  <string name="pref_custom_rename_prompt_label">Custom rename prompt</string>
-  <string name="pref_custom_translation_prompt_label">Custom subtitle translation prompt</string>
-  <string name="pref_custom_format_prompt_label">Custom subtitle formatting prompt</string>
-  <string name="pref_legacy_prompt_info">Legacy global prompt saved. It will be used whenever a task-specific prompt is empty.</string>
-
-  <!-- AI - API Key titles/placeholders for each provider         -->
 
   <!-- ═══════════════════════════════════════════════════════════ -->
   <!-- Folders Preferences                                        -->
@@ -1004,12 +967,6 @@
   <string name="pref_media_library_section">Media Library</string>
   <string name="pref_clear_content_desc">Clear</string>
 
-  <!-- ═══════════════════════════════════════════════════════════ -->
-  <!-- Search Index Entries (SearchablePreference.kt)             -->
-  <!-- ═══════════════════════════════════════════════════════════ -->
-  <string name="search_api_key_config_title">API Key Configuration</string>
-  <string name="search_ai_model_selection_title">AI Model Selection</string>
-  <string name="search_custom_ai_prompts_title">Custom AI Prompts</string>
 
   <!-- ═══════════════════════════════════════════════════════════ -->
   <!-- Decoder Preferences                                        -->
@@ -1314,6 +1271,7 @@
   <string name="ui_songs">Songs</string>
   <string name="ui_albums">Albums</string>
   <string name="ui_artists">Artists</string>
+  <string name="ui_favorites">Favorites</string>
   <string name="ui_network">Network</string>
   <string name="ui_pinned_folder">Pinned folder</string>
   <string name="ui_pin_videos">Pin videos</string>
@@ -1369,7 +1327,6 @@
   </plurals>
   <string name="ui_playlist_name">Playlist Name</string>
   <string name="ui_create">Create</string>
-  <string name="ui_ai_rename_is_disabled_enable_it_in_settings_ai_integration">AI Rename is disabled. Enable it in Settings → AI Integration.</string>
   <string name="ui_new_name">New name</string>
   <string name="ui_generate_previews">Generate Previews</string>
   <string name="ui_edit_connection">Edit Connection</string>
@@ -1389,8 +1346,6 @@
   <string name="ui_go_back">Go back</string>
   <string name="ui_go_to_internal_storage">Go to internal storage</string>
   <string name="ui_create_folder">Create folder</string>
-  <string name="ui_ai_is_thinking">AI is thinking...</string>
-  <string name="ui_ai_rename">AI Rename</string>
   <string name="ui_fields">Fields</string>
   <string name="ui_sort_by">Sort by</string>
   <string name="ui_media_types">Media types</string>
@@ -1659,14 +1614,6 @@
   <string name="ui_core_open_source_dependencies_used_by_mpvrx">Core open source dependencies used by Video Player.</string>
   <string name="ui_already_using_latest_version">Already using latest version</string>
   <string name="ui_install_and_update_yt_dlp_for_streaming_support">Install and update yt-dlp for streaming support</string>
-  <string name="ui_instructions_for_ai_file_renaming">Instructions for AI file renaming...</string>
-  <string name="ui_instructions_for_ai_subtitle_translation">Instructions for AI subtitle translation...</string>
-  <string name="ui_instructions_for_formatting_subtitle_search_queries">Instructions for formatting subtitle search queries...</string>
-  <string name="ui_subtitle_translation_can_be_a_bit_messy">Subtitle translation can be a bit messy. </string>
-  <string name="ui_auto_translate_target_languages">Auto-Translate Target Languages</string>
-  <string name="ui_when_translating_subtitles_if_1_language_is_configured_it_transl">When translating subtitles, if 1 language is configured it translates directly. If 2+ are configured, a picker appears.</string>
-  <string name="ui_no_target_languages_configured">No target languages configured</string>
-  <string name="ui_search_languages">Search languages...</string>
   <string name="ui_refresh">Refresh</string>
   <string name="ui_dual_pane_view">Dual Pane View</string>
   <string name="ui_enable_dual_pane_layout_on_tablets_in_folder_view">Enable dual pane layout on tablets in folder view</string>

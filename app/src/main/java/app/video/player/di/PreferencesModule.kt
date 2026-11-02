@@ -10,7 +10,6 @@
 package app.video.player.di
 
 import app.video.player.preferences.AdvancedPreferences
-import app.video.player.preferences.AiPreferences
 import app.video.player.preferences.AppearancePreferences
 import app.video.player.preferences.AudioPreferences
 import app.video.player.preferences.BrowserPreferences
@@ -47,7 +46,6 @@ val PreferencesModule =
     single { BrowserPreferences(get(), androidContext()) }
     singleOf(::FoldersPreferences)
     singleOf(::NetworkBookmarkPreferences)
-    singleOf(::AiPreferences)
     singleOf(::YtdlPreferences)
     singleOf(::SettingsManager)
     singleOf(::SecureFolderPreferences)

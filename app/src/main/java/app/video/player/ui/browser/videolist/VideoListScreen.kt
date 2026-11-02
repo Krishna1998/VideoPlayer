@@ -606,7 +606,7 @@ data class VideoListScreen(
           }
         },
         onDownscaleClick = { compressorDialogOpen.value = true },
-        onRenameClick = { renameDialogOpen.value = true },
+        onRenameClick = if (selectionManager.isSingleSelection) { { renameDialogOpen.value = true } } else null,
         onDeleteClick = { deleteDialogOpen.value = true },
         onAddToPlaylistClick = { addToPlaylistDialogOpen.value = true },
         onPinClick = {
@@ -617,7 +617,7 @@ data class VideoListScreen(
         pinLabelRes = R.string.ui_pin_videos,
         unpinLabelRes = R.string.ui_unpin_videos,
         showDownscale = selectionManager.getSelectedItems().let { items -> items.isNotEmpty() && items.none { it.isAudio } },
-        showRename = selectionManager.selectedCount > 0,
+        showRename = selectionManager.isSingleSelection,
         modifier = Modifier.padding(bottom = 0.dp),
       )
     }
@@ -648,28 +648,19 @@ data class VideoListScreen(
         totalSizeBytes = selectionManager.getSelectedItems().sumOf { it.size.coerceAtLeast(0L) }.takeIf { it > 0L },
       )
 
-      // Rename Dialogs
-      if (renameDialogOpen.value) {
-        if (selectionManager.isSingleSelection) {
-          val video = selectionManager.getSelectedItems().firstOrNull()
-          if (video != null) {
-            val baseName = video.displayName.substringBeforeLast('.')
-            val extension = "." + video.displayName.substringAfterLast('.', "")
-            RenameDialog(
-              isOpen = true,
-              onDismiss = { renameDialogOpen.value = false },
-              onConfirm = { newName -> selectionManager.renameSelected(newName) },
-              currentName = baseName,
-              itemType = "file",
-              extension = if (extension != ".") extension else null,
-            )
-          }
-        } else if (selectionManager.selectedCount > 1) {
-          app.video.player.ui.browser.dialogs.BulkAiRenameDialog(
+      // Rename Dialog
+      if (renameDialogOpen.value && selectionManager.isSingleSelection) {
+        val video = selectionManager.getSelectedItems().firstOrNull()
+        if (video != null) {
+          val baseName = video.displayName.substringBeforeLast('.')
+          val extension = "." + video.displayName.substringAfterLast('.', "")
+          RenameDialog(
             isOpen = true,
             onDismiss = { renameDialogOpen.value = false },
-            onConfirm = { updates -> selectionManager.renameBulk(updates) },
-            selectedVideos = selectionManager.getSelectedItems(),
+            onConfirm = { newName -> selectionManager.renameSelected(newName) },
+            currentName = baseName,
+            itemType = "file",
+            extension = if (extension != ".") extension else null,
           )
         }
       }

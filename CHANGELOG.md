@@ -4,6 +4,21 @@ These notes are written in plain English and focus on what changed for real use.
 
 ## Unreleased
 
+## 1.1.1
+
+- Release version 1.1.1.
+- **Music Library Favorites:**
+  - Added dedicated **Favorites** tab in the Music Library with full tab reordering and customization support.
+  - Added quick favorite toggle (heart icon) directly on audio tracks in both list and grid view layouts.
+  - Added "Add to favorites" / "Remove from favorites" action in the song options bottom sheet.
+  - Real-time reactive updates for favorite tracks with instant reflection across playlist and favorites views.
+- **File Selection & Renaming:**
+  - Removed bulk AI rename dialog and disabled multi-file rename options; renaming is now strictly enabled for single file selection.
+- **Complete Removal of AI Integration:**
+  - Completely removed AI integration, AI repository services, and AI settings screen.
+  - Removed Google Gemini and Groq AI provider pipelines and client implementations.
+  - Removed AI-based subtitle translation, AI formatting in subtitle search, and AI search indexing.
+
 ## 1.1.0
 
 - Release version 1.1.0.
