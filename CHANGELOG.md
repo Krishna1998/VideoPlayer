@@ -4,6 +4,17 @@ These notes are written in plain English and focus on what changed for real use.
 
 ## Unreleased
 
+## 1.1.0
+
+- Release version 1.1.0.
+- **AI Integration Facility:**
+  - Added full AI Integration settings screen with Groq and Google Gemini provider support.
+  - Streamlined AI providers down strictly to Groq and Google Gemini, completely removing OpenCode, OpenAI, Anthropic, OpenRouter, and Together AI.
+  - Added Google Gemini AI provider integration using Google's Generative Language API with automatic model fetching and verification.
+  - Retained Groq high-speed transcription engine for real-time speech-to-text (STT) and subtitle generation.
+  - Restricted AI subtitle translation and speech-to-text language targets strictly to English and Hindi.
+  - Enabled AI-powered bulk file renaming and online subtitle search title formatting.
+
 ## 1.0.9
 
 - Release version 1.0.9.
