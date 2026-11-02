@@ -143,8 +143,8 @@ internal class LauncherIcon(
       LauncherIcon(IconBackground.Wallpaper, IconMark.Black, R.mipmap.ic_launcher_wallpaper_black, R.style.Theme_videoplayer_Splash_WallpaperBlack),
     )
 
-    /** Crimson background with black mark: default app icon. */
-    val Default: LauncherIcon = of(IconBackground.Crimson, IconMark.Black)!!
+    /** Black background with gradient mark: default app icon. */
+    val Default: LauncherIcon = of(IconBackground.Black, IconMark.Gradient)!!
 
     fun of(background: IconBackground, mark: IconMark): LauncherIcon? =
       entries.firstOrNull { it.background == background && it.mark == mark }
@@ -186,11 +186,11 @@ internal class LauncherIcon(
  */
 private enum class LegacyIcon(val phoneAlias: String, val tvAlias: String, val becomes: LauncherIcon) {
   SolidPurple(
-    "app.video.player.SolidPurpleLauncher", "app.video.player.TvSolidPurpleLauncher", LauncherIcon.Default,
+    "app.video.player.SolidPurpleLauncher", "app.video.player.TvSolidPurpleLauncher",
+    LauncherIcon.of(IconBackground.Black, IconMark.Solid)!!,
   ),
   Purple(
-    "app.video.player.PurpleLauncher", "app.video.player.TvPurpleLauncher",
-    LauncherIcon.of(IconBackground.Black, IconMark.Gradient)!!,
+    "app.video.player.PurpleLauncher", "app.video.player.TvPurpleLauncher", LauncherIcon.Default,
   ),
   Classic(
     "app.video.player.ClassicLauncher", "app.video.player.TvClassicLauncher",
