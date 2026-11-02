@@ -11,8 +11,8 @@ These notes are written in plain English and focus on what changed for real use.
   - Added full AI Integration settings screen with Groq and Google Gemini provider support.
   - Streamlined AI providers down strictly to Groq and Google Gemini, completely removing OpenCode, OpenAI, Anthropic, OpenRouter, and Together AI.
   - Added Google Gemini AI provider integration using Google's Generative Language API with automatic model fetching and verification.
-  - Retained Groq high-speed transcription engine for real-time speech-to-text (STT) and subtitle generation.
-  - Restricted AI subtitle translation and speech-to-text language targets strictly to English and Hindi.
+  - Completely removed Speech-to-Text [Extreme Experimental] (STT) and real-time live captions pipeline, including all STT background services, Whisper clients, model selectors, and audio chunk extractors.
+  - Restricted AI subtitle translation language targets strictly to English and Hindi.
   - Enabled AI-powered bulk file renaming and online subtitle search title formatting.
 - **Music & Navigation:**
   - Removed Audiobooks and Media Servers settings from the music source selector.

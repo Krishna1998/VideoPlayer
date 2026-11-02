@@ -1276,7 +1276,7 @@ object SearchablePreferences {
       add(
         SearchablePreference(
           titleRes = R.string.pref_section_ai_title,
-          summary = "AI-powered rename, subtitle formatting, speech-to-text, subtitle translation",
+          summary = "AI-powered rename, subtitle formatting, subtitle translation",
           keywords =
             listOf(
               "ai",
@@ -1337,25 +1337,6 @@ object SearchablePreferences {
           titleRes = R.string.pref_ai_search_title,
           summary = "Auto-format video titles for Wyzie/SubHub subtitle search",
           keywords = listOf("subtitle", "search", "format", "wyzie", "subhub", "title", "ai"),
-          category = "AI",
-          screen = AiIntegrationScreen,
-        ),
-      )
-      add(
-        SearchablePreference(
-          titleRes = R.string.search_stt_title,
-          summary = "Configure STT provider, real-time model, audio language, and output format",
-          keywords =
-            listOf(
-              "speech",
-              "stt",
-              "transcription",
-              "whisper",
-              "audio",
-              "language",
-              "voice",
-              "speech to text",
-            ),
           category = "AI",
           screen = AiIntegrationScreen,
         ),
@@ -1588,10 +1569,6 @@ object SearchablePreferences {
         screen = AiIntegrationScreen,
         anchorItemIndex = 0,
         SearchEntrySpec(R.string.pref_ai_enabled_title, listOf("ai", "enable", "disable", "features")),
-        SearchEntrySpec(R.string.pref_stt_title, listOf("speech", "text", "realtime", "subtitle", "transcription")),
-        SearchEntrySpec(R.string.pref_stt_output_format_title, listOf("speech", "text", "subtitle", "srt", "vtt")),
-        SearchEntrySpec(R.string.pref_stt_provider_title, listOf("speech", "text", "provider", "groq")),
-        SearchEntrySpec(R.string.pref_audio_language_title, listOf("speech", "audio", "language", "detect")),
         SearchEntrySpec(R.string.pref_enable_translation_title, listOf("subtitle", "translation", "enable", "language")),
         SearchEntrySpec(R.string.ui_auto_translate_target_languages, listOf("subtitle", "translation", "target", "languages"), R.string.pref_translation_section),
         SearchEntrySpec(R.string.pref_override_instructions_title, listOf("ai", "prompt", "override", "instructions", "custom")),
@@ -1602,7 +1579,6 @@ object SearchablePreferences {
         anchorItemIndex = 14,
         SearchEntrySpec(R.string.pref_custom_translation_prompt_label, listOf("ai", "custom", "translation", "prompt"), R.string.pref_override_instructions_title),
         SearchEntrySpec(R.string.pref_custom_format_prompt_label, listOf("ai", "custom", "subtitle", "format", "prompt"), R.string.pref_override_instructions_title),
-        SearchEntrySpec(R.string.ui_real_time_model, listOf("speech", "transcription", "stt", "model"), R.string.search_stt_title),
         SearchEntrySpec(R.string.pref_verify_key, listOf("ai", "api", "key", "verify"), R.string.search_api_key_config_title),
         SearchEntrySpec(R.string.pref_fetch_models, listOf("ai", "model", "fetch"), R.string.search_ai_model_selection_title),
         SearchEntrySpec(R.string.pref_check_model_access, listOf("ai", "model", "verify", "access"), R.string.search_ai_model_selection_title),
@@ -1853,7 +1829,7 @@ object SearchablePreferences {
         keywords =
           listOf(
             "enable provider groq gemini api key model verify",
-            "rename subtitle format translation speech text stt realtime whisper language output prompt custom auto translate",
+            "rename subtitle format translation prompt custom auto translate",
           ),
         category = "AI",
         screen = AiIntegrationScreen,

@@ -59,9 +59,6 @@ import app.video.player.preferences.SubtitlesPreferences
 import app.video.player.repository.IntroDbLookupOutcome
 import app.video.player.repository.IntroDbLookupRequest
 import app.video.player.repository.IntroDbRepository
-import app.video.player.repository.ai.RealtimeMediaInput
-import app.video.player.repository.ai.RealtimeSubtitleRequest
-import app.video.player.repository.ai.SubtitleGenerationService
 import app.video.player.repository.subtitle.OnlineSubtitle
 import app.video.player.repository.subtitle.OnlineSubtitleOrchestrator
 import app.video.player.repository.subtitle.OnlineSubtitleSearchMode
@@ -231,8 +228,6 @@ class PlayerViewModel(
   private val json: Json by inject()
   private val playbackBookmarkDao: app.video.player.database.dao.PlaybackBookmarkDao by inject()
   private val aiService: app.video.player.repository.ai.AiService by inject()
-  private val subtitleGenerationService: SubtitleGenerationService by inject()
-  private val realtimeSubtitleService: app.video.player.repository.ai.RealtimeSubtitleService by inject()
   private val wyzieRepository: WyzieSearchRepository by inject()
   private val onlineSubtitleOrchestrator: OnlineSubtitleOrchestrator by inject()
   private val introDbRepository: IntroDbRepository by inject()
@@ -323,34 +318,6 @@ class PlayerViewModel(
 
   private val _translationStatus = MutableStateFlow("")
   val translationStatus: StateFlow<String> = _translationStatus.asStateFlow()
-
-  private val _isGeneratingSubtitles = MutableStateFlow(false)
-  val isGeneratingSubtitles: StateFlow<Boolean> = _isGeneratingSubtitles.asStateFlow()
-
-  private val _subtitleGenerationProgress = MutableStateFlow(0f)
-  val subtitleGenerationProgress: StateFlow<Float> = _subtitleGenerationProgress.asStateFlow()
-
-  private val _subtitleGenerationStatus = MutableStateFlow("")
-  val subtitleGenerationStatus: StateFlow<String> = _subtitleGenerationStatus.asStateFlow()
-
-  private val _isRealtimeSubsActive = MutableStateFlow(false)
-  val isRealtimeSubsActive: StateFlow<Boolean> = _isRealtimeSubsActive.asStateFlow()
-
-  private val _realtimeSubsLanguage = MutableStateFlow("")
-  val realtimeSubsLanguage: StateFlow<String> = _realtimeSubsLanguage.asStateFlow()
-
-  private val _realtimeSubsProgress = MutableStateFlow(0f)
-  val realtimeSubsProgress: StateFlow<Float> = _realtimeSubsProgress.asStateFlow()
-
-  private val _realtimeSubsStatus = MutableStateFlow("")
-  val realtimeSubsStatus: StateFlow<String> = _realtimeSubsStatus.asStateFlow()
-
-  private var realtimeSrtFile: java.io.File? = null
-  private var realtimeSubtitleTrackId: Int? = null
-  private var realtimeTargetLanguage: String? = null
-  private var realtimeSubtitleSessionId = 0L
-  private var realtimePlaybackGeneration = -1L
-  private val realtimeSubtitleUpdateMutex = Mutex()
 
   private var playlistMetadataJob: Job? = null
   private var controlsVisibleForPolling = false
@@ -2731,7 +2698,6 @@ fun restartFromBeginning() {
 
   /** Stops every ViewModel path that can read or write libmpv during native teardown. */
   fun onMpvCoreStopping() {
-    stopRealtimeSubtitles(showToastMessage = false)
     cancelAutoCropAnalysis()
     disableAmbientShader()
     _isMpvCoreReady.value = false
@@ -2834,38 +2800,6 @@ fun restartFromBeginning() {
         launch { PlaybackSession.propInt["duration"].collect { _duration.value = it } }
         launch { PlaybackSession.propInt["volume-max"].collect { _volumeBoostCap.value = it } }
         launch {
-          var wasSeeking = false
-          PlaybackSession.propBoolean["seeking"].collect { seeking ->
-            when {
-              seeking == true -> {
-                wasSeeking = true
-                if (_isRealtimeSubsActive.value) realtimeSubtitleService.onSeekStarted()
-              }
-              wasSeeking -> {
-                wasSeeking = false
-                if (_isRealtimeSubsActive.value) {
-                  val positionMs = ((PlaybackSession.getPropertyDouble("time-pos") ?: _precisePosition.value.toDouble()) * 1000).toLong()
-                  realtimeSubtitleService.seekTo(positionMs)
-                }
-              }
-            }
-          }
-        }
-        launch {
-          audioTracks
-            .map { tracks -> tracks.firstOrNull(TrackNode::isSelected)?.id }
-            .distinctUntilChanged()
-            .drop(1)
-            .collect { selectedId ->
-              val targetLanguage = realtimeTargetLanguage
-              if (_isRealtimeSubsActive.value && selectedId != null) {
-                withContext(Dispatchers.Main) {
-                  startRealtimeSubtitles(targetLanguage.orEmpty())
-                }
-              }
-            }
-        }
-        launch {
           PlaybackSession.queue
             .map { it.repeatMode }
             .distinctUntilChanged()
@@ -2958,7 +2892,6 @@ fun restartFromBeginning() {
     lastLyricsLoadRequest = null
     lyricsStatePath = null
     lyricsUiState.value = LyricsUiState()
-    stopRealtimeSubtitles(showToastMessage = false)
     introLookupJob?.cancel()
     cancelAutoCropAnalysis()
     autoCropAnalyzedGeneration = -1L
@@ -3817,292 +3750,6 @@ fun restartFromBeginning() {
       cacheDir.delete()
     }
     showToast("Translation cancelled")
-  }
-
-  fun generateSubtitles(
-    language: String,
-    outputFormat: String = "srt",
-  ) {
-    val videoUri = currentVideoUriForSubtitleGeneration()
-    if (videoUri == null) {
-      showToast("Could not find current video path")
-      return
-    }
-    val mediaInput = currentRealtimeMediaInput()
-    if (mediaInput == null) {
-      showToast(appContext.getString(R.string.subtitle_generation_audio_unavailable))
-      return
-    }
-    val videoDurationMs = (_preciseDuration.value * 1000f).toLong()
-    if (videoDurationMs <= 0L) {
-      showToast(appContext.getString(R.string.subtitle_generation_duration_unknown))
-      return
-    }
-
-    val actualLanguage = if (language.isBlank()) aiPreferences.sttLanguage.get().ifBlank { "en" } else language
-    val actualFormat = if (outputFormat.isBlank()) aiPreferences.subtitleGenerationOutputFormat.get() else outputFormat
-
-    viewModelScope.launch(Dispatchers.IO) {
-      _isGeneratingSubtitles.value = true
-      _subtitleGenerationProgress.value = 0f
-      _subtitleGenerationStatus.value = "Preparing audio"
-
-      try {
-        val result =
-          subtitleGenerationService.generateSubtitles(
-            mediaInput = mediaInput,
-            videoDurationMs = videoDurationMs,
-            language = actualLanguage,
-            outputFormat = actualFormat,
-          ) { progress ->
-            _subtitleGenerationProgress.value = progress.progress
-            _subtitleGenerationStatus.value = progress.stage
-          }
-
-        result
-          .onSuccess { generated ->
-            val baseName = currentMediaTitle.substringBeforeLast(".").ifBlank { "video" }
-            val sanitizedLang = actualLanguage.replace(" ", "_")
-            val newFileName = "$baseName.$sanitizedLang.AI.${generated.extension}"
-            val savedUri =
-              saveTranslatedSubtitle(videoUri, newFileName, generated.extension, sanitizedLang, generated.content)
-                ?: throw Exception("Could not save generated subtitles")
-            withContext(Dispatchers.Main) {
-              addSubtitle(savedUri, select = true)
-              showToast("Generated subtitles: $newFileName")
-            }
-          }.onFailure { error ->
-            withContext(Dispatchers.Main) {
-              showToast("Subtitle generation failed: ${error.message}")
-            }
-          }
-      } catch (e: Exception) {
-        withContext(Dispatchers.Main) {
-          showToast("Subtitle generation error: ${e.message}")
-        }
-      } finally {
-        _isGeneratingSubtitles.value = false
-        _subtitleGenerationProgress.value = 0f
-        _subtitleGenerationStatus.value = ""
-      }
-    }
-  }
-
-  private fun currentVideoUriForSubtitleGeneration(): Uri? {
-    val media = host?.currentMediaLookupHint()?.takeIf { it.isNotBlank() } ?: return null
-    return if (media.startsWith("/")) File(media).toUri() else Uri.parse(media)
-  }
-
-  private fun currentRealtimeMediaInput(): RealtimeMediaInput? {
-    val item = PlaybackSession.state.value.currentItem
-    val tracks = audioTracks.value
-    val selectedAudio = tracks.firstOrNull(TrackNode::isSelected) ?: tracks.firstOrNull()
-    val selectedAudioSource =
-      selectedAudio
-        ?.externalFilename
-        ?.takeIf(String::isNotBlank)
-        ?.let { path -> mpvPathToUriMap[path] ?: path }
-    val runtimeSource =
-      PlaybackSession.getPropertyString("stream-open-filename")
-        ?.takeIf(String::isNotBlank)
-        ?: PlaybackSession.getPropertyString("path")?.takeIf(String::isNotBlank)
-    val source =
-      selectedAudioSource
-        ?: runtimeSource?.takeUnless { it.startsWith("fd://") || it.startsWith("memory://") }
-        ?: item?.originalUri?.takeIf(String::isNotBlank)
-        ?: item?.playableUri?.takeIf(String::isNotBlank)
-        ?: host?.currentMediaLookupHint()?.takeIf(String::isNotBlank)
-        ?: return null
-    val audioTrackOrdinal =
-      selectedAudio
-        ?.let { selected -> tracks.indexOfFirst { it.id == selected.id } }
-        ?.coerceAtLeast(0)
-        ?: 0
-    return RealtimeMediaInput(
-      source = source,
-      headers = item?.headers.orEmpty(),
-      audioTrackIndex = selectedAudio?.ffIndex?.toInt(),
-      audioTrackOrdinal = audioTrackOrdinal,
-    )
-  }
-
-  fun startRealtimeSubtitles(targetLanguage: String = "") {
-    val mediaInput = currentRealtimeMediaInput()
-    if (mediaInput == null) {
-      showToast(appContext.getString(R.string.realtime_subtitles_media_unavailable))
-      return
-    }
-    val videoDurationMs = (_preciseDuration.value * 1000f).toLong()
-    if (videoDurationMs <= 0) {
-      showToast(appContext.getString(R.string.subtitle_generation_duration_unknown))
-      return
-    }
-
-    stopRealtimeSubtitles(showToastMessage = false)
-    val sessionId = ++realtimeSubtitleSessionId
-    val sourceLanguage = aiPreferences.sttLanguage.get().trim().takeIf(String::isNotBlank)
-    val resolvedTargetLanguage = targetLanguage.trim().takeIf(String::isNotBlank)
-    val startPositionMs = (_precisePosition.value * 1000f).toLong().coerceIn(0L, videoDurationMs)
-    val playbackGeneration = PlaybackSession.state.value.generation
-    realtimeSrtFile = java.io.File.createTempFile("realtime_subs_", ".srt", appContext.cacheDir)
-    realtimeSubtitleTrackId = null
-    realtimeTargetLanguage = resolvedTargetLanguage
-    realtimePlaybackGeneration = playbackGeneration
-
-    _isRealtimeSubsActive.value = true
-    _realtimeSubsLanguage.value = resolvedTargetLanguage ?: sourceLanguage ?: "Auto"
-    _realtimeSubsProgress.value = 0f
-
-    realtimeSubtitleService.start(
-      request =
-        RealtimeSubtitleRequest(
-          mediaInput = mediaInput,
-          videoDurationMs = videoDurationMs,
-          startPositionMs = startPositionMs,
-          sourceLanguage = sourceLanguage,
-          targetLanguage = resolvedTargetLanguage,
-        ),
-      scope = viewModelScope,
-      positionProvider = { (_precisePosition.value * 1000f).toLong() },
-      onProgress = { progress ->
-        if (sessionId != realtimeSubtitleSessionId || playbackGeneration != PlaybackSession.state.value.generation) return@start
-        _realtimeSubsProgress.value = progress.chunkIndex.toFloat() / progress.totalChunks.coerceAtLeast(1)
-        _realtimeSubsStatus.value = progress.stage
-      },
-      onNewContent = { srtContent ->
-        updateRealtimeSubtitleContent(sessionId, playbackGeneration, srtContent)
-      },
-      onComplete = {
-        if (sessionId != realtimeSubtitleSessionId || playbackGeneration != PlaybackSession.state.value.generation) return@start
-        _isRealtimeSubsActive.value = false
-        _realtimeSubsProgress.value = 0f
-        _realtimeSubsStatus.value = ""
-        realtimeTargetLanguage = null
-        showToast(appContext.getString(R.string.realtime_subtitles_complete))
-      },
-      onError = { error ->
-        if (sessionId != realtimeSubtitleSessionId || playbackGeneration != PlaybackSession.state.value.generation) return@start
-        _isRealtimeSubsActive.value = false
-        _realtimeSubsProgress.value = 0f
-        _realtimeSubsStatus.value = ""
-        realtimeTargetLanguage = null
-        Log.e(TAG, "Real-time subtitles failed: $error")
-        showToast(appContext.getString(R.string.realtime_subtitles_failed))
-      },
-    )
-  }
-
-  private fun updateRealtimeSubtitleContent(
-    sessionId: Long,
-    playbackGeneration: Long,
-    content: String,
-  ) {
-    viewModelScope.launch(Dispatchers.IO) {
-      try {
-        realtimeSubtitleUpdateMutex.withLock {
-          if (sessionId != realtimeSubtitleSessionId || playbackGeneration != PlaybackSession.state.value.generation) return@withLock
-          val file = realtimeSrtFile ?: return@withLock
-          FileOutputStream(file, false).use { output ->
-            output.write(content.toByteArray())
-            output.fd.sync()
-          }
-          if (sessionId != realtimeSubtitleSessionId || playbackGeneration != PlaybackSession.state.value.generation) return@withLock
-
-          val path = file.absolutePath
-          var trackId = realtimeSubtitleTrackId ?: findRealtimeSubtitleTrackId(path)
-          if (trackId == null) {
-            withContext(Dispatchers.Main) {
-              PlaybackSession.command("sub-add", path, "select")
-            }
-            trackId = awaitRealtimeSubtitleTrackId(path, sessionId, playbackGeneration)
-            if (sessionId != realtimeSubtitleSessionId || playbackGeneration != PlaybackSession.state.value.generation) {
-              trackId?.let { staleTrackId ->
-                withContext(Dispatchers.Main) {
-                  PlaybackSession.command("sub-remove", staleTrackId.toString())
-                }
-              }
-              return@withLock
-            }
-            if (trackId == null) throw IllegalStateException("mpv did not expose the live subtitle track")
-            realtimeSubtitleTrackId = trackId
-          } else {
-            withContext(Dispatchers.Main) {
-              PlaybackSession.command("sub-reload", trackId.toString())
-              PlaybackSession.setPropertyInt("sid", trackId)
-            }
-          }
-        }
-      } catch (cancellation: kotlinx.coroutines.CancellationException) {
-        throw cancellation
-      } catch (error: Exception) {
-        withContext(Dispatchers.Main) {
-          if (sessionId == realtimeSubtitleSessionId && playbackGeneration == PlaybackSession.state.value.generation) {
-            realtimeSubtitleService.stop()
-            _isRealtimeSubsActive.value = false
-            _realtimeSubsProgress.value = 0f
-            _realtimeSubsStatus.value = ""
-            realtimeTargetLanguage = null
-            Log.e(TAG, "Could not update live subtitles", error)
-            showToast(appContext.getString(R.string.realtime_subtitles_update_failed))
-          }
-        }
-      }
-    }
-  }
-
-  private suspend fun awaitRealtimeSubtitleTrackId(
-    path: String,
-    sessionId: Long,
-    playbackGeneration: Long,
-  ): Int? =
-    withTimeoutOrNull(5_000L) {
-      var pollDelayMs = 50L
-      while (
-        currentCoroutineContext().isActive &&
-        sessionId == realtimeSubtitleSessionId &&
-        playbackGeneration == PlaybackSession.state.value.generation
-      ) {
-        findRealtimeSubtitleTrackId(path)?.let { return@withTimeoutOrNull it }
-        delay(pollDelayMs)
-        pollDelayMs = (pollDelayMs * 2).coerceAtMost(200L)
-      }
-      null
-    }
-
-  private fun findRealtimeSubtitleTrackId(path: String): Int? {
-    val count = PlaybackSession.getPropertyInt("track-list/count")
-    if (count != null) {
-      for (index in 0 until count) {
-        if (PlaybackSession.getPropertyString("track-list/$index/type") != "sub") continue
-        if (PlaybackSession.getPropertyString("track-list/$index/external-filename") != path) continue
-        return PlaybackSession.getPropertyInt("track-list/$index/id")
-      }
-    }
-    return subtitleTracks.value.firstOrNull { it.externalFilename == path }?.id
-  }
-
-  fun stopRealtimeSubtitles(showToastMessage: Boolean = true) {
-    val wasActive = _isRealtimeSubsActive.value
-    val subtitlePath = realtimeSrtFile?.absolutePath
-    realtimeSubtitleSessionId++
-    realtimeSubtitleService.stop()
-    if (realtimePlaybackGeneration == PlaybackSession.state.value.generation) {
-      (realtimeSubtitleTrackId ?: subtitlePath?.let(::findRealtimeSubtitleTrackId))?.let { trackId ->
-        runCatching { PlaybackSession.command("sub-remove", trackId.toString()) }
-      }
-    }
-    _isRealtimeSubsActive.value = false
-    _realtimeSubsLanguage.value = ""
-    _realtimeSubsProgress.value = 0f
-    _realtimeSubsStatus.value = ""
-    realtimeTargetLanguage = null
-    realtimePlaybackGeneration = -1L
-    realtimeSrtFile?.delete()
-    realtimeSrtFile = null
-    realtimeSubtitleTrackId = null
-    if (showToastMessage && wasActive) {
-      showToast(appContext.getString(R.string.realtime_subtitles_stopped))
-    }
   }
 
   private fun saveTranslatedSubtitle(
@@ -8541,10 +8188,6 @@ fun restartFromBeginning() {
     // resources are not coroutine-scoped and need explicit release.
     // See issue 2.1 in the leak audit.
 
-    // Stop the realtime subtitle service and delete its temp .srt file.
-    // Without this the file lingers in cacheDir until the system reclaims
-    // it, and the service may keep an active session open.
-    runCatching { stopRealtimeSubtitles(showToastMessage = false) }
     runCatching { cancelAutoCropAnalysis() }
 
 

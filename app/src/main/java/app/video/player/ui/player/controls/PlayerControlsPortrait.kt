@@ -62,9 +62,6 @@ fun TopPlayerControlsPortrait(
   onOpenSheet: (Sheets) -> Unit,
   viewModel: PlayerViewModel,
   isTranslatingSub: Boolean = false,
-  isRealtimeSubsActive: Boolean = false,
-  realtimeSubsLanguage: String = "",
-  realtimeSubsStatus: String = "",
   translationStatus: String = "",
   translatingTrackName: String = "",
 ) {
@@ -168,7 +165,7 @@ fun TopPlayerControlsPortrait(
       }
 
       androidx.compose.animation.AnimatedVisibility(
-        visible = isTranslatingSub || isRealtimeSubsActive,
+        visible = isTranslatingSub,
         enter = androidx.compose.animation.fadeIn() + androidx.compose.animation.slideInVertically { -it },
         exit = androidx.compose.animation.fadeOut() + androidx.compose.animation.slideOutVertically { -it },
       ) {
@@ -184,14 +181,7 @@ fun TopPlayerControlsPortrait(
             tint = MaterialTheme.colorScheme.tertiary,
           )
           Text(
-            text =
-              if (isRealtimeSubsActive) {
-                "${stringResource(
-                  R.string.realtime_subtitles_label,
-                )}: ${realtimeSubsLanguage.ifBlank { "?" }} ${realtimeSubsStatus.ifBlank { "" }}"
-              } else {
-                "Translating ${translatingTrackName.ifBlank { "subs" }} ${translationStatus.ifBlank { "" }}"
-              },
+            text = "Translating ${translatingTrackName.ifBlank { "subs" }} ${translationStatus.ifBlank { "" }}",
             style = MaterialTheme.typography.labelSmall,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,

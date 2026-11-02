@@ -77,34 +77,6 @@ class AiService(
       }
     }
 
-  suspend fun fetchSpeechModelsForProvider(provider: AiProvider): Result<List<AiModelInfo>> =
-    withContext(Dispatchers.IO) {
-      if (provider != AiProvider.GROQ) {
-        return@withContext Result.failure(IllegalArgumentException("$provider does not provide speech-to-text in Video Player"))
-      }
-      val apiKey = getApiKey(provider)
-      if (apiKey.isBlank()) {
-        return@withContext Result.failure(Exception("API key not configured for $provider"))
-      }
-      val client = clients[provider] ?: return@withContext Result.failure(Exception("Unknown provider: $provider"))
-      client.fetchModels(apiKey).mapCatching { fetched ->
-        val liveModels = fetched.filter { model -> AiModelCapabilities.isSpeechToTextModel(model.id) }
-        AiModelCapabilities
-          .normalize(liveModels.ifEmpty { fallbackSpeechModels(provider) })
-          .also { models -> check(models.isNotEmpty()) { "$provider returned no speech-to-text models" } }
-      }
-    }
-
-  private fun fallbackSpeechModels(provider: AiProvider): List<AiModelInfo> =
-    when (provider) {
-      AiProvider.GROQ ->
-        listOf(
-          AiModelInfo("whisper-large-v3-turbo", "Whisper Large V3 Turbo"),
-          AiModelInfo("whisper-large-v3", "Whisper Large V3"),
-        )
-      else -> emptyList()
-    }
-
   suspend fun verifyKey(): Result<String> =
     withContext(Dispatchers.IO) {
       val provider = preferences.provider.get()

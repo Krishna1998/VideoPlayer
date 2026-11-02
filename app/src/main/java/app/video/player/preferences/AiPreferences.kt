@@ -73,16 +73,6 @@ class AiPreferences(
   private val groqAvailableModels = preferenceStore.getString("ai_available_models_groq", "[]")
   private val geminiAvailableModels = preferenceStore.getString("ai_available_models_gemini", "[]")
 
-  val subtitleGenerationOutputFormat = preferenceStore.getString("ai_subtitle_generation_output_format", "srt")
-
-  // Speech-to-text (real-time subs + batch generation)
-  val sttProvider = preferenceStore.getEnum("ai_stt_provider", AiProvider.GROQ)
-  val sttModel = preferenceStore.getString("ai_stt_model", "")
-  val sttAvailableModels = preferenceStore.getString("ai_stt_available_models", "[]")
-  private val groqSttModel = preferenceStore.getString("ai_stt_model_groq", "")
-  private val groqSttAvailableModels = preferenceStore.getString("ai_stt_available_models_groq", "[]")
-  val sttLanguage = preferenceStore.getString("ai_stt_language", "")
-
   // Auto-translate target languages (comma-separated codes: "en,hi")
   val autoTranslateLanguages = preferenceStore.getString("ai_auto_translate_languages", "en,hi")
 
@@ -95,9 +85,6 @@ class AiPreferences(
   val renameWithAi = preferenceStore.getBoolean("ai_rename_enabled", true)
   val subtitleFormatWithAi = preferenceStore.getBoolean("ai_subtitle_format_enabled", true)
   val subtitleTranslationEnabled = preferenceStore.getBoolean("ai_subtitle_translation_enabled", false)
-
-  // Real-time subtitle generation (speech-to-text while playing)
-  val realtimeSubsEnabled = preferenceStore.getBoolean("ai_realtime_subs_enabled", true)
   val subtitleTranslationFirstTime = preferenceStore.getBoolean("ai_subtitle_translation_first_time", true)
 
   val lastVerified = preferenceStore.getLong("ai_last_verified", 0L)
@@ -112,15 +99,6 @@ class AiPreferences(
     if (providerModels.get() == "[]" && availableModels.get() != "[]") {
       providerModels.set(availableModels.get())
     }
-    val currentSttProvider = sttProvider.get()
-    val providerSttModel = sttModelFor(currentSttProvider)
-    if (providerSttModel.get().isBlank() && sttModel.get().isNotBlank()) {
-      providerSttModel.set(sttModel.get())
-    }
-    val providerSttModels = sttAvailableModelsFor(currentSttProvider)
-    if (providerSttModels.get() == "[]" && sttAvailableModels.get() != "[]") {
-      providerSttModels.set(sttAvailableModels.get())
-    }
   }
 
   fun selectedModelFor(provider: AiProvider): Preference<String> =
@@ -133,17 +111,5 @@ class AiPreferences(
     when (provider) {
       AiProvider.GROQ -> groqAvailableModels
       AiProvider.GEMINI -> geminiAvailableModels
-    }
-
-  fun sttModelFor(provider: AiProvider): Preference<String> =
-    when (provider) {
-      AiProvider.GROQ -> groqSttModel
-      else -> sttModel
-    }
-
-  fun sttAvailableModelsFor(provider: AiProvider): Preference<String> =
-    when (provider) {
-      AiProvider.GROQ -> groqSttAvailableModels
-      else -> sttAvailableModels
     }
 }

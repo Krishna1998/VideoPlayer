@@ -387,7 +387,6 @@ fun PlayerControls(
   val appearancePreferences = koinInject<AppearancePreferences>()
   val aiPreferences = koinInject<AiPreferences>()
   val aiEnabled by aiPreferences.enabled.collectAsState()
-  val realtimeSubsEnabled by aiPreferences.realtimeSubsEnabled.collectAsState()
   val liquidGlassPreference by appearancePreferences.liquidGlassEnabled.collectAsState()
   val liquidGlassInHdr by appearancePreferences.liquidGlassInHdr.collectAsState()
   val hdrOutputPreference by koinInject<DecoderPreferences>().hdrScreenOutput.collectAsState()
@@ -1351,12 +1350,6 @@ fun PlayerControls(
           val translationProgress by viewModel.translationProgress.collectAsState()
           val translationStatus by viewModel.translationStatus.collectAsState()
           val translatingTrackName by viewModel.translatingTrackName.collectAsState()
-          val isRealtimeSubsActive by viewModel.isRealtimeSubsActive.collectAsState()
-          val realtimeSubsLanguage by viewModel.realtimeSubsLanguage.collectAsState()
-          val realtimeSubsStatus by viewModel.realtimeSubsStatus.collectAsState()
-          val isGeneratingSubtitles by viewModel.isGeneratingSubtitles.collectAsState()
-          val subtitleGenerationProgress by viewModel.subtitleGenerationProgress.collectAsState()
-          val subtitleGenerationStatus by viewModel.subtitleGenerationStatus.collectAsState()
 
           // Overlay visibility — Groups 2 & 5
           val showHoldSpeedOverlay by playerPreferences.showHoldSpeedOverlay.collectAsState()
@@ -2260,7 +2253,6 @@ fun PlayerControls(
                 },
           ) {
             val showAiIndicators = aiEnabled
-            val showRealtimeSubs = aiEnabled && realtimeSubsEnabled
             if (isPortrait) {
               TopPlayerControlsPortrait(
                 mediaTitle = mediaTitle,
@@ -2268,9 +2260,6 @@ fun PlayerControls(
                 onOpenSheet = onOpenSheet,
                 viewModel = viewModel,
                 isTranslatingSub = showAiIndicators && isTranslatingSub,
-                isRealtimeSubsActive = showRealtimeSubs && isRealtimeSubsActive,
-                realtimeSubsLanguage = realtimeSubsLanguage,
-                realtimeSubsStatus = realtimeSubsStatus,
                 translationStatus = translationStatus,
                 translatingTrackName = translatingTrackName,
               )
@@ -2281,9 +2270,6 @@ fun PlayerControls(
                 onOpenSheet = onOpenSheet,
                 viewModel = viewModel,
                 isTranslatingSub = showAiIndicators && isTranslatingSub,
-                isRealtimeSubsActive = showRealtimeSubs && isRealtimeSubsActive,
-                realtimeSubsLanguage = realtimeSubsLanguage,
-                realtimeSubsStatus = realtimeSubsStatus,
                 translationStatus = translationStatus,
                 translatingTrackName = translatingTrackName,
               )

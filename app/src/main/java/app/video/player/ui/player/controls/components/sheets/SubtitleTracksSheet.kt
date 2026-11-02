@@ -95,25 +95,15 @@ fun SubtitlesSheet(
   onOpenOnlineSearch: () -> Unit,
   onDismissRequest: () -> Unit,
   onTranslateSubtitle: (TrackNode, String) -> Unit,
-  onGenerateSubtitle: () -> Unit,
-  onStartRealtimeSubtitle: (String) -> Unit,
-  onStopRealtimeSubtitle: () -> Unit,
   onCancelTranslation: () -> Unit,
   isTranslating: Boolean,
   translationProgress: Float,
   translationStatus: String,
-  realtimeSubsStatus: String,
   translationEnabled: Boolean,
-  isGeneratingSubtitles: Boolean,
-  isRealtimeSubsActive: Boolean,
-  realtimeSubsProgress: Float,
-  subtitleGenerationProgress: Float,
-  subtitleGenerationStatus: String,
   translatingTrackId: Int? = null,
   translatingTrackName: String = "",
   autoTranslateLanguages: String = "",
   aiEnabled: Boolean = true,
-  realtimeSubsEnabled: Boolean = true,
   subtitlesOff: Boolean = false,
   onDisableSubtitles: () -> Unit = {},
   delayControlEnabled: Boolean = true,
@@ -167,9 +157,8 @@ fun SubtitlesSheet(
 
   var langSearch by remember { mutableStateOf("") }
   var showLanguagePicker by remember { androidx.compose.runtime.mutableStateOf<TrackNode?>(null) }
-  var showRealtimeLanguagePicker by remember { mutableStateOf(false) }
 
-  if (showLanguagePicker != null || showRealtimeLanguagePicker) {
+  if (showLanguagePicker != null) {
     val languagesToShow =
       remember(configuredLanguages, langSearch) {
         val source =
@@ -187,7 +176,6 @@ fun SubtitlesSheet(
     AppPickerSheet(
       onDismissRequest = {
         showLanguagePicker = null
-        showRealtimeLanguagePicker = false
         langSearch = ""
       },
       title = androidx.compose.ui.res.stringResource(app.video.player.R.string.ui_translate_to),
@@ -195,7 +183,6 @@ fun SubtitlesSheet(
       actions = {
         androidx.compose.material3.TextButton(onClick = {
           showLanguagePicker = null
-          showRealtimeLanguagePicker = false
           langSearch = ""
         }) {
           Text(
@@ -221,13 +208,8 @@ fun SubtitlesSheet(
                   Modifier
                     .fillMaxWidth()
                     .clickable {
-                      if (showRealtimeLanguagePicker) {
-                        onStartRealtimeSubtitle(lang)
-                      } else {
-                        showLanguagePicker?.let { track -> onTranslateSubtitle(track, lang) }
-                      }
+                      showLanguagePicker?.let { track -> onTranslateSubtitle(track, lang) }
                       showLanguagePicker = null
-                      showRealtimeLanguagePicker = false
                       langSearch = ""
                     }.padding(MaterialTheme.spacing.medium),
               )
@@ -263,29 +245,6 @@ fun SubtitlesSheet(
           shape = rememberConnectedShape(index = 0, itemCount = 2, layout = ConnectedLayout.Vertical),
           actions = {
             PlayerSheetAction(Icons.RoundedFilled.Search, stringResource(R.string.settings_search_title), onOpenOnlineSearch)
-            if (aiEnabled && realtimeSubsEnabled) {
-              PlayerSheetAction(
-                icon = if (isRealtimeSubsActive) Icons.RoundedFilled.Close else Icons.RoundedFilled.Translate,
-                label = stringResource(R.string.pref_stt_title),
-                onClick = {
-                  if (isRealtimeSubsActive) {
-                    onStopRealtimeSubtitle()
-                  } else if (configuredLanguages.isEmpty()) {
-                    onStartRealtimeSubtitle("")
-                  } else if (configuredLanguages.size == 1) {
-                    onStartRealtimeSubtitle(codeToName[configuredLanguages.first()] ?: configuredLanguages.first())
-                  } else {
-                    showRealtimeLanguagePicker = true
-                  }
-                },
-              )
-              PlayerSheetAction(
-                icon = Icons.RoundedFilled.Subtitles,
-                label = stringResource(R.string.ui_include_auto_generated_subtitles),
-                onClick = onGenerateSubtitle,
-                enabled = !isGeneratingSubtitles,
-              )
-            }
             PlayerSheetAction(
               icon = Icons.RoundedFilled.Palette,
               label = stringResource(R.string.player_sheets_subtitles_settings_title),
@@ -329,48 +288,6 @@ fun SubtitlesSheet(
           }
           LinearProgressIndicator(
             progress = { translationProgress.coerceIn(0f, 1f) },
-            modifier = Modifier.fillMaxWidth(),
-          )
-        }
-        }
-      }
-
-      if (aiEnabled && isGeneratingSubtitles) {
-        item(key = "subtitle_generation_progress") {
-        androidx.compose.foundation.layout.Column(
-          modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp),
-          verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-          Text(
-            "${subtitleGenerationStatus.ifBlank {
-              "Generating subtitles"
-            }}... ${(subtitleGenerationProgress * 100).toInt()}%",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.primary,
-          )
-          LinearProgressIndicator(
-            progress = { subtitleGenerationProgress.coerceIn(0f, 1f) },
-            modifier = Modifier.fillMaxWidth(),
-          )
-        }
-        }
-      }
-
-      if (aiEnabled && isRealtimeSubsActive) {
-        item(key = "realtime_subtitle_progress") {
-        Column(
-          modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp),
-          verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-          Text(
-            realtimeSubsStatus.ifBlank { stringResource(R.string.pref_stt_title) },
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.primary,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
-          )
-          LinearProgressIndicator(
-            progress = { realtimeSubsProgress.coerceIn(0f, 1f) },
             modifier = Modifier.fillMaxWidth(),
           )
         }

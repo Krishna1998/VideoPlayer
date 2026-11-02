@@ -777,7 +777,7 @@
   <string name="pref_section_storage">Storage</string>
   <string name="pref_section_ai">AI</string>
   <string name="pref_section_ai_title">AI Integration</string>
-  <string name="pref_section_ai_summary">AI rename, subtitle translation, speech-to-text (Groq/Gemini)</string>
+  <string name="pref_section_ai_summary">AI rename, subtitle translation (Groq/Gemini)</string>
   <string name="pref_section_advanced">Advanced</string>
   <string name="pref_section_about">About</string>
 
@@ -984,24 +984,6 @@
   <string name="pref_ai_rename_summary">Use AI to generate clean filenames for bulk rename operations</string>
   <string name="pref_ai_search_title">AI Search</string>
   <string name="pref_ai_search_summary">Auto-format video titles for Wyzie/SubHub subtitle search</string>
-  <string name="pref_stt_section">Speech-to-Text [Extreme Experimental]</string>
-  <string name="pref_stt_title">Real-time Subtitle Generation</string>
-  <string name="realtime_subtitles_label">Live captions</string>
-  <string name="realtime_subtitles_processing">Live captions %1$d/%2$d</string>
-  <string name="realtime_subtitles_translating">Translating live captions</string>
-  <string name="realtime_subtitles_translation_fallback">Translation unavailable; showing transcript</string>
-  <string name="realtime_subtitles_complete">Live captions complete</string>
-  <string name="realtime_subtitles_failed">Live captions failed</string>
-  <string name="realtime_subtitles_stopped">Live captions stopped</string>
-  <string name="realtime_subtitles_media_unavailable">Current media is unavailable for live captions</string>
-  <string name="realtime_subtitles_update_failed">Could not update live captions</string>
-  <string name="subtitle_generation_audio_unavailable">Could not open the selected audio track</string>
-  <string name="subtitle_generation_duration_unknown">Video duration is unavailable</string>
-  <string name="pref_stt_summary">Generate subtitles from audio while playing video</string>
-  <string name="pref_stt_output_format_title">Default Output Format</string>
-  <string name="pref_stt_provider_title">Speech-to-Text Provider</string>
-  <string name="pref_stt_provider_summary">Used for both real-time streaming and batch subtitle generation</string>
-  <string name="pref_audio_language_title">Audio Language</string>
   <string name="pref_translation_section">Subtitle Translation</string>
   <string name="pref_enable_translation_title">Enable Translation</string>
   <string name="pref_enable_translation_summary">Translate external subtitles using AI</string>
@@ -1027,7 +1009,6 @@
   <!-- ═══════════════════════════════════════════════════════════ -->
   <string name="search_api_key_config_title">API Key Configuration</string>
   <string name="search_ai_model_selection_title">AI Model Selection</string>
-  <string name="search_stt_title">Speech-to-Text</string>
   <string name="search_custom_ai_prompts_title">Custom AI Prompts</string>
 
   <!-- ═══════════════════════════════════════════════════════════ -->
@@ -1682,7 +1663,6 @@
   <string name="ui_instructions_for_ai_subtitle_translation">Instructions for AI subtitle translation...</string>
   <string name="ui_instructions_for_formatting_subtitle_search_queries">Instructions for formatting subtitle search queries...</string>
   <string name="ui_subtitle_translation_can_be_a_bit_messy">Subtitle translation can be a bit messy. </string>
-  <string name="ui_real_time_model">Real-time Model</string>
   <string name="ui_auto_translate_target_languages">Auto-Translate Target Languages</string>
   <string name="ui_when_translating_subtitles_if_1_language_is_configured_it_transl">When translating subtitles, if 1 language is configured it translates directly. If 2+ are configured, a picker appears.</string>
   <string name="ui_no_target_languages_configured">No target languages configured</string>

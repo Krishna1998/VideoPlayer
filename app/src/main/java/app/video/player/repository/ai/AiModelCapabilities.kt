@@ -31,12 +31,6 @@ internal object AiModelCapabilities {
     ).none(value::contains)
   }
 
-  fun isSpeechToTextModel(id: String): Boolean {
-    val value = id.lowercase(Locale.ROOT)
-    if (listOf("tts", "text-to-speech", "speech-generation").any(value::contains)) return false
-    return listOf("whisper", "transcribe", "speech-to-text", "speech_to_text").any(value::contains)
-  }
-
   fun normalize(models: List<AiModelInfo>): List<AiModelInfo> =
     models
       .asSequence()

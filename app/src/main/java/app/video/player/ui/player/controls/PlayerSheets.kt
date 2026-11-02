@@ -191,15 +191,8 @@ fun PlayerSheets(
       val translationStatus by viewModel.translationStatus.composeCollectAsState()
       val translatingTrackId by viewModel.translatingTrackId.composeCollectAsState()
       val translatingTrackName by viewModel.translatingTrackName.composeCollectAsState()
-      val isGeneratingSubtitles by viewModel.isGeneratingSubtitles.composeCollectAsState()
-      val subtitleGenerationProgress by viewModel.subtitleGenerationProgress.composeCollectAsState()
-      val subtitleGenerationStatus by viewModel.subtitleGenerationStatus.composeCollectAsState()
-      val isRealtimeSubsActive by viewModel.isRealtimeSubsActive.composeCollectAsState()
-      val realtimeSubsProgress by viewModel.realtimeSubsProgress.composeCollectAsState()
-      val realtimeSubsStatus by viewModel.realtimeSubsStatus.composeCollectAsState()
       val aiPreferences = koinInject<app.video.player.preferences.AiPreferences>()
       val aiEnabled by aiPreferences.enabled.collectAsState()
-      val realtimeSubsEnabled by aiPreferences.realtimeSubsEnabled.collectAsState()
       val translationEnabled by aiPreferences.subtitleTranslationEnabled.collectAsState()
       val autoTranslateLanguages by aiPreferences.autoTranslateLanguages.collectAsState()
 
@@ -231,25 +224,15 @@ fun PlayerSheets(
         onOpenOnlineSearch = { onShowSheet(Sheets.OnlineSubtitleSearch) },
         onDismissRequest = onDismissRequest,
         onTranslateSubtitle = { track, lang -> viewModel.translateSubtitle(track, lang) },
-        onGenerateSubtitle = { viewModel.generateSubtitles("", "") },
-        onStartRealtimeSubtitle = viewModel::startRealtimeSubtitles,
-        onStopRealtimeSubtitle = { viewModel.stopRealtimeSubtitles() },
         onCancelTranslation = { viewModel.cancelTranslation() },
         isTranslating = isTranslating,
         translationProgress = translationProgress,
         translationStatus = translationStatus,
-        realtimeSubsStatus = realtimeSubsStatus,
         translationEnabled = aiEnabled && translationEnabled,
-        isGeneratingSubtitles = isGeneratingSubtitles,
-        isRealtimeSubsActive = isRealtimeSubsActive,
-        realtimeSubsProgress = realtimeSubsProgress,
-        subtitleGenerationProgress = subtitleGenerationProgress,
-        subtitleGenerationStatus = subtitleGenerationStatus,
         translatingTrackId = translatingTrackId,
         translatingTrackName = translatingTrackName,
         autoTranslateLanguages = autoTranslateLanguages,
         aiEnabled = aiEnabled,
-        realtimeSubsEnabled = realtimeSubsEnabled,
         subtitlesOff = subtitlesOff,
         onDisableSubtitles = {
           setTrackSelectionId("sid", null)

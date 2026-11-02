@@ -21,9 +21,6 @@ import app.video.player.repository.ai.AiClient
 import app.video.player.repository.ai.AiService
 import app.video.player.repository.ai.GeminiClient
 import app.video.player.repository.ai.GroqClient
-import app.video.player.repository.ai.GroqSpeechClient
-import app.video.player.repository.ai.RealtimeSubtitleService
-import app.video.player.repository.ai.SubtitleGenerationService
 import app.video.player.repository.subtitle.OnlineSubtitleFileStore
 import app.video.player.repository.subtitle.OnlineSubtitleOrchestrator
 import app.video.player.repository.subtitlehub.MpvRxSubtitleHubRepository
@@ -58,11 +55,8 @@ val domainModule =
     single { IntroDbRepository(get(), get(), androidContext()) }
     single { GroqClient(get(), get()) }
     single { GeminiClient(get(), get()) }
-    single { GroqSpeechClient(get(), get()) }
     single<AiClient>(named("groq")) { GroqClient(get(), get()) }
     single<AiClient>(named("gemini")) { GeminiClient(get(), get()) }
-    single { SubtitleGenerationService(androidContext(), get(), get(), get(), get()) }
-    single { RealtimeSubtitleService(androidContext(), get(), get(), get(), get(), get()) }
     single {
       AiService(
         androidContext(),
