@@ -48,7 +48,6 @@ class SettingsManager(
 ) {
   companion object {
     private const val TAG_ROOT = "VideoPlayerSettings"
-    private const val LEGACY_TAG_ROOT = "mpvRxSettings"
     private const val TAG_PREFERENCES = "preferences"
     private const val TAG_PREFERENCE = "preference"
     private const val TAG_DATABASE = "database"
@@ -77,8 +76,8 @@ class SettingsManager(
     private const val LAST_BACKUP_SIGNATURE = "last_signature"
     private const val LAST_BACKUP_TIME = "last_time"
     private const val AUTO_BACKUP_RETENTION = 7
-    private val AUTO_BACKUP_FILE_REGEX = Regex("""(?:videoplayer|mpvrx)_settings_[0-9]{8}_[0-9]{6}(?: \([0-9]+\))?\.xml""")
-    private val BACKUP_TIMESTAMP_REGEX = Regex("""(?:videoplayer|mpvrx)_settings_([0-9]{8}_[0-9]{6})""", RegexOption.IGNORE_CASE)
+    private val AUTO_BACKUP_FILE_REGEX = Regex("""videoplayer_settings_[0-9]{8}_[0-9]{6}(?: \([0-9]+\))?\.xml""")
+    private val BACKUP_TIMESTAMP_REGEX = Regex("""videoplayer_settings_([0-9]{8}_[0-9]{6})""", RegexOption.IGNORE_CASE)
     private const val MAX_BACKUP_BYTES = 64L * 1024 * 1024
     private const val MAX_TEXT_LENGTH = 4 * 1024 * 1024
     private const val MAX_SET_SIZE = 10_000
@@ -192,7 +191,7 @@ class SettingsManager(
         val candidates = (root.listFiles().asSequence() + backupFolder?.listFiles().orEmpty().asSequence())
           .filter { file ->
             file.isFile && file.name?.let { name ->
-              (name.startsWith("videoplayer_settings_", ignoreCase = true) || name.startsWith("mpvrx_settings_", ignoreCase = true)) &&
+              name.startsWith("videoplayer_settings_", ignoreCase = true) &&
                 name.endsWith(".xml", ignoreCase = true)
             } == true
           }
@@ -408,7 +407,7 @@ class SettingsManager(
     parser.setInput(inputStream, null)
     parser.nextTag()
     val rootTag = parser.name
-    require(rootTag == TAG_ROOT || rootTag == LEGACY_TAG_ROOT) { "Expected root tag $TAG_ROOT or $LEGACY_TAG_ROOT, found $rootTag" }
+    require(rootTag == TAG_ROOT) { "Expected root tag $TAG_ROOT, found $rootTag" }
     val formatVersion = parser.getAttributeValue(null, ATTR_FORMAT_VERSION)?.trim()?.toIntOrNull() ?: 1
     require(formatVersion >= 1) { "Unsupported settings format: $formatVersion" }
 
@@ -429,7 +428,7 @@ class SettingsManager(
           XmlPullParser.START_TAG -> {
             parents.addLast(parser.name)
             when (parser.name) {
-              TAG_ROOT, LEGACY_TAG_ROOT -> stats.version = parser.getAttributeValue(null, ATTR_VERSION) ?: "unknown"
+              TAG_ROOT -> stats.version = parser.getAttributeValue(null, ATTR_VERSION) ?: "unknown"
               TAG_PREFERENCE -> {
                 val key = parser.getAttributeValue(null, ATTR_KEY)
                 if (parents.size == 3 && parents[1] == TAG_PREFERENCES &&

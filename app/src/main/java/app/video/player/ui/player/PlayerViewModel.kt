@@ -4706,7 +4706,7 @@ fun restartFromBeginning() {
     var lastSentPosition: Float? = null
     val owner = currentCoroutineContext()[Job]
     val networkFrame = framePreview && PlaybackSession.state.value.currentItem?.let {
-      it.networkSource != null || it.originalUri.startsWith("videoplayer-network://") || it.originalUri.startsWith("mpvrx-network://")
+      it.networkSource != null || it.originalUri.startsWith("videoplayer-network://")
     } == true
     val intervalMs = if (networkFrame) NETWORK_FRAME_PREVIEW_SEEK_INTERVAL_MS else PREVIEW_SEEK_INTERVAL_MS
     try {

@@ -31,7 +31,7 @@ internal fun playlistSourceLocation(source: String?): String {
     null -> source
     "file" -> uri.path.orEmpty()
     "content" -> uri.lastPathSegment?.substringAfter(':').orEmpty()
-    "videoplayer-network", "mpvrx-network" -> ""
+    "videoplayer-network" -> ""
     else -> uri.host.orEmpty()
   }
 }

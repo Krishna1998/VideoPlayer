@@ -15,7 +15,6 @@ import java.net.URI
 /** A credential-free reference to a stream exposed by a saved Xtream account. */
 object XtreamPlaybackUri {
   const val SCHEME = "videoplayer-xtream"
-  const val LEGACY_SCHEME = "mpvrx-xtream"
 
   enum class Route(
     val wireValue: String,
@@ -93,7 +92,7 @@ object XtreamPlaybackUri {
   fun parse(rawUri: String): Reference? =
     runCatching {
       val uri = URI(rawUri)
-      if ((!uri.scheme.equals(SCHEME, ignoreCase = true) && !uri.scheme.equals(LEGACY_SCHEME, ignoreCase = true)) ||
+      if (!uri.scheme.equals(SCHEME, ignoreCase = true) ||
         uri.userInfo != null ||
         uri.port != -1 ||
         uri.query != null ||

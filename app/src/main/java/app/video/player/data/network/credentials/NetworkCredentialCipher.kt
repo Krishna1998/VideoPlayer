@@ -39,8 +39,7 @@ class NetworkCredentialCipher(
   fun decrypt(storedValue: String): String {
     require(isEncrypted(storedValue)) { "Unsupported credential format" }
 
-    val isLegacy = storedValue.startsWith(LEGACY_PREFIX)
-    val payload = if (isLegacy) storedValue.removePrefix(LEGACY_PREFIX) else storedValue.removePrefix(PREFIX)
+    val payload = storedValue.removePrefix(PREFIX)
     val separatorIndex = payload.indexOf('.')
     require(separatorIndex > 0 && separatorIndex < payload.lastIndex) {
       "Malformed credential"
@@ -54,22 +53,20 @@ class NetworkCredentialCipher(
 
     val cipher = Cipher.getInstance(TRANSFORMATION)
     cipher.init(Cipher.DECRYPT_MODE, keyProvider(), GCMParameterSpec(GCM_TAG_BITS, iv))
-    cipher.updateAAD(if (isLegacy) LEGACY_PREFIX_BYTES else PREFIX_BYTES)
+    cipher.updateAAD(PREFIX_BYTES)
     return String(cipher.doFinal(ciphertext), StandardCharsets.UTF_8)
   }
 
   fun isEncrypted(storedValue: String): Boolean =
-    storedValue.startsWith(PREFIX) || storedValue.startsWith(LEGACY_PREFIX)
+    storedValue.startsWith(PREFIX)
 
   companion object {
     private const val PREFIX = "videoplayer-credential:v1:"
-    private const val LEGACY_PREFIX = "mpvrx-credential:v1:"
     private const val TRANSFORMATION = "AES/GCM/NoPadding"
     private const val GCM_IV_BYTES = 12
     private const val GCM_TAG_BYTES = 16
     private const val GCM_TAG_BITS = GCM_TAG_BYTES * 8
     private val PREFIX_BYTES = PREFIX.toByteArray(StandardCharsets.UTF_8)
-    private val LEGACY_PREFIX_BYTES = LEGACY_PREFIX.toByteArray(StandardCharsets.UTF_8)
     private val ENCODER = Base64.getUrlEncoder().withoutPadding()
     private val DECODER = Base64.getUrlDecoder()
   }
@@ -79,13 +76,11 @@ class NetworkCredentialCipher(
 object AndroidNetworkCredentialKey {
   private const val KEYSTORE = "AndroidKeyStore"
   private const val KEY_ALIAS = "videoplayer.network-credentials.v1"
-  private const val LEGACY_KEY_ALIAS = "mpvrx.network-credentials.v1"
 
   @Synchronized
   fun getOrCreate(): SecretKey {
     val keyStore = KeyStore.getInstance(KEYSTORE).apply { load(null) }
     (keyStore.getKey(KEY_ALIAS, null) as? SecretKey)?.let { return it }
-    (keyStore.getKey(LEGACY_KEY_ALIAS, null) as? SecretKey)?.let { return it }
 
     val keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, KEYSTORE)
     keyGenerator.init(

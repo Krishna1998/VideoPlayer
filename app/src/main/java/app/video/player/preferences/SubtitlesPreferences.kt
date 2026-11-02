@@ -96,7 +96,6 @@ private fun PreferenceStore.getOnlineSubtitleSearchMode() =
         OnlineSubtitleSearchMode.WYZIE.name -> OnlineSubtitleSearchMode.WYZIE
         OnlineSubtitleSearchMode.SUBHUB.name,
         "VIDEOPLAYER_SUBTITLE_HUB",
-        "MPVRX_SUBTITLE_HUB",
         -> OnlineSubtitleSearchMode.SUBHUB
         OnlineSubtitleSearchMode.HYBRID.name,
         "HYBRID_SEQUENTIAL",

@@ -109,5 +109,3 @@ abstract class VideoPlayerDatabase : RoomDatabase() {
 
   abstract fun snapshotFolderDao(): SnapshotFolderDao
 }
-
-typealias MpvRxDatabase = VideoPlayerDatabase

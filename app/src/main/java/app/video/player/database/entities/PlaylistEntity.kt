@@ -37,5 +37,5 @@ data class PlaylistEntity(
 ) {
   @get:Ignore
   val isZipPlaylist: Boolean
-    get() = !isM3uPlaylist && (m3uSourceUrl?.startsWith("videoplayer-zip://") == true || m3uSourceUrl?.startsWith("mpvrx-zip://") == true)
+    get() = !isM3uPlaylist && m3uSourceUrl?.startsWith("videoplayer-zip://") == true
 }

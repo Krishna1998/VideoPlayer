@@ -44,7 +44,6 @@ import kotlinx.coroutines.withContext
 
 object ZipArchiveMedia {
   private const val BROWSER_SCHEME = "videoplayer-zip"
-  private const val LEGACY_BROWSER_SCHEME = "mpvrx-zip"
   private const val BROWSER_AUTHORITY = "local"
   private const val PLAYBACK_SCHEME = "archive"
   private const val MAX_ENTRIES = 100_000
@@ -404,7 +403,7 @@ object ZipArchiveMedia {
 
   fun parseBrowserPath(value: String): Location? = runCatching {
     val uri = Uri.parse(value)
-    if ((!uri.scheme.equals(BROWSER_SCHEME, ignoreCase = true) && !uri.scheme.equals(LEGACY_BROWSER_SCHEME, ignoreCase = true)) || uri.authority != BROWSER_AUTHORITY) {
+    if (!uri.scheme.equals(BROWSER_SCHEME, ignoreCase = true) || uri.authority != BROWSER_AUTHORITY) {
       return@runCatching null
     }
     val archivePath = uri.getQueryParameter("archive")?.let(::normalizeArchiveSource) ?: return@runCatching null

@@ -97,7 +97,6 @@ fun encodeNetworkPathForUrl(path: String): String = Uri.encode(path, "/")
  */
 object NetworkPlaybackUri {
   const val SCHEME = "videoplayer-network"
-  const val LEGACY_SCHEME = "mpvrx-network"
 
   data class Reference(
     val connectionId: Long,
@@ -116,7 +115,7 @@ object NetworkPlaybackUri {
   fun parse(rawUri: String): Reference? =
     runCatching {
       val uri = URI(rawUri)
-      if ((!uri.scheme.equals(SCHEME, ignoreCase = true) && !uri.scheme.equals(LEGACY_SCHEME, ignoreCase = true)) ||
+      if (!uri.scheme.equals(SCHEME, ignoreCase = true) ||
         uri.userInfo != null ||
         uri.port != -1 ||
         uri.query != null ||

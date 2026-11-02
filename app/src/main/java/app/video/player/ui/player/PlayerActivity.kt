@@ -4625,7 +4625,7 @@ class PlayerActivity :
       }
       else -> {
         when (property.substringBeforeLast("/")) {
-          "user-data/videoplayer", "user-data/mpvrx" -> viewModel.handleLuaInvocation(property, value)
+          "user-data/videoplayer" -> viewModel.handleLuaInvocation(property, value)
         }
       }
     }

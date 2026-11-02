@@ -1002,17 +1002,6 @@ val DatabaseModule =
 
     single<VideoPlayerDatabase> {
       val context = androidContext()
-      val oldDb = context.getDatabasePath("mpvrx.db")
-      val newDb = context.getDatabasePath("videoplayer.db")
-      if (oldDb.exists() && !newDb.exists()) {
-        oldDb.renameTo(newDb)
-        val oldWal = java.io.File(oldDb.path + "-wal")
-        val newWal = java.io.File(newDb.path + "-wal")
-        if (oldWal.exists()) oldWal.renameTo(newWal)
-        val oldShm = java.io.File(oldDb.path + "-shm")
-        val newShm = java.io.File(newDb.path + "-shm")
-        if (oldShm.exists()) oldShm.renameTo(newShm)
-      }
       Room
         .databaseBuilder(context, VideoPlayerDatabase::class.java, "videoplayer.db")
         .setJournalMode(RoomDatabase.JournalMode.WRITE_AHEAD_LOGGING)
