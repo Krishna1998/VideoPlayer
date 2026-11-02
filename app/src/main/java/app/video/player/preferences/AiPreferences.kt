@@ -103,8 +103,8 @@ class AiPreferences(
   private val openRouterSttAvailableModels = preferenceStore.getString("ai_stt_available_models_openrouter", "[]")
   val sttLanguage = preferenceStore.getString("ai_stt_language", "")
 
-  // Auto-translate target languages (comma-separated codes: "en,es,fr")
-  val autoTranslateLanguages = preferenceStore.getString("ai_auto_translate_languages", "")
+  // Auto-translate target languages (comma-separated codes: "en,hi")
+  val autoTranslateLanguages = preferenceStore.getString("ai_auto_translate_languages", "en,hi")
 
   val customPromptEnabled = preferenceStore.getBoolean("ai_custom_prompt_enabled", false)
   val customPrompt = preferenceStore.getString("ai_custom_prompt", "")

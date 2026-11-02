@@ -77,7 +77,7 @@ RULES:
 6. Return ONLY the translated subtitle block, preserving the structure perfectly.
 7. Do NOT add any preamble, comments, or explanations.
 
-Example (English to Spanish):
+Example (English to Hindi):
 1
 00:00:01,000 --> 00:00:04,000
 Hello, how are you today?
@@ -85,7 +85,7 @@ Hello, how are you today?
 Output:
 1
 00:00:01,000 --> 00:00:04,000
-Hola, ¿cómo estás hoy?
+नमस्ते, आज आप कैसे हैं?
     """.trimIndent()
 
   fun resolveInstruction(

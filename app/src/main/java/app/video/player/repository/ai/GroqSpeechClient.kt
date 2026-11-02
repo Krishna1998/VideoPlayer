@@ -117,16 +117,6 @@ class GroqSpeechClient(
     return when (normalized) {
       "english" -> "en"
       "hindi" -> "hi"
-      "spanish" -> "es"
-      "french" -> "fr"
-      "german" -> "de"
-      "japanese" -> "ja"
-      "korean" -> "ko"
-      "chinese", "chinese (simplified)", "chinese (traditional)" -> "zh"
-      "arabic" -> "ar"
-      "portuguese" -> "pt"
-      "russian" -> "ru"
-      "italian" -> "it"
       else -> null
     }
   }

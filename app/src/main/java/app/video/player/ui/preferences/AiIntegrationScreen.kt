@@ -80,49 +80,7 @@ import org.koin.compose.koinInject
 private val allLanguages =
   mapOf(
     "en" to "English",
-    "es" to "Spanish",
-    "fr" to "French",
-    "de" to "German",
-    "it" to "Italian",
-    "pt" to "Portuguese",
-    "ru" to "Russian",
-    "zh" to "Chinese",
-    "ja" to "Japanese",
-    "ko" to "Korean",
-    "ar" to "Arabic",
     "hi" to "Hindi",
-    "bn" to "Bengali",
-    "vi" to "Vietnamese",
-    "te" to "Telugu",
-    "ta" to "Tamil",
-    "ur" to "Urdu",
-    "tr" to "Turkish",
-    "pl" to "Polish",
-    "uk" to "Ukrainian",
-    "nl" to "Dutch",
-    "el" to "Greek",
-    "hu" to "Hungarian",
-    "sv" to "Swedish",
-    "cs" to "Czech",
-    "ro" to "Romanian",
-    "da" to "Danish",
-    "fi" to "Finnish",
-    "no" to "Norwegian",
-    "he" to "Hebrew",
-    "id" to "Indonesian",
-    "th" to "Thai",
-    "ms" to "Malay",
-    "fa" to "Persian",
-    "sk" to "Slovak",
-    "bg" to "Bulgarian",
-    "hr" to "Croatian",
-    "sr" to "Serbian",
-    "sl" to "Slovenian",
-    "et" to "Estonian",
-    "lv" to "Latvian",
-    "lt" to "Lithuanian",
-    "af" to "Afrikaans",
-    "sw" to "Swahili",
   )
 
 @Serializable
@@ -909,44 +867,14 @@ val apiKeyInfo =
                       listOf(
                         "",
                         "en",
-                        "es",
-                        "fr",
-                        "de",
                         "hi",
-                        "ja",
-                        "zh",
-                        "ko",
-                        "pt",
-                        "ru",
-                        "ar",
-                        "it",
-                        "nl",
-                        "pl",
-                        "tr",
-                        "vi",
-                        "th",
                       ),
                     valueToText = { lang ->
                       androidx.compose.ui.text.AnnotatedString(
                         when (lang) {
                           "" -> "Auto-detect"
                           "en" -> "English"
-                          "es" -> "Spanish"
-                          "fr" -> "French"
-                          "de" -> "German"
                           "hi" -> "Hindi"
-                          "ja" -> "Japanese"
-                          "zh" -> "Chinese"
-                          "ko" -> "Korean"
-                          "pt" -> "Portuguese"
-                          "ru" -> "Russian"
-                          "ar" -> "Arabic"
-                          "it" -> "Italian"
-                          "nl" -> "Dutch"
-                          "pl" -> "Polish"
-                          "tr" -> "Turkish"
-                          "vi" -> "Vietnamese"
-                          "th" -> "Thai"
                           else -> lang
                         },
                       )
@@ -1339,7 +1267,7 @@ val apiKeyInfo =
     languages: String,
     onLanguagesChange: (String) -> Unit,
   ) {
-    val selectedCodes = remember(languages) { languages.split(",").filter { it.isNotBlank() }.toMutableSet() }
+    val selectedCodes = remember(languages) { languages.split(",").filter { it.isNotBlank() && it in allLanguages }.toMutableSet() }
     var adding by remember { mutableStateOf(false) }
     var addingSearch by remember { mutableStateOf("") }
 
