@@ -130,7 +130,6 @@ import app.video.player.ui.browser.dialogs.rememberSelectionInfoAction
 import app.video.player.ui.browser.filesystem.FileSystemBrowserRootScreen
 import app.video.player.ui.browser.medialibrary.MediaLibraryContent
 import app.video.player.ui.browser.selection.rememberSelectionManager
-import app.video.player.ui.browser.sheets.PlayLinkSheet
 import app.video.player.ui.browser.states.EmptyState
 import app.video.player.ui.browser.states.LoadingState
 import app.video.player.ui.browser.states.PermissionDeniedState
@@ -257,7 +256,6 @@ object FolderListScreen : Screen {
     val isRefreshing = remember { mutableStateOf(false) }
     val sortDialogOpen = rememberBrowserSortDialogOpen(useHomeState = !embedded && !audioOnly)
     var pendingDeleteFolders by remember { mutableStateOf<List<VideoFolder>>(emptyList()) }
-    val showLinkDialog = remember { mutableStateOf(false) }
     val folderPickerOpen = rememberSaveable { mutableStateOf(false) }
     val operationType = remember { mutableStateOf<CopyPasteOps.OperationType?>(null) }
     val progressDialogOpen = rememberSaveable { mutableStateOf(false) }
@@ -912,20 +910,6 @@ object FolderListScreen : Screen {
                 },
               )
 
-              FloatingActionButtonMenuItem(
-                onClick = {
-                  isFabExpanded.value = false
-                  showLinkDialog.value = true
-                },
-                icon = { Icon(Icons.RoundedFilled.Link, contentDescription = null) },
-                text = {
-                  Text(
-                    text =
-                      androidx.compose.ui.res
-                        .stringResource(app.video.player.R.string.ui_open_link),
-                  )
-                },
-              )
             }
           }
         },
@@ -1189,12 +1173,6 @@ object FolderListScreen : Screen {
     }
 
     // Dialogs
-    PlayLinkSheet(
-      isOpen = showLinkDialog.value,
-      onDismiss = { showLinkDialog.value = false },
-      onPlayLink = { url -> MediaUtils.playFile(url, context, "play_link") },
-    )
-
     FolderPickerDialog(
       isOpen = folderPickerOpen.value,
       currentPath = "",

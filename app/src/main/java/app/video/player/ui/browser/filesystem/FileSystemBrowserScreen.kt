@@ -116,7 +116,6 @@ import app.video.player.ui.browser.dialogs.RenameDialog
 import app.video.player.ui.browser.dialogs.VideoCompressorOverlay
 import app.video.player.ui.browser.dialogs.rememberSelectionInfoAction
 import app.video.player.ui.browser.selection.rememberSelectionManager
-import app.video.player.ui.browser.sheets.PlayLinkSheet
 import app.video.player.ui.browser.states.EmptyState
 import app.video.player.ui.browser.states.LoadingState
 import app.video.player.ui.browser.states.PermissionDeniedState
@@ -247,7 +246,6 @@ fun FileSystemBrowserScreen(path: String? = null) {
 
   // UI state
   val isRefreshing = remember { mutableStateOf(false) }
-  val showLinkDialog = remember { mutableStateOf(false) }
   val sortDialogOpen = rememberBrowserSortDialogOpen(useHomeState = path == null)
   var deleteDialogOpen by rememberSaveable { mutableStateOf(false) }
   val renameDialogOpen = rememberSaveable { mutableStateOf(false) }
@@ -785,20 +783,6 @@ fun FileSystemBrowserScreen(path: String? = null) {
                 },
               )
 
-              FloatingActionButtonMenuItem(
-                onClick = {
-                  isFabExpanded.value = false
-                  showLinkDialog.value = true
-                },
-                icon = { Icon(Icons.RoundedFilled.Link, contentDescription = null) },
-                text = {
-                  Text(
-                    text =
-                      androidx.compose.ui.res
-                        .stringResource(app.video.player.R.string.ui_open_link),
-                  )
-                },
-              )
             }
           }
         }
@@ -1001,12 +985,6 @@ fun FileSystemBrowserScreen(path: String? = null) {
     }
 
     // Dialogs
-    PlayLinkSheet(
-      isOpen = showLinkDialog.value,
-      onDismiss = { showLinkDialog.value = false },
-      onPlayLink = { url -> MediaUtils.playFile(url, context, "play_link") },
-    )
-
     FileSystemSortDialog(
       isOpen = sortDialogOpen.value,
       onDismiss = { sortDialogOpen.value = false },

@@ -32,7 +32,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.OutlinedButton
 import app.video.player.presentation.components.AppTextField as OutlinedTextField
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
@@ -49,10 +48,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import app.video.player.presentation.components.AppAlertDialog
-import app.video.player.ui.browser.dialogs.AddXtreamPlaylistDialog
 import app.video.player.ui.icons.Icon
 import app.video.player.ui.icons.Icons
-import app.video.player.utils.media.SharedUrlExtractor
+
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
@@ -62,17 +60,15 @@ fun PlaylistActionSheet(
   isOpen: Boolean,
   onDismiss: () -> Unit,
   onCreatePlaylist: suspend (String) -> Long,
-  onCreateM3UPlaylistFromFile: suspend (Uri) -> Result<Long>,
   onCreateZipPlaylist: suspend (Uri) -> Result<Long>,
-  onCreateM3UPlaylist: suspend (String, String?) -> Result<Long>,
-  onCreateXtreamPlaylist: suspend (String, String, String) -> Result<Long>,
   context: android.content.Context,
   modifier: Modifier = Modifier,
+  onCreateM3UPlaylistFromFile: (suspend (Uri) -> Result<Long>)? = null,
+  onCreateM3UPlaylist: (suspend (String, String?) -> Result<Long>)? = null,
+  onCreateXtreamPlaylist: (suspend (String, String, String) -> Result<Long>)? = null,
   savedXtreamServerUrls: List<String> = emptyList(),
 ) {
   var showCreateDialog by remember { mutableStateOf(false) }
-  var showM3UDialog by remember { mutableStateOf(false) }
-  var showXtreamDialog by remember { mutableStateOf(false) }
   val zipScope = rememberCoroutineScope()
   var zipImportJob by remember { mutableStateOf<Job?>(null) }
   var isImportingZip by remember { mutableStateOf(false) }
@@ -212,88 +208,6 @@ fun PlaylistActionSheet(
       }
 
       Card(
-        onClick = {
-          showM3UDialog = true
-        },
-        modifier = Modifier.fillMaxWidth(),
-        colors =
-          CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant,
-          ),
-      ) {
-        Row(
-          modifier =
-            Modifier
-              .fillMaxWidth()
-              .padding(16.dp),
-          horizontalArrangement = Arrangement.spacedBy(16.dp),
-          verticalAlignment = Alignment.CenterVertically,
-        ) {
-          Icon(
-            imageVector = Icons.RoundedFilled.Link,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(24.dp),
-          )
-          Column(modifier = Modifier.weight(1f)) {
-            Text(
-              text =
-                androidx.compose.ui.res
-                  .stringResource(app.video.player.R.string.ui_add_playlist_from_url),
-              style = MaterialTheme.typography.bodyLarge,
-              fontWeight = FontWeight.Medium,
-            )
-            Text(
-              text =
-                androidx.compose.ui.res.stringResource(
-                  app.video.player.R.string.ui_import_a_playlist_from_a_web_url,
-                ),
-              style = MaterialTheme.typography.bodySmall,
-              color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-          }
-        }
-      }
-
-      Card(
-        onClick = { showXtreamDialog = true },
-        modifier = Modifier.fillMaxWidth(),
-        colors =
-          CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant,
-          ),
-      ) {
-        Row(
-          modifier = Modifier.fillMaxWidth().padding(16.dp),
-          horizontalArrangement = Arrangement.spacedBy(16.dp),
-          verticalAlignment = Alignment.CenterVertically,
-        ) {
-          Icon(
-            imageVector = Icons.RoundedFilled.Tv,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(24.dp),
-          )
-          Column(modifier = Modifier.weight(1f)) {
-            Text(
-              text =
-                androidx.compose.ui.res
-                  .stringResource(app.video.player.R.string.playlist_xtream_add_action),
-              style = MaterialTheme.typography.bodyLarge,
-              fontWeight = FontWeight.Medium,
-            )
-            Text(
-              text =
-                androidx.compose.ui.res
-                  .stringResource(app.video.player.R.string.playlist_xtream_add_action_description),
-              style = MaterialTheme.typography.bodySmall,
-              color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-          }
-        }
-      }
-
-      Card(
         onClick = { folderPickerLauncher.launch(null) },
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
@@ -399,232 +313,4 @@ fun PlaylistActionSheet(
     )
   }
 
-  // M3U Playlist Dialog
-  if (showM3UDialog) {
-    var playlistUrl by remember { mutableStateOf("") }
-    var playlistUserAgent by remember { mutableStateOf("") }
-    var isLoading by remember { mutableStateOf(false) }
-    val coroutineScope = rememberCoroutineScope()
-
-    // File picker launcher
-    val filePickerLauncher =
-      rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.OpenDocument(),
-      ) { uri: Uri? ->
-        uri?.let {
-          val permissionGranted = runCatching {
-            context.contentResolver.takePersistableUriPermission(it, android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
-          }.onFailure { error ->
-            app.video.player.ui.components.AppToast.makeText(
-              context,
-              context.getString(app.video.player.R.string.playlist_local_access_failed, error.localizedMessage.orEmpty()),
-              app.video.player.ui.components.AppToast.LENGTH_LONG,
-            ).show()
-          }.isSuccess
-          if (!permissionGranted) return@rememberLauncherForActivityResult
-          isLoading = true
-          coroutineScope.launch {
-            val result = onCreateM3UPlaylistFromFile(it)
-            result
-              .onSuccess {
-                app.video.player.ui.components.AppToast
-                  .makeText(
-                    context,
-                    context.getString(app.video.player.R.string.playlist_add_success),
-                    app.video.player.ui.components.AppToast.LENGTH_SHORT,
-                  ).show()
-                showM3UDialog = false
-                onDismiss()
-              }.onFailure { error ->
-                app.video.player.ui.components.AppToast
-                  .makeText(
-                    context,
-                    "Failed to add M3U playlist: ${error.message}",
-                    app.video.player.ui.components.AppToast.LENGTH_LONG,
-                  ).show()
-              }
-            isLoading = false
-          }
-        }
-      }
-
-    AppAlertDialog(
-      onDismissRequest = { showM3UDialog = false },
-      title = {
-        Text(
-          text =
-            androidx.compose.ui.res
-              .stringResource(app.video.player.R.string.playlist_add_remote_title),
-          style = MaterialTheme.typography.headlineSmall,
-        )
-      },
-      text = {
-        Column(
-          modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
-          verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-          Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            OutlinedTextField(
-              value = playlistUrl,
-              onValueChange = { playlistUrl = it },
-              label = {
-                Text(
-                  androidx.compose.ui.res
-                    .stringResource(app.video.player.R.string.playlist_url_label),
-                )
-              },
-              singleLine = false,
-              maxLines = 3,
-              modifier = Modifier.fillMaxWidth(),
-              enabled = !isLoading,
-            )
-
-            Text(
-              text =
-                androidx.compose.ui.res
-                  .stringResource(
-                    if (app.video.player.BuildConfig.ENABLE_YTDLP) {
-                      app.video.player.R.string.playlist_remote_url_hint
-                    } else {
-                      app.video.player.R.string.playlist_url_hint
-                    },
-                  ),
-              style = MaterialTheme.typography.bodySmall,
-              color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-
-            OutlinedTextField(
-              value = playlistUserAgent,
-              onValueChange = { playlistUserAgent = it },
-              label = {
-                Text(
-                  androidx.compose.ui.res
-                    .stringResource(app.video.player.R.string.ui_custom_user_agent_optional),
-                )
-              },
-              singleLine = true,
-              modifier = Modifier.fillMaxWidth(),
-              enabled = !isLoading,
-            )
-
-            // OR divider
-            Row(
-              modifier = Modifier.fillMaxWidth(),
-              verticalAlignment = Alignment.CenterVertically,
-              horizontalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-              androidx.compose.material3.HorizontalDivider(modifier = Modifier.weight(1f))
-              Text(
-                text =
-                  androidx.compose.ui.res
-                    .stringResource(app.video.player.R.string.ui_or),
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-              )
-              androidx.compose.material3.HorizontalDivider(modifier = Modifier.weight(1f))
-            }
-
-            // Local file picker button
-            OutlinedButton(
-              onClick = {
-              filePickerLauncher.launch(arrayOf("*/*"))
-              },
-              enabled = !isLoading,
-              modifier = Modifier.fillMaxWidth(),
-            ) {
-              Icon(
-                imageVector = Icons.RoundedFilled.FolderOpen,
-                contentDescription = null,
-                modifier = Modifier.size(20.dp),
-              )
-              Spacer(modifier = Modifier.width(8.dp))
-              Text(
-                androidx.compose.ui.res
-                  .stringResource(app.video.player.R.string.ui_choose_local_m3u_file),
-              )
-            }
-
-            if (isLoading) {
-              Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center,
-              ) {
-                androidx.compose.material3.CircularProgressIndicator(
-                  modifier = Modifier.size(32.dp),
-                )
-              }
-            }
-          }
-        }
-      },
-      dismissButton = {
-        TextButton(
-          onClick = { showM3UDialog = false },
-          shape = MaterialTheme.shapes.extraLarge,
-        ) {
-          Text(
-            androidx.compose.ui.res
-              .stringResource(app.video.player.R.string.generic_cancel),
-          )
-        }
-      },
-      confirmButton = {
-        TextButton(
-          onClick = {
-            val normalizedPlaylistUrl = SharedUrlExtractor.normalizeInput(playlistUrl)
-            if (normalizedPlaylistUrl.isNotBlank()) {
-              isLoading = true
-              coroutineScope.launch {
-                val result =
-                  onCreateM3UPlaylist(
-                    normalizedPlaylistUrl,
-                    playlistUserAgent.trim().takeIf { it.isNotEmpty() },
-                  )
-                result
-                  .onSuccess {
-                    app.video.player.ui.components.AppToast
-                      .makeText(
-                        context,
-                        context.getString(app.video.player.R.string.playlist_import_success),
-                        app.video.player.ui.components.AppToast.LENGTH_SHORT,
-                      ).show()
-                    showM3UDialog = false
-                    onDismiss()
-                  }.onFailure { error ->
-                    app.video.player.ui.components.AppToast
-                      .makeText(
-                        context,
-                        context.getString(
-                          app.video.player.R.string.playlist_import_error,
-                          error.message ?: context.getString(app.video.player.R.string.generic_unknown_error),
-                        ),
-                        app.video.player.ui.components.AppToast.LENGTH_LONG,
-                      ).show()
-                  }
-                isLoading = false
-              }
-            }
-          },
-          enabled = playlistUrl.isNotBlank() && !isLoading,
-          shape = MaterialTheme.shapes.extraLarge,
-        ) {
-          Text(
-            androidx.compose.ui.res
-              .stringResource(app.video.player.R.string.ui_add_from_url),
-          )
-        }
-      },
-    )
-  }
-
-  AddXtreamPlaylistDialog(
-    isOpen = showXtreamDialog,
-    savedServerUrls = savedXtreamServerUrls,
-    onDismiss = { showXtreamDialog = false },
-    onImported = {
-      showXtreamDialog = false
-      onDismiss()
-    },
-    onCreateXtreamPlaylist = onCreateXtreamPlaylist,
-  )
 }

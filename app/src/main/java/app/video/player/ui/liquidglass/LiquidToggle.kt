@@ -16,9 +16,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.lerp
@@ -27,10 +32,13 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.toggleableState
+import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastCoerceIn
 import androidx.compose.ui.util.lerp
+import app.video.player.ui.theme.AppMotion
 import com.kyant.backdrop.Backdrop
 import com.kyant.backdrop.backdrops.layerBackdrop
 import com.kyant.backdrop.backdrops.rememberBackdrop
@@ -43,11 +51,8 @@ import com.kyant.backdrop.highlight.Highlight
 import com.kyant.backdrop.shadow.InnerShadow
 import com.kyant.backdrop.shadow.Shadow
 import com.kyant.shapes.Capsule
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.semantics.toggleableState
-import androidx.compose.ui.state.ToggleableState
-import app.video.player.ui.theme.AppMotion
 import kotlinx.coroutines.flow.collectLatest
+import kotlin.math.abs
 
 @Composable
 fun LiquidToggle(
@@ -59,16 +64,18 @@ fun LiquidToggle(
     enabled: Boolean = true,
     isInteractive: Boolean = true,
 ) {
-    val trackColor = MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = 0.72f)
-    val unselectedFilm = MaterialTheme.colorScheme.surfaceContainerHigh
-    val selectedFilm = lerp(MaterialTheme.colorScheme.primaryContainer, accentColor, 0.35f)
+    val trackOffColor = MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = 0.70f)
+    val trackOnColor = accentColor.copy(alpha = 0.92f)
     val currentSelected = rememberUpdatedState(selected)
     val currentOnSelect = rememberUpdatedState(onSelect)
     val reduceMotion = AppMotion.shouldReduceMotion()
 
+    // Switch track: 52.dp x 32.dp, Thumb: 26.dp x 26.dp, Padding: 3.dp
+    // Travel distance = 52 - 26 - (3 * 2) = 20.dp
     val density = LocalDensity.current
     val isLtr = LocalLayoutDirection.current == LayoutDirection.Ltr
     val dragWidth = with(density) { 20f.dp.toPx() }
+    val paddingPx = with(density) { 3f.dp.toPx() }
     val animationScope = rememberCoroutineScope()
     var didDrag by remember { mutableStateOf(false) }
     var fraction by remember { mutableFloatStateOf(if (selected()) 1f else 0f) }
@@ -79,7 +86,7 @@ fun LiquidToggle(
             valueRange = 0f..1f,
             visibilityThreshold = 0.001f,
             initialScale = 1f,
-            pressedScale = if (reduceMotion) 1f else 1.5f,
+            pressedScale = if (reduceMotion) 1f else 1.05f,
             onDragStarted = {},
             onDragStopped = {
                 if (!enabled) return@DampedDragAnimation
@@ -124,97 +131,110 @@ fun LiquidToggle(
     val trackBackdrop = rememberLayerBackdrop()
 
     Box(
-        modifier.alpha(if (enabled) 1f else 0.38f),
-        contentAlignment = Alignment.CenterStart
+        modifier = modifier.alpha(if (enabled) 1f else 0.38f),
+        contentAlignment = Alignment.Center,
     ) {
         Box(
-            Modifier
-                .layerBackdrop(trackBackdrop)
-                .clip(Capsule())
-                .drawBehind {
-                    val frac = dampedDragAnimation.value
-                    drawRect(lerp(trackColor, accentColor, frac))
-                }
-                .size(64f.dp, 28f.dp)
-        )
+            modifier = Modifier.size(52.dp, 32.dp),
+            contentAlignment = Alignment.CenterStart,
+        ) {
+            Box(
+                Modifier
+                    .layerBackdrop(trackBackdrop)
+                    .clip(Capsule())
+                    .drawBehind {
+                        val frac = dampedDragAnimation.value
+                        val currentTrack = lerp(trackOffColor, trackOnColor, frac)
+                        drawRect(currentTrack)
 
-        val toggleShadow = remember {
-            Shadow(
-                radius = 4f.dp,
-                color = Color.Black.copy(alpha = 0.05f)
+                        // Refined liquid glass rim stroke
+                        val strokeWidth = 1.dp.toPx()
+                        val strokeColor = lerp(
+                            Color.White.copy(alpha = 0.20f),
+                            Color.White.copy(alpha = 0.45f),
+                            frac,
+                        )
+                        drawRoundRect(
+                            color = strokeColor,
+                            topLeft = Offset(strokeWidth / 2f, strokeWidth / 2f),
+                            size = Size(size.width - strokeWidth, size.height - strokeWidth),
+                            cornerRadius = CornerRadius((size.height - strokeWidth) / 2f),
+                            style = Stroke(width = strokeWidth),
+                        )
+                    }
+                    .size(52.dp, 32.dp)
+            )
+
+            val toggleShadow = remember {
+                Shadow(
+                    radius = 3.dp,
+                    color = Color.Black.copy(alpha = 0.22f),
+                )
+            }
+
+            Box(
+                Modifier
+                    .graphicsLayer {
+                        val frac = dampedDragAnimation.value
+                        translationX =
+                            if (isLtr) lerp(paddingPx, paddingPx + dragWidth, frac)
+                            else lerp(-paddingPx, -(paddingPx + dragWidth), frac)
+                    }
+                    .semantics {
+                        role = Role.Switch
+                        toggleableState = ToggleableState(selected())
+                    }
+                    .then(if (isInteractive && enabled) dampedDragAnimation.modifier else Modifier)
+                    .drawBackdrop(
+                        backdrop = rememberCombinedBackdrop(
+                            backdrop,
+                            rememberBackdrop(trackBackdrop) { drawBackdrop ->
+                                val progress = dampedDragAnimation.pressProgress
+                                val scale = lerp(0.85f, 0.95f, progress)
+                                scale(scale, scale) {
+                                    drawBackdrop()
+                                }
+                            }
+                        ),
+                        shape = { Capsule() },
+                        effects = {
+                            val progress = dampedDragAnimation.pressProgress
+                            blur(6f.dp.toPx() * (1f - progress * 0.25f))
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                lens(3.5f.dp.toPx(), 7f.dp.toPx(), chromaticAberration = true)
+                            }
+                        },
+                        highlight = {
+                            val progress = dampedDragAnimation.pressProgress
+                            Highlight.Ambient.copy(
+                                width = Highlight.Ambient.width / 1.5f,
+                                blurRadius = Highlight.Ambient.blurRadius / 1.5f,
+                                alpha = lerp(0.55f, 0.85f, progress),
+                            )
+                        },
+                        shadow = { toggleShadow },
+                        innerShadow = {
+                            val progress = dampedDragAnimation.pressProgress
+                            InnerShadow(
+                                radius = 2.dp,
+                                color = Color.White.copy(alpha = lerp(0.35f, 0.55f, progress)),
+                            )
+                        },
+                        layerBlock = {
+                            scaleX = dampedDragAnimation.scaleX
+                            scaleY = dampedDragAnimation.scaleY
+                            val velocity = (dampedDragAnimation.velocity / 300f).fastCoerceIn(-0.1f, 0.1f)
+                            scaleX = (scaleX + abs(velocity) * 0.15f).fastCoerceIn(0.95f, 1.1f)
+                            scaleY = (scaleY - abs(velocity) * 0.05f).fastCoerceIn(0.95f, 1.05f)
+                        },
+                        onDrawSurface = {
+                            val selection = dampedDragAnimation.value.coerceIn(0f, 1f)
+                            val film = lerp(Color.White.copy(alpha = 0.94f), Color.White, selection)
+                            drawCapsuleTint(film)
+                        }
+                    )
+                    .size(26.dp, 26.dp)
             )
         }
-
-        Box(
-            Modifier
-                .graphicsLayer {
-                    val frac = dampedDragAnimation.value
-                    val padding = 2f.dp.toPx()
-                    translationX =
-                        if (isLtr) lerp(padding, padding + dragWidth, frac)
-                        else lerp(-padding, -(padding + dragWidth), frac)
-                }
-                .semantics {
-                    role = Role.Switch
-                    toggleableState = ToggleableState(selected())
-                }
-                .then(if (isInteractive && enabled) dampedDragAnimation.modifier else Modifier)
-                .drawBackdrop(
-                    backdrop = rememberCombinedBackdrop(
-                        backdrop,
-                        rememberBackdrop(trackBackdrop) { drawBackdrop ->
-                            val progress = dampedDragAnimation.pressProgress
-                            val scaleX = lerp(2f / 3f, 0.75f, progress)
-                            val scaleY = lerp(0f, 0.75f, progress)
-                            scale(scaleX, scaleY) {
-                                drawBackdrop()
-                            }
-                        }
-                    ),
-                    shape = { Capsule() },
-                    effects = {
-                        val progress = dampedDragAnimation.pressProgress
-                        blur(8f.dp.toPx() * (1f - progress))
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                            lens(5f.dp.toPx() * progress, 10f.dp.toPx() * progress, chromaticAberration = true)
-                        }
-                    },
-                    highlight = {
-                        val progress = dampedDragAnimation.pressProgress
-                        Highlight.Ambient.copy(
-                            width = Highlight.Ambient.width / 1.5f,
-                            blurRadius = Highlight.Ambient.blurRadius / 1.5f,
-                            alpha = progress
-                        )
-                    },
-                    shadow = { toggleShadow },
-                    innerShadow = {
-                        val progress = dampedDragAnimation.pressProgress
-                        InnerShadow(
-                            radius = 4f.dp * progress,
-                            alpha = progress
-                        )
-                    },
-                    layerBlock = {
-                        scaleX = dampedDragAnimation.scaleX
-                        scaleY = dampedDragAnimation.scaleY
-                        val velocity = dampedDragAnimation.velocity / 50f
-                        scaleX /= 1f - (velocity * 0.75f).fastCoerceIn(-0.2f, 0.2f)
-                        scaleY *= 1f - (velocity * 0.25f).fastCoerceIn(-0.2f, 0.2f)
-                    },
-                    onDrawSurface = {
-                        val progress = dampedDragAnimation.pressProgress.coerceIn(0f, 1f)
-                        val selection = dampedDragAnimation.value.coerceIn(0f, 1f)
-                        val film = if (currentSelected.value()) {
-                            lerp(unselectedFilm, selectedFilm, selection)
-                                .copy(alpha = 0.58f - 0.16f * progress)
-                        } else {
-                            Color.White
-                        }
-                        drawCapsuleTint(film)
-                    }
-                )
-                .size(40f.dp, 24f.dp)
-        )
     }
 }

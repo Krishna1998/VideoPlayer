@@ -102,7 +102,6 @@ import app.video.player.ui.browser.components.fastScrollGlyph
 import app.video.player.ui.browser.dialogs.RecentSortDialog
 import app.video.player.ui.browser.playlist.PlaylistDetailScreen
 import app.video.player.ui.browser.selection.rememberSelectionManager
-import app.video.player.ui.browser.sheets.PlayLinkSheet
 import app.video.player.ui.browser.states.EmptyState
 import app.video.player.ui.icons.Icon
 import app.video.player.ui.icons.Icons
@@ -167,7 +166,6 @@ object RecentlyPlayedScreen : Screen {
     // FAB visibility for scroll-based hiding
     val isFabVisible = remember { mutableStateOf(true) }
     val isFabExpanded = remember { mutableStateOf(false) }
-    val showLinkDialog = remember { mutableStateOf(false) }
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -412,20 +410,6 @@ object RecentlyPlayedScreen : Screen {
               },
             )
 
-            FloatingActionButtonMenuItem(
-              onClick = {
-                isFabExpanded.value = false
-                showLinkDialog.value = true
-              },
-              icon = { Icon(Icons.RoundedFilled.Link, contentDescription = null) },
-              text = {
-                Text(
-                  text =
-                    androidx.compose.ui.res
-                      .stringResource(app.video.player.R.string.ui_open_link),
-                )
-              },
-            )
           }
         }
       },
@@ -652,12 +636,6 @@ object RecentlyPlayedScreen : Screen {
         )
       }
 
-      // Link dialog
-      PlayLinkSheet(
-        isOpen = showLinkDialog.value,
-        onDismiss = { showLinkDialog.value = false },
-        onPlayLink = { url -> MediaUtils.playFile(url, context, "play_link") },
-      )
 
       FabScrollHelper.FabScrim(
         visible = isFabExpanded.value && !quickPlayFabDirect,
