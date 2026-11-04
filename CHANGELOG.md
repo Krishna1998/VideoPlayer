@@ -4,6 +4,14 @@ These notes are written in plain English and focus on what changed for real use.
 
 ## Unreleased
 
+## 3.0.0
+
+- Release version 3.0.0.
+- **UI & Navigation Cleanups:**
+  - Removed "Open Link" Floating Action Button (FAB) action from File System Browser, Folder List, and Recently Played screens.
+  - Streamlined playlist creation by removing Xtream and URL-based playlist creation options from the playlist action sheet.
+  - Redesigned and refined the liquid glass toggle button shape, ambient highlights, inner shadow, and animation ergonomics.
+
 ## 2.0.0
 
 - Release version 2.0.0.
