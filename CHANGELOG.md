@@ -27,6 +27,8 @@ These notes are written in plain English and focus on what changed for real use.
   - Eliminated translucent layered shadow boxes across cards, panels, and badges for clean, unified surfaces.
   - Fixed blank mini-player clearance spacing on the Preferences screen.
 
+## 3.0.0
+
 - Release version 3.0.0.
 - **UI & Navigation Cleanups:**
   - Removed "Open Link" Floating Action Button (FAB) action from File System Browser, Folder List, and Recently Played screens.
