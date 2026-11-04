@@ -18,7 +18,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -60,6 +60,7 @@ fun TopLeftPlayerControlsLandscape(
     val playlistModeEnabled = viewModel.hasPlaylistSupport()
     val clickEvent = LocalPlayerButtonsClickEvent.current
     val enableLiquidGlass = liquidGlassActive()
+    val titleHeight = playerTitleHeight(45.dp, MaterialTheme.typography.titleMedium.lineHeight)
 
     Column(
       modifier = Modifier.width(IntrinsicSize.Max),
@@ -85,15 +86,15 @@ fun TopLeftPlayerControlsLandscape(
                 }
               },
               isInteractive = playlistModeEnabled,
-              height = 45.dp,
+              height = titleHeight,
               horizontalPadding = MaterialTheme.spacing.medium,
             ) {
               Text(
                 mediaTitle ?: "",
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.weight(1f, fill = false),
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.weight(1f, fill = false).playerTitleMarquee(),
               )
               viewModel.getPlaylistInfo()?.let { playlistInfo ->
                 Text(
@@ -110,7 +111,7 @@ fun TopLeftPlayerControlsLandscape(
             Box(
               modifier =
                 Modifier
-                  .height(45.dp)
+                  .heightIn(min = titleHeight)
                   .clip(CircleShape)
                   .clickable(
                     interactionSource = titleInteractionSource,
@@ -134,19 +135,18 @@ fun TopLeftPlayerControlsLandscape(
                   verticalAlignment = Alignment.CenterVertically,
                   modifier =
                     Modifier
+                      .heightIn(min = titleHeight)
                       .padding(
-                        start = MaterialTheme.spacing.medium,
-                        end = MaterialTheme.spacing.medium,
-                        top = MaterialTheme.spacing.small,
-                        bottom = MaterialTheme.spacing.small,
+                        horizontal = MaterialTheme.spacing.medium,
+                        vertical = 4.dp,
                       ),
                 ) {
                   Text(
                     mediaTitle ?: "",
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.weight(1f, fill = false),
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.weight(1f, fill = false).playerTitleMarquee(),
                   )
                   viewModel.getPlaylistInfo()?.let { playlistInfo ->
                     Text(

@@ -48,6 +48,7 @@ import app.video.player.presentation.Screen
 import app.video.player.ui.icons.Icon
 import app.video.player.ui.icons.Icons
 import app.video.player.ui.player.Debanding
+import app.video.player.ui.player.HwPlusGuard
 import app.video.player.ui.player.MPVProfile
 import app.video.player.ui.player.PlaybackSession
 import app.video.player.ui.player.RendererBackendPolicy
@@ -246,8 +247,14 @@ object DecoderPreferencesScreen : Screen {
                 modifier = Modifier.settingsSearchTarget(R.string.pref_decoder_debanding_title),
                 value = debanding,
                 onValueChange = {
-                  preferences.debanding.set(it)
-                  if (embeddedInPlayer) PlaybackSession.applyDebanding(it)
+                  val select: () -> Unit = {
+                    preferences.debanding.set(it)
+                    if (embeddedInPlayer) PlaybackSession.applyDebanding(it)
+                  }
+                  val blocked =
+                    embeddedInPlayer && it == Debanding.CPU &&
+                      HwPlusGuard.blocks(context, R.string.player_hwplus_cpu_deband, select)
+                  if (!blocked) select()
                 },
                 values = Debanding.entries,
                 enabled = !debandingConfigOwned,

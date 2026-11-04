@@ -343,7 +343,7 @@ internal fun AudioPlayerScreen(
         },
         onMakeDefaultSpeed = { playerPreferences.defaultSpeed.set(it.toFixed(2)) },
         onAddSpeedPreset = { playerPreferences.speedPresets += it.toFixed(2).toString() },
-        onRemoveSpeedPreset = { playerPreferences.speedPresets -= it.toFixed(2).toString() },
+        onRemoveSpeedPreset = { removeSpeedPreset(playerPreferences, it) },
         onResetSpeedPresets = playerPreferences.speedPresets::delete,
         speedPresets = sortedSpeedPresets,
         onResetDefaultSpeed = {
@@ -482,8 +482,6 @@ fun PlayerControls(
     } else {
       Modifier
     }
-  // Null until repeated seekbar updates start a scrub; a single tap never pauses playback.
-  var seekbarScrubWasPaused by remember { mutableStateOf<Boolean?>(null) }
   val mpvSeeking by PlaybackSession.propBoolean["seeking"].collectAsStateWithLifecycle()
   val isPlayerSeeking = isSeeking || (mpvSeeking ?: false)
   // mpv can remain "seeking" until its cache refills. Only active scrubbing suppresses the spinner;
@@ -682,7 +680,7 @@ fun PlayerControls(
     (isBrightnessSliderShown && showBrightnessGestureOverlay) ||
       (isVolumeSliderShown && showVolumeGestureOverlay)
   val gestureSeekUpdate by viewModel.playerUpdate.collectAsState()
-  // Swipe-seek pauses playback internally; the auto-hide timer should still run through it.
+  // The auto-hide timer keeps running through a swipe-seek, even while paused.
   val isPlayingForAutoHide = paused == false || gestureSeekUpdate is PlayerUpdates.HorizontalSeek
 
   LaunchedEffect(
@@ -870,7 +868,7 @@ fun PlayerControls(
             onSpeedChange = { PlaybackSession.setPropertyFloat("speed", it.toFixed(2)) },
             onMakeDefaultSpeed = { playerPreferences.defaultSpeed.set(it.toFixed(2)) },
             onAddSpeedPreset = { playerPreferences.speedPresets += it.toFixed(2).toString() },
-            onRemoveSpeedPreset = { playerPreferences.speedPresets -= it.toFixed(2).toString() },
+            onRemoveSpeedPreset = { removeSpeedPreset(playerPreferences, it) },
             onResetSpeedPresets = playerPreferences.speedPresets::delete,
             speedPresets = tvSortedSpeedPresets,
             onResetDefaultSpeed = {
@@ -2168,28 +2166,14 @@ fun PlayerControls(
               duration = seekbarDuration,
               remaining = effectiveRemaining,
               onValueChange = {
-                // Seeker emits one value and then finishes for a tap. Defer decoder preview
-                // and pausing until another value arrives, so a tap commits only one seek.
-                if (isSeeking) {
-                  if (seekbarScrubWasPaused == null) {
-                    val alreadyPaused = paused ?: false
-                    seekbarScrubWasPaused = alreadyPaused
-                    if (!alreadyPaused) {
-                      viewModel.pause()
-                    }
-                  }
-                  // Stream scrubbing previews the UI only; local files may preview decoder frames.
-                  viewModel.seekPreviewTo(it)
-                }
                 isSeeking = true
                 resetControlsTimestamp = System.currentTimeMillis()
+                viewModel.scrubTo(it)
               },
               onValueChangeFinished = { targetPosition ->
-                val resumePlayback = seekbarScrubWasPaused == false
-                seekbarScrubWasPaused = null
                 isSeeking = false
                 resetControlsTimestamp = System.currentTimeMillis()
-                viewModel.seekFromScrub(targetPosition, resumePlayback = resumePlayback)
+                viewModel.seekFromScrub(targetPosition)
                 viewModel.showControls()
               },
               timersInverted = Pair(false, invertDuration),
@@ -2391,7 +2375,7 @@ fun PlayerControls(
       onSpeedChange = { PlaybackSession.setPropertyFloat("speed", it.toFixed(2)) },
       onMakeDefaultSpeed = { playerPreferences.defaultSpeed.set(it.toFixed(2)) },
       onAddSpeedPreset = { playerPreferences.speedPresets += it.toFixed(2).toString() },
-      onRemoveSpeedPreset = { playerPreferences.speedPresets -= it.toFixed(2).toString() },
+      onRemoveSpeedPreset = { removeSpeedPreset(playerPreferences, it) },
       onResetSpeedPresets = playerPreferences.speedPresets::delete,
       speedPresets = sortedSpeedPresets,
       onResetDefaultSpeed = {
@@ -3006,5 +2990,15 @@ private fun CustomControlButton(
       )
     }
   }
+}
+
+private fun removeSpeedPreset(playerPreferences: PlayerPreferences, speedToRemove: Float) {
+  val current = playerPreferences.speedPresets.get()
+  playerPreferences.speedPresets.set(
+    current.filterNot { str ->
+      val f = str.toFloatOrNull()
+      f != null && kotlin.math.abs(f - speedToRemove) < 0.001f
+    }.toSet(),
+  )
 }
 

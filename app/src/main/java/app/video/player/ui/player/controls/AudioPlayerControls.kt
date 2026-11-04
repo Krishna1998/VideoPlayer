@@ -1470,7 +1470,29 @@ fun AudioPlayerControls(
                 Modifier
                   .height(30.dp)
                   .clip(CircleShape)
-                  .clickable(enabled = !speedConfigOwned, onClick = { onOpenSheet(Sheets.PlaybackSpeed) }),
+                  .combinedClickable(
+                    enabled = !speedConfigOwned,
+                    onClick = {
+                      val current = playbackSpeed ?: 1f
+                      val nextSpeed =
+                        when {
+                          current < 0.999f -> 1.00f
+                          current < 1.249f -> 1.25f
+                          current < 1.499f -> 1.50f
+                          current < 1.749f -> 1.75f
+                          current < 1.999f -> 2.00f
+                          else -> 1.00f
+                        }
+                      val isAudiobook = PlaybackSession.state.value.currentItem?.audiobook != null
+                      if (isAudiobook) {
+                        AudiobookPlayback.setSpeed(nextSpeed)
+                      } else {
+                        PlaybackSession.setPropertyFloat("speed", nextSpeed)
+                      }
+                      viewModel.playerUpdate.value = PlayerUpdates.DynamicSpeedControl(nextSpeed)
+                    },
+                    onLongClick = { onOpenSheet(Sheets.PlaybackSpeed) },
+                  ),
             ) {
               Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -1988,7 +2010,7 @@ fun AudioPlayerControls(
         committedPosition = timelinePosition,
         duration = timelineDuration.coerceAtLeast(1f),
         remaining = effectiveRemaining,
-        onValueChange = { value -> if (!isAudiobook) viewModel.seekPreviewTo(value) },
+        onValueChange = { value -> if (!isAudiobook) viewModel.scrubTo(value) },
         onValueChangeFinished = viewModel::seekAudioTo,
         timersInverted = Pair(false, invertDuration),
         durationTimerOnCLick = { playerPreferences.invertDuration.set(!invertDuration) },

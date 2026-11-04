@@ -202,16 +202,15 @@ fun PlaybackSpeedSheet(
 
         // Add / Remove Preset Buttons
         val isCurrentSpeedSaved = speedPresets.any { kotlin.math.abs(it - speed) < 0.001f }
-        val isDefaultPreset = defaultPresets.any { kotlin.math.abs(it - speed) < 0.001f }
 
-        if (isCurrentSpeedSaved && !isDefaultPreset) {
+        if (isCurrentSpeedSaved) {
           PlayerSheetAction(
             icon = Icons.RoundedFilled.Remove,
             label = stringResource(R.string.ui_remove),
             onClick = { onRemoveSpeedPreset(speed) },
             enabled = speedControlEnabled,
           )
-        } else if (!isCurrentSpeedSaved) {
+        } else {
           PlayerSheetAction(
             icon = Icons.RoundedFilled.Add,
             label = stringResource(R.string.ui_add),
