@@ -81,6 +81,7 @@ import app.video.player.ui.theme.ConnectedLayout
 import app.video.player.ui.securefolder.SecureFolderSettingsScreen
 import app.video.player.ui.theme.LocalEmphasizedTypography
 import app.video.player.ui.theme.rememberConnectedShape
+import app.video.player.ui.browser.LocalNavigationBarHeight
 import app.video.player.ui.utils.LocalBackStack
 import app.video.player.ui.utils.navigateTo
 import app.video.player.ui.utils.LocalShowSettingsBackArrow
@@ -223,7 +224,9 @@ object PreferencesScreen : Screen {
             .fillMaxSize()
             .tvContentFocus()
             .padding(padding),
-        contentPadding = PaddingValues(bottom = 28.dp),
+        // Keep the settings page full-height and let its list scroll clear of any
+        // transient mini-player overlay without clipping the entire screen.
+        contentPadding = PaddingValues(bottom = 28.dp + LocalNavigationBarHeight.current),
         verticalArrangement = Arrangement.spacedBy(4.dp),
       ) {
         item {

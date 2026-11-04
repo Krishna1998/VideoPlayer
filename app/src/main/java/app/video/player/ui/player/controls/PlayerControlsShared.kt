@@ -26,6 +26,7 @@ import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -34,6 +35,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
@@ -56,9 +58,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import app.video.player.R
 import app.video.player.preferences.AdvancedPreferences
@@ -71,8 +75,10 @@ import app.video.player.ui.liquidglass.LiquidIconButton
 import app.video.player.ui.liquidglass.LiquidPillButton
 import app.video.player.ui.cast.CastPlayerButton
 import app.video.player.ui.icons.Icons
+import app.video.player.ui.player.AudiobookPlayback
 import app.video.player.ui.player.Panels
 import app.video.player.ui.player.PlayerActivity
+import app.video.player.ui.player.PlayerUpdates
 import app.video.player.ui.player.PlayerViewModel
 import app.video.player.ui.player.clip.ClipOverlayView
 import app.video.player.ui.player.Sheets
@@ -96,6 +102,15 @@ import org.koin.compose.koinInject
 import kotlin.math.abs
 import kotlin.math.roundToInt
 import app.video.player.ui.icons.Icon as AppSymbolIcon
+
+@Composable
+internal fun playerTitleHeight(minHeight: Dp, lineHeight: TextUnit): Dp =
+  with(LocalDensity.current) { maxOf(minHeight, lineHeight.toDp() + 8.dp) }
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+internal fun Modifier.playerTitleMarquee(): Modifier =
+  if (AppMotion.playerReducedMotion()) this else basicMarquee(iterations = Int.MAX_VALUE)
 
 @Composable
 fun RenderPlayerButton(
@@ -145,6 +160,7 @@ fun RenderPlayerButton(
 
     PlayerButton.VIDEO_TITLE -> {
       val playlistModeEnabled = viewModel.hasPlaylistSupport()
+      val titleHeight = playerTitleHeight(buttonSize, MaterialTheme.typography.bodyMedium.lineHeight)
 
       if (enableLiquidGlass) {
         LiquidPillButton(
@@ -155,7 +171,7 @@ fun RenderPlayerButton(
             }
           },
           isInteractive = playlistModeEnabled,
-          height = buttonSize,
+          height = titleHeight,
           horizontalPadding = 12.dp,
         ) {
           Text(
@@ -163,7 +179,7 @@ fun RenderPlayerButton(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.weight(1f, fill = false),
+            modifier = Modifier.weight(1f, fill = false).playerTitleMarquee(),
           )
           viewModel.getPlaylistInfo()?.let { playlistInfo ->
             Text(
@@ -199,7 +215,7 @@ fun RenderPlayerButton(
             },
           modifier =
             Modifier
-              .height(buttonSize)
+              .heightIn(min = titleHeight)
               .clip(CircleShape)
               .clickable(
                 interactionSource = titleInteractionSource,
@@ -218,9 +234,10 @@ fun RenderPlayerButton(
             verticalAlignment = Alignment.CenterVertically,
             modifier =
               Modifier
+                .heightIn(min = titleHeight)
                 .padding(
                   horizontal = MaterialTheme.spacing.extraSmall,
-                  vertical = MaterialTheme.spacing.small,
+                  vertical = 4.dp,
                 ),
           ) {
             Text(
@@ -228,7 +245,7 @@ fun RenderPlayerButton(
               maxLines = 1,
               overflow = TextOverflow.Ellipsis,
               style = MaterialTheme.typography.bodyMedium,
-              modifier = Modifier.weight(1f, fill = false),
+              modifier = Modifier.weight(1f, fill = false).playerTitleMarquee(),
             )
             viewModel.getPlaylistInfo()?.let { playlistInfo ->
               Text(
@@ -268,15 +285,39 @@ fun RenderPlayerButton(
     PlayerButton.PLAYBACK_SPEED -> {
       val configOwned = isMpvOptionOwnedByConfig("speed")
       val disabledColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+      val onCycleSpeed = {
+        if (!configOwned) {
+          clickEvent()
+          val nextSpeed =
+            when {
+              playbackSpeed < 0.999f -> 1.00f
+              playbackSpeed < 1.249f -> 1.25f
+              playbackSpeed < 1.499f -> 1.50f
+              playbackSpeed < 1.749f -> 1.75f
+              playbackSpeed < 1.999f -> 2.00f
+              else -> 1.00f
+            }
+          val isAudiobook = PlaybackSession.state.value.currentItem?.audiobook != null
+          if (isAudiobook) {
+            AudiobookPlayback.setSpeed(nextSpeed)
+          } else {
+            PlaybackSession.setPropertyFloat("speed", nextSpeed)
+          }
+          viewModel.playerUpdate.value = PlayerUpdates.DynamicSpeedControl(nextSpeed)
+        }
+      }
+      val onOpenSpeedSheet = {
+        if (!configOwned) {
+          clickEvent()
+          onOpenSheet(Sheets.PlaybackSpeed)
+        }
+      }
       if (isSpeedNonOne) {
         if (enableLiquidGlass) {
           LiquidPillButton(
-            onClick = {
-              if (!configOwned) {
-                clickEvent()
-                onOpenSheet(Sheets.PlaybackSpeed)
-              }
-            },
+            onClick = onCycleSpeed,
+            onLongClick = onOpenSpeedSheet,
+            onLongClickLabel = stringResource(R.string.btn_label_speed),
             isInteractive = !configOwned,
             height = buttonSize,
             horizontalPadding = MaterialTheme.spacing.small,
@@ -323,14 +364,13 @@ fun RenderPlayerButton(
               Modifier
                 .height(buttonSize)
                 .clip(CircleShape)
-                .clickable(
+                .combinedClickable(
                   enabled = !configOwned,
                   interactionSource = remember { MutableInteractionSource() },
                   indication = ripple(bounded = true),
-                  onClick = {
-                    clickEvent()
-                    onOpenSheet(Sheets.PlaybackSpeed)
-                  },
+                  onClick = onCycleSpeed,
+                  onLongClick = onOpenSpeedSheet,
+                  onLongClickLabel = stringResource(R.string.btn_label_speed),
                 ),
           ) {
             Row(
@@ -364,14 +404,19 @@ fun RenderPlayerButton(
         if (enableLiquidGlass) {
           LiquidIconButton(
             icon = Icons.RoundedFilled.Speed,
-            onClick = { onOpenSheet(Sheets.PlaybackSpeed) },
+            onClick = onCycleSpeed,
+            onLongClick = onOpenSpeedSheet,
+            title = stringResource(R.string.btn_label_speed),
             tint = if (configOwned) disabledColor else if (borderless) controlColor else MaterialTheme.colorScheme.onSurface,
             size = buttonSize,
           )
         } else {
           ControlsButton(
             icon = Icons.RoundedFilled.Speed,
-            onClick = { onOpenSheet(Sheets.PlaybackSpeed) },
+            onClick = onCycleSpeed,
+            onLongClick = onOpenSpeedSheet,
+            onLongClickLabel = stringResource(R.string.btn_label_speed),
+            title = stringResource(R.string.btn_label_speed),
             color = if (borderless) controlColor else MaterialTheme.colorScheme.onSurface,
             enabled = !configOwned,
             modifier = Modifier.size(buttonSize),

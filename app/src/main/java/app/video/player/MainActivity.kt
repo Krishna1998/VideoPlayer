@@ -745,6 +745,8 @@ open class MainActivity : AppCompatActivity() {
               backStack = typedBackstack,
               opaqueFrom = app.video.player.ui.preferences.PreferencesScreen,
               tvSafeArea = true,
+              bottomOverlayClearance = NavigationBarState.miniPlayerClearance,
+              bottomOverlayExempt = MainScreen,
               onBack = {
                 if (typedBackstack.size <= 1 || !typedBackstack.popSafely()) {
                   this@MainActivity.finish()

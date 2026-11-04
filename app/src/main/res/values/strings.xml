@@ -280,8 +280,6 @@
   <string name="pref_player_gestures_volume">Volume gestures</string>
   <string name="pref_player_gestures_pinch_to_zoom">Pinch to zoom</string>
   <string name="pref_player_gestures_pinch_to_zoom_subtitles">Pinch to zoom subtitles</string>
-  <string name="pref_player_gestures_two_finger_speed_swipe">Two-finger swipe for speed</string>
-  <string name="pref_player_gestures_two_finger_speed_swipe_summary">Swipe up or down with two fingers to change playback speed by 0.25x, from 0.5x to 4x</string>
   <string name="pref_subtitles_secondary_pinch_zoom">Pinch zooms secondary subtitle</string>
   <string name="pref_subtitles_secondary_pinch_zoom_summary">When pinching the primary subtitle, also scale the secondary subtitle</string>
   <string name="pref_player_gestures_swipe_subtitles_to_seek_dialog">Swipe subtitles to seek dialog</string>
@@ -1160,6 +1158,9 @@
   <string name="player_horizontal_flip_off">Horizontal flip off</string>
   <string name="player_vertical_flip_on">Vertical flip on</string>
   <string name="player_vertical_flip_off">Vertical flip off</string>
+  <string name="player_hwplus_unsupported">%1$s isn\'t supported in HW+ mode. Switch to HW or SW decoding to use it.</string>
+  <string name="player_hwplus_use_hw">Use HW</string>
+  <string name="player_hwplus_cpu_deband">CPU Debanding</string>
   <string name="btn_label_back">Back Arrow</string>
   <string name="btn_label_title">Video Title</string>
   <string name="btn_label_bookmarks">Chapters / Bookmarks</string>
