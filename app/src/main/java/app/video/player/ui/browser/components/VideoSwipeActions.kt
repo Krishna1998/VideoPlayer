@@ -20,6 +20,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -217,7 +218,7 @@ internal fun rememberVideoSwipeActions(
           },
         ) {
           if (busy) CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
-          else Text(stringResource(R.string.delete), color = MaterialTheme.colorScheme.error)
+          else Text(stringResource(R.string.delete), color = Color.Black)
         }
       },
       dismissButton = {
