@@ -4,9 +4,9 @@ These notes are written in plain English and focus on what changed for real use.
 
 ## Unreleased
 
-## 3.0.1
+## 3.3.3
 
-- Release version 3.0.1.
+- Release version 3.3.3.
 - **Playback Controls & Seeking Performance:**
   - Refactored playback seeking logic to mirror mpv-android: seeks are sent directly to mpv without artificial delay or client-side coalescing locks.
   - Seekbar scrubbing now tracks live positions in 0.5s intervals, significantly reducing decoder thrashing.
