@@ -16,7 +16,7 @@ These notes are written in plain English and focus on what changed for real use.
   - Playback speed button is now directly clickable to cycle speed in increments of 0.25x between 1.00x and 2.00x (long press opens the speed sheet).
   - All playback speed presets in the speed sheet can now be edited or removed.
 - **HW+ Decoding Safety Guard:**
-  - Added warning toast and fallback action when attempting features unsupported by HW+ (direct MediaCodec) decoding, such as horizontal flip/mirroring, vertical flip, CPU debanding, and ArtCNN shader mode.
+  - Added warning toast with interactive action button and automatic fallback to switch to HW decoding when attempting features unsupported by HW+ (direct MediaCodec) decoding, such as horizontal flip/mirroring, vertical flip, CPU debanding, and ArtCNN shader mode.
 - **Gesture Cleanup:**
   - Removed two-finger speed swipe gesture to eliminate conflicts with zoom and volume/brightness interactions.
 - **PiP & Orientation Enhancements:**
