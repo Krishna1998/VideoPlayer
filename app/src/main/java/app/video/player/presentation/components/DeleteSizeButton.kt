@@ -21,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -99,7 +100,7 @@ fun DeleteSizeButton(
       shape = actionShape,
       colors = ButtonDefaults.textButtonColors(
         containerColor = MaterialTheme.colorScheme.error,
-        contentColor = MaterialTheme.colorScheme.onError,
+        contentColor = Color.Black,
       ),
       contentPadding = ButtonDefaults.TextButtonContentPadding,
     ) {
@@ -107,8 +108,8 @@ fun DeleteSizeButton(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically,
       ) {
-        Icon(Icons.RoundedFilled.Delete, contentDescription = null, modifier = Modifier.size(18.dp))
-        Text(stringResource(R.string.delete), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, maxLines = 1, softWrap = false)
+        Icon(Icons.RoundedFilled.Delete, contentDescription = null, modifier = Modifier.size(18.dp), tint = Color.Black)
+        Text(stringResource(R.string.delete), color = Color.Black, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, maxLines = 1, softWrap = false)
       }
     }
   }

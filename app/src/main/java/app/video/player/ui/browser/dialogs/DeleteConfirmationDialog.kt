@@ -28,6 +28,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.ui.graphics.Color
 import app.video.player.presentation.components.AppDialogTextButton as TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -167,13 +168,14 @@ fun DeleteConfirmationDialog(
           colors =
             ButtonDefaults.buttonColors(
               containerColor = MaterialTheme.colorScheme.error,
-              contentColor = MaterialTheme.colorScheme.onError,
+              contentColor = Color.Black,
             ),
           shape = MaterialTheme.shapes.extraLarge,
         ) {
           Icon(
             imageVector = Icons.RoundedFilled.Delete,
             contentDescription = null,
+            tint = Color.Black,
             modifier = Modifier.size(18.dp),
           )
           Spacer(modifier = Modifier.width(6.dp))
@@ -181,6 +183,7 @@ fun DeleteConfirmationDialog(
             text =
               androidx.compose.ui.res
                 .stringResource(app.video.player.R.string.delete),
+            color = Color.Black,
             fontWeight = FontWeight.Bold,
           )
         }
