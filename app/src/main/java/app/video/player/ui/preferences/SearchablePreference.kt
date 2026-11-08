@@ -1054,14 +1054,6 @@ object SearchablePreferences {
       )
       add(
         SearchablePreference(
-          titleRes = R.string.pref_audio_orientation_title,
-          keywords = listOf("audio", "music", "orientation", "portrait", "landscape", "auto", "rotate"),
-          category = "Audio",
-          screen = AudioPreferencesScreen,
-        ),
-      )
-      add(
-        SearchablePreference(
           titleRes = R.string.pref_preferred_languages,
           keywords = listOf("language", "preferred", "subtitle", "audio", "locale", "code"),
           category = "Audio",
@@ -1100,33 +1092,6 @@ object SearchablePreferences {
           titleRes = R.string.pref_ignore_audio_focus_title,
           summaryRes = R.string.pref_ignore_audio_focus_summary,
           keywords = listOf("audio", "focus", "ignore", "mix", "simultaneous", "音频焦点", "同时播放"),
-          category = "Audio",
-          screen = AudioPreferencesScreen,
-        ),
-      )
-      add(
-        SearchablePreference(
-          titleRes = R.string.pref_audio_background_playback_title,
-          summaryRes = R.string.pref_audio_background_playback_summary,
-          keywords = listOf("background", "playback", "audio", "service", "music"),
-          category = "Audio",
-          screen = AudioPreferencesScreen,
-        ),
-      )
-      add(
-        SearchablePreference(
-          titleRes = R.string.pref_audio_mini_player_track_switching_title,
-          summaryRes = R.string.pref_audio_mini_player_track_switching_summary,
-          keywords = listOf("mini player", "background", "switch", "song", "audio", "music", "change"),
-          category = "Audio",
-          screen = AudioPreferencesScreen,
-        ),
-      )
-      add(
-        SearchablePreference(
-          titleRes = R.string.pref_autoplay_next_audio_title,
-          summaryRes = R.string.pref_autoplay_next_audio_summary,
-          keywords = listOf("autoplay", "next", "audio", "music", "advance", "continuous"),
           category = "Audio",
           screen = AudioPreferencesScreen,
         ),
@@ -1482,26 +1447,7 @@ object SearchablePreferences {
         category = "Audio",
         screen = AudioPreferencesScreen,
         anchorItemIndex = 1,
-        SearchEntrySpec(R.string.ui_include_audio_files, listOf("audio", "files", "browser", "folders", "library")),
-        SearchEntrySpec(R.string.ui_minimum_audio_duration, listOf("audio", "minimum", "duration", "short", "filter")),
-      )
-      addSearchEntries(
-        category = "Audio",
-        screen = AudioPreferencesScreen,
-        anchorItemIndex = 3,
-        SearchEntrySpec(R.string.pref_audio_ambient_mode_title, listOf("audio", "ambient", "background", "visualizer")),
-        SearchEntrySpec(R.string.pref_audio_wavy_seekbar_title, listOf("audio", "wavy", "seekbar", "visualizer", "animation", "wave")),
-        SearchEntrySpec(R.string.pref_audio_animated_artwork_title, listOf("audio", "music", "animated", "artwork", "album", "cover", "apple")),
-      )
-      addSearchEntries(
-        category = "Audio",
-        screen = AudioPreferencesScreen,
-        anchorItemIndex = 5,
-        SearchEntrySpec(R.string.pref_autoplay_next_audio_title, listOf("autoplay", "next", "audio", "music")),
         SearchEntrySpec(R.string.pref_audio_drc_title, listOf("audio", "dynamic range", "compression", "drc", "loudness")),
-        SearchEntrySpec(R.string.pref_lyrics_auto_translate, listOf("lyrics", "translation", "automatic", "language")),
-        SearchEntrySpec(R.string.pref_lyrics_target_language, listOf("lyrics", "translation", "target", "language")),
-        SearchEntrySpec(R.string.pref_lyrics_display_mode, listOf("lyrics", "translation", "display", "style")),
       )
 
       addSearchEntries(
@@ -1693,7 +1639,6 @@ object SearchablePreferences {
         keywords =
           listOf(
             "preferred language delay pitch correction channels volume boost normalization drc",
-            "audio player background playback orientation ambient wavy seekbar minimum duration",
           ),
         category = "Audio",
         screen = AudioPreferencesScreen,

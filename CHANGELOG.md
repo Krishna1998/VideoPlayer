@@ -32,6 +32,12 @@ These notes are written in plain English and focus on what changed for real use.
 - **Removed Music Section:**
   - Completely removed the dedicated Music library tab and destination from the bottom navigation bar and TV side navigation rail.
   - Removed local music library scanning, artist image caching, and music tab customization settings.
+  - Streamlined Audio Preferences strictly for video audio playback and decoding (retaining preferred audio languages, pitch correction, volume normalization, spatial audio, DRC, audio focus, audio channels, and volume boost cap).
+  - Removed audio player appearance settings (audio player orientation, audio ambient mode, animated album artwork, wavy seekbar) from audio preferences.
+  - Removed media library section and audio file inclusion/duration filters from audio preferences.
+  - Removed audio player background playback, mini-player track switching, and autoplay next audio toggles from audio preferences.
+  - Removed online lyrics auto-fetching, lyrics translation & romanization settings from audio preferences.
+  - Cleaned up in-settings search indexing and search navigation anchors across the application.
   - Streamlined the application strictly for video playback.
 - **UI & Gestures:**
   - Refined player layout overflow with `FlowRow` wrapping for action buttons, custom layout positioning for landscape controls, and unified 8dp section spacing accounting for glass shadow padding.
