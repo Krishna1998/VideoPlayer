@@ -11,6 +11,7 @@ package app.video.player.ui.preferences
 
 import androidx.annotation.StringRes
 import app.video.player.R
+import app.video.player.domain.motion.MotionInterpolation
 import app.video.player.presentation.Screen
 import app.video.player.ui.background.BackgroundType
 import app.video.player.ui.background.RandomInterval
@@ -1447,6 +1448,17 @@ object SearchablePreferences {
         SearchEntrySpec(R.string.pref_decoder_profile_title, listOf("mpv", "profile", "fast", "quality", "decoder")),
         SearchEntrySpec(R.string.pref_decoder_gpu_next_enable_title, listOf("gpu-next", "vulkan", "decoder", "enable"), R.string.pref_decoder_gpu_next_title),
       )
+      if (MotionInterpolation.isBuildSupported) {
+        addSearchEntries(
+          category = "Decoder",
+          screen = DecoderPreferencesScreen,
+          anchorItemIndex = 3,
+          SearchEntrySpec(R.string.motion_title, listOf("motion", "interpolation", "memc", "smooth", "fps", "60fps", "frame")),
+          SearchEntrySpec(R.string.motion_target_title, listOf("target", "fps", "auto", "refresh rate", "motion"), R.string.motion_title),
+          SearchEntrySpec(R.string.motion_target_fps_title, listOf("target", "fps", "custom", "motion"), R.string.motion_title),
+          SearchEntrySpec(R.string.motion_switch_display_title, listOf("refresh rate", "display", "hz", "motion"), R.string.motion_title),
+        )
+      }
 
       addSearchEntries(
         category = "Audio",

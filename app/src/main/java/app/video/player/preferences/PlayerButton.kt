@@ -50,6 +50,7 @@ enum class PlayerButton(
   BACKGROUND_PLAYBACK(Icons.RoundedFilled.Headset),
   AMBIENT_MODE(Icons.RoundedFilled.BlurOff),
   POST_PROCESSING(Icons.RoundedFilled.PostProcessing),   // lens aperture + sparkle
+  MOTION_INTERPOLATION(Icons.RoundedFilled.MotionInterpolation),
   TIME_NETWORK(Icons.RoundedFilled.AccessTime),
   EQUALIZER(Icons.RoundedFilled.Equalizer),
   SCOPES(Icons.RoundedFilled.Mystery),
@@ -102,6 +103,7 @@ fun getPlayerButtonLabel(button: PlayerButton): String =
     PlayerButton.BACKGROUND_PLAYBACK -> stringResource(R.string.btn_label_background_playback)
     PlayerButton.AMBIENT_MODE -> stringResource(R.string.btn_label_ambient)
     PlayerButton.POST_PROCESSING -> stringResource(R.string.btn_label_post_processing)
+    PlayerButton.MOTION_INTERPOLATION -> stringResource(R.string.btn_label_motion_interpolation)
     PlayerButton.TIME_NETWORK -> stringResource(R.string.btn_label_time_network)
     PlayerButton.EQUALIZER -> stringResource(R.string.btn_label_equalizer)
     PlayerButton.SCOPES -> stringResource(R.string.btn_label_scopes)

@@ -173,6 +173,7 @@ enum class Sheets {
   LyricsProvider,
   Scopes,
   PostProcessingConfig,
+  MotionInterpolation,
   BookmarkEditor,
   AudiobookRewind,
   AudiobookSleepTimer,

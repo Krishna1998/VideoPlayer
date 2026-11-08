@@ -4,8 +4,13 @@ These notes are written in plain English and focus on what changed for real use.
 
 ## Unreleased
 
+- **Motion Interpolation:**
+  - Added GPU motion interpolation feature support with dedicated controller and live playback statistics readout.
+  - Added `MotionInterpolationSheet` for configuring target FPS (Auto, 24, 30, 60, custom), matching display refresh rate, and viewing real-time synthesized frames and GPU compute timings.
+  - Added `PlayerButton.MOTION_INTERPOLATION` quick toggle and configuration button to customizable player controls.
+  - Added `MotionInterpolationPreferences` in Decoder settings with search indexing support.
 - **Build, Dependencies & Diagnostics:**
-  - Upgraded mpvlib to 1.1.6.
+  - Upgraded mpvlib to 1.1.7.
   - Replaced deprecated file-watcher constructors in `VisibleDirectoryWatcher` with API 29+ `File` constructor and legacy fallback for Android 8/9.
   - Retained explicit device credential fallback in `DeviceCredentialPrompt` for Android 10 and older.
   - Used public OkHttp telemetry hooks and excluded automatic instrumentation to preserve OkHttp 5.5 compatibility.

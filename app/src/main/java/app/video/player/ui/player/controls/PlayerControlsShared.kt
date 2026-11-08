@@ -1609,6 +1609,81 @@ fun RenderPlayerButton(
       }
     }
 
+    PlayerButton.MOTION_INTERPOLATION -> {
+      val motionState by viewModel.motionInterpolation.state.collectAsState()
+      val motionEnabled = motionState.config.enabled
+      val blocked = !motionEnabled && motionState.availability.blocksEnabling
+      val motionColor =
+        when {
+          motionState.running -> MaterialTheme.colorScheme.primary
+          motionEnabled -> MaterialTheme.colorScheme.tertiary
+          blocked -> (if (borderless) controlColor else MaterialTheme.colorScheme.onSurface).copy(alpha = 0.38f)
+          borderless -> controlColor
+          else -> MaterialTheme.colorScheme.onSurface
+        }
+      val handleToggle = {
+        clickEvent()
+        viewModel.motionInterpolation.toggle()
+        if (blocked) onOpenSheet(Sheets.MotionInterpolation)
+      }
+      val handleConfigure = {
+        clickEvent()
+        onOpenSheet(Sheets.MotionInterpolation)
+      }
+      if (enableLiquidGlass) {
+        LiquidIconButton(
+          icon = Icons.RoundedFilled.MotionInterpolation,
+          onClick = handleToggle,
+          onLongClick = handleConfigure,
+          tint = motionColor,
+          size = buttonSize,
+          iconSize = 24.dp,
+        )
+      } else {
+        @OptIn(ExperimentalFoundationApi::class)
+        Surface(
+          shape = CircleShape,
+          color =
+            if (borderless) {
+              Color.Transparent
+            } else {
+              playerButtonContainerColor()
+            },
+          contentColor = motionColor,
+          border =
+            if (borderless) {
+              null
+            } else {
+              BorderStroke(
+                1.dp,
+                playerButtonBorderColor(),
+              )
+            },
+          modifier =
+            Modifier
+              .size(buttonSize)
+              .clip(CircleShape)
+              .combinedClickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = ripple(bounded = true),
+                onClick = handleToggle,
+                onLongClick = handleConfigure,
+              ),
+        ) {
+          Box(contentAlignment = Alignment.Center) {
+            AppSymbolIcon(
+              imageVector = Icons.RoundedFilled.MotionInterpolation,
+              contentDescription =
+                androidx.compose.ui.res
+                  .stringResource(app.video.player.R.string.btn_label_motion_interpolation),
+              tint = motionColor,
+              modifier = Modifier.size(24.dp),
+            )
+          }
+        }
+      }
+    }
+
     PlayerButton.TIME_NETWORK -> {
       val clockFormat by playerPreferences.clockFormat.collectAsState()
       val stat by rememberTimeAndNetworkStat(clockFormat)

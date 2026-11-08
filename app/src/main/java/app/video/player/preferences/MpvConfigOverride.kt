@@ -165,6 +165,8 @@ enum class MpvConfigOverride(
         "hr-seek-framedrop",
         "video-sync",
         "framedrop",
+        "motion-interpolation",
+        "display-fps-override",
       ),
   ),
   NETWORK_BUFFERING(

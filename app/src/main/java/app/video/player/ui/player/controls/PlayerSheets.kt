@@ -588,6 +588,13 @@ fun PlayerSheets(
       )
     }
 
+    Sheets.MotionInterpolation -> {
+      app.video.player.ui.player.controls.components.sheets.MotionInterpolationSheet(
+        controller = viewModel.motionInterpolation,
+        onDismissRequest = onDismissRequest,
+      )
+    }
+
     Sheets.Equalizer -> {
       val equalizerState by viewModel.equalizerState.collectAsState()
       app.video.player.ui.player.controls.components.sheets.EqualizerSheet(
