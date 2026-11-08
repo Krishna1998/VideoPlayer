@@ -381,24 +381,6 @@ val savePositionOnQuit by preferences.savePositionOnQuit.collectAsState()
                 PreferenceDivider()
               }
 
-              DevicePreference(R.string.pref_enable_video_mini_player_title) {
-                val enableVideoMiniPlayer by preferences.enableVideoMiniPlayer.collectAsState()
-                SwitchPreference(
-                  modifier = Modifier.settingsSearchTarget(R.string.pref_enable_video_mini_player_title),
-                  value = enableVideoMiniPlayer,
-                  onValueChange = preferences.enableVideoMiniPlayer::set,
-                  title = { Text(stringResource(R.string.pref_enable_video_mini_player_title)) },
-                  summary = {
-                    Text(
-                      stringResource(R.string.pref_enable_video_mini_player_summary),
-                      color = MaterialTheme.colorScheme.outline,
-                    )
-                  },
-                )
-
-                PreferenceDivider()
-              }
-
               val keepScreenOnWhenPaused by preferences.keepScreenOnWhenPaused.collectAsState()
               SwitchPreference(
                 modifier = Modifier.settingsSearchTarget(R.string.pref_player_keep_screen_on_when_paused_title),
