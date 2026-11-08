@@ -481,13 +481,8 @@ class ThumbnailRepository(
   ) {
     val videoSequence = videos.asSequence()
     val filteredVideos =
-      (
-        if (appearancePreferences.showNetworkThumbnails.get()) {
-          videoSequence
-        } else {
-          videoSequence.filterNot { isNetworkUrl(it.path) }
-        }
-      ).take(maxFolderBatchSize)
+      videoSequence.filterNot { isNetworkUrl(it.path) }
+        .take(maxFolderBatchSize)
         .toList()
 
     if (filteredVideos.isEmpty()) {
@@ -1122,28 +1117,11 @@ class ThumbnailRepository(
       }
     }
 
-    if (!appearancePreferences.showNetworkThumbnails.get()) {
-      return null
-    }
-
-    val strategy =
-      browserPreferences.thumbnailMode.get().toThumbnailStrategy(
-        browserPreferences.thumbnailFramePosition.get(),
-      )
-
-    val rotated =
-      extractNetworkVideoFrame(
-        url = video.path,
-        strategy = strategy,
-        targetWidth = widthPx.takeIf { it > 0 },
-        targetHeight = heightPx.takeIf { it > 0 },
-      ) ?: generateFastNetworkThumbnail(video.path, widthPx, heightPx) ?: return null
-
-    return scaleBitmap(rotated, widthPx, heightPx)
+    return null
   }
 
   private fun isNetworkThumbnailAllowed(path: String): Boolean =
-    extractJellyfinImageUrls(path).isNotEmpty() || appearancePreferences.showNetworkThumbnails.get()
+    extractJellyfinImageUrls(path).isNotEmpty()
 
   private fun extractJellyfinImageUrls(url: String, maxWidth: Int = 400): List<String> =
     runCatching {
@@ -1347,88 +1325,7 @@ class ThumbnailRepository(
     connection: NetworkConnection? = null,
     fileSize: Long = -1L,
     mimeType: String? = null,
-  ): Bitmap? =
-    withContext(Dispatchers.IO) {
-      val revision = diskCacheLock.read { cacheRevision.value }
-      if (!appearancePreferences.showNetworkThumbnails.get()) return@withContext null
-
-      val identity = networkThumbnailIdentity(path, connection)
-      val memKey = networkThumbnailMemoryKey(identity, widthPx, heightPx)
-      synchronized(memoryCache) { memoryCache.get(memKey) }?.let { return@withContext it }
-      ongoingOperations[memKey]?.let { return@withContext it.await() }
-
-      val candidate =
-        async(start = CoroutineStart.LAZY) {
-          if (!isHttpUrl(path)) {
-            return@async getNonHttpNetworkThumbnail(
-              path = path,
-              connection = connection,
-              widthPx = widthPx,
-              heightPx = heightPx,
-              identity = identity,
-              fileSize = fileSize,
-              mimeType = mimeType,
-              revision = revision,
-            )
-          }
-
-          if (hasRecentNetworkThumbnailFailure(identity)) {
-            android.util.Log.d("ThumbnailRepository", "Skipping network thumbnail (previously failed): $path")
-            return@async null
-          }
-
-          val diskKey = networkThumbnailDiskKey(identity)
-          readBitmapFromDisk(diskKey, network = true)?.let { bitmap ->
-            val scaled = scaleBitmap(bitmap, widthPx, heightPx)
-            diskCacheLock.read {
-              if (revision != cacheRevision.value) return@async null
-              synchronized(memoryCache) { memoryCache.put(memKey, scaled) }
-            }
-            return@async scaled
-          }
-
-          val strategy =
-            browserPreferences.thumbnailMode.get().toThumbnailStrategy(
-              browserPreferences.thumbnailFramePosition.get(),
-            )
-          val bitmap =
-            networkGenerationSemaphore.withPermit {
-              (
-                extractNetworkVideoFrame(
-                  url = path,
-                  strategy = strategy,
-                  targetWidth = widthPx.takeIf { it > 0 },
-                  targetHeight = heightPx.takeIf { it > 0 },
-                ) ?: generateFastNetworkThumbnail(path, widthPx, heightPx)
-              )?.let { scaleBitmap(it, widthPx, heightPx) }
-            }
-
-          if (bitmap == null) {
-            android.util.Log.w("ThumbnailRepository", "All strategies failed for network stream $path")
-            networkThumbnailFailedAt.put(identity, SystemClock.elapsedRealtime())
-            return@async null
-          }
-
-          currentCoroutineContext().ensureActive()
-          networkThumbnailFailedAt.remove(identity)
-          writeBitmapToDisk(diskKey, bitmap, network = true, revision = revision)
-          diskCacheLock.read {
-            if (revision != cacheRevision.value) return@async null
-            synchronized(memoryCache) { memoryCache.put(memKey, bitmap) }
-          }
-          _thumbnailReadyKeys.tryEmit(memKey)
-          bitmap
-        }
-
-      val operation =
-        ongoingOperations.putIfAbsent(memKey, candidate)?.also {
-          candidate.cancel()
-        } ?: candidate.also { owned ->
-          owned.invokeOnCompletion { ongoingOperations.remove(memKey, owned) }
-          owned.start()
-        }
-      operation.await()
-    }
+  ): Bitmap? = null
 
   suspend fun getThumbnailForNetworkSource(
     connectionId: Long,

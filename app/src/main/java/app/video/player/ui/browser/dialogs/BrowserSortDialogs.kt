@@ -1528,7 +1528,6 @@ fun NetworkSortDialog(
   val networkSortOrder by browserPreferences.networkSortOrder.collectAsState()
   val networkLayoutMode by browserPreferences.networkLayoutMode.collectAsState()
   val showVideoThumbnails by browserPreferences.showVideoThumbnails.collectAsState()
-  val showNetworkThumbnails by appearancePreferences.showNetworkThumbnails.collectAsState()
   val showSizeChip by browserPreferences.showSizeChip.collectAsState()
   val showDateChip by browserPreferences.showDateChip.collectAsState()
   val showExtensionField by browserPreferences.showExtensionField.collectAsState()
@@ -1648,10 +1647,9 @@ fun NetworkSortDialog(
         add(
           VisibilityToggle(
             label = "Thumbnails",
-            checked = showVideoThumbnails && showNetworkThumbnails,
+            checked = showVideoThumbnails,
             onCheckedChange = {
               browserPreferences.showVideoThumbnails.set(it)
-              appearancePreferences.showNetworkThumbnails.set(it)
             },
           ),
         )

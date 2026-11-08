@@ -663,7 +663,6 @@ open class MainActivity : AppCompatActivity() {
     }
     val liquidGlassEnabled by appearancePreferences.liquidGlassEnabled.collectAsState()
     val legacyNavigationBar by appearancePreferences.legacyNavigationBar.collectAsState()
-    val connectedMiniPlayerNavigation by appearancePreferences.connectedMiniPlayerNavigation.collectAsState()
 
     // Provide both LocalBackStack and the LazyList/Grid states to all screens
     CompositionLocalProvider(
@@ -690,15 +689,9 @@ open class MainActivity : AppCompatActivity() {
           val isDualPane = isMainScreen && !legacyNavigationBar && NavigationBarState.isDualPaneLayout
           val isNavBarVisible = isMainScreen && NavigationBarState.isNavBarVisible
           val spacing = NavigationBarState.floatingBarSpacing
-          val dockedPlayer = connectedMiniPlayerNavigation && isNavBarVisible && !legacyNavigationBar && !isDualPane &&
-            !DeviceFormFactor.isTelevision(context) && NavigationBarState.isMiniPlayerVisible &&
-            NavigationBarState.miniPlayerConnectionEnabled
+          val dockedPlayer = false
           val reducedMotion = AppMotion.shouldReduceMotion()
-          val dockFraction by animateFloatAsState(
-            targetValue = if (dockedPlayer) 1f else 0f,
-            animationSpec = if (reducedMotion) snap() else tween(320, easing = FastOutSlowInEasing),
-            label = "mini_player_dock_placement",
-          )
+          val dockFraction = 0f
           val navigationStart =
             if (layoutDirection == LayoutDirection.Ltr) {
               NavigationBarState.navbarLeftOffset - leftInset
@@ -714,8 +707,8 @@ open class MainActivity : AppCompatActivity() {
             maxWidth - leftInset - rightInset - besideStartSpacing - spacing >= NavigationBarState.miniPlayerMinWidth
           SideEffect {
             NavigationBarState.isMiniPlayerBesideNavigation = besideNavigation
-            NavigationBarState.isMiniPlayerDocked = dockedPlayer
-            NavigationBarState.dockProgress = dockFraction
+            NavigationBarState.isMiniPlayerDocked = false
+            NavigationBarState.dockProgress = 0f
           }
           val miniPlayerShape = rememberMiniPlayerShape()
 

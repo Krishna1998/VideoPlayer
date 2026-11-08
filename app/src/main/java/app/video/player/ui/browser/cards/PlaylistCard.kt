@@ -121,7 +121,6 @@ fun PlaylistCard(
         playlist.m3uSourceUrl ?: playlist.xtreamServerUrl,
       )
     }
-  val showNetworkThumbnails by appearancePreferences.showNetworkThumbnails.collectAsState()
   val previewItems by
     remember(repository, playlist.id) {
       repository.observePlaylistPreviewItems(playlist.id, 2)
@@ -160,7 +159,6 @@ fun PlaylistCard(
       thumbnailGenerator,
       thumbnailCacheRevision,
       thumbnailFramePosition,
-      showNetworkThumbnails,
     ) {
       value = thumbnail
       if (thumbnail != null) return@produceState
@@ -191,7 +189,6 @@ fun PlaylistCard(
       thumbnailGenerator,
       thumbnailCacheRevision,
       thumbnailFramePosition,
-      showNetworkThumbnails,
     ) {
       val item = secondItem
       if (item == null) {

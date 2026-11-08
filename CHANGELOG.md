@@ -5,6 +5,10 @@ These notes are written in plain English and focus on what changed for real use.
 ## 3.3.3
 
 - Release version 3.3.3.
+- **Mini-Player & Navigation Streamlining:**
+  - Enabled video mini-player in the app by default and removed the legacy background playback dependency requirement and dialog.
+  - Removed "Connected mini-player and navigation" option, preserving an independent floating mini-player panel layout.
+  - Removed experimental "Show network thumbnails" setting and streamlined network media cards and thumbnail caching.
 - **Profile Tab & Watching Statistics Streamlining:**
   - Removed "Recents" and "Playlists" shortcut buttons, headers, and horizontal carousel shelves from the Profile tab, turning it into a focused personal hub with the profile card and watching statistics.
   - Removed audio playback tracking and the "Media Breakdown" card from Watching Statistics.

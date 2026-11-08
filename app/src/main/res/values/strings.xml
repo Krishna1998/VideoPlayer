@@ -118,8 +118,6 @@
   <string name="pref_appearance_thumbnail_parallelism_value">%1$d of %2$d</string>
   <string name="pref_appearance_thumbnail_parallelism_dialog_summary">How many thumbnails are created at the same time. More is faster but uses more memory and battery and can make scrolling stutter. Auto picks a safe value for this device.</string>
   <string name="pref_appearance_thumbnail_parallelism_warning">Higher than the %1$d recommended for this device. Lower it if lists lag or the app is closed in the background.</string>
-  <string name="pref_appearance_show_network_thumbnails_title">Show network thumbnails (Experimental)</string>
-  <string name="pref_appearance_show_network_thumbnails_summary">Generate thumbnails for network streams (May increase data usage on mobile networks)</string>
   <string name="pref_nav_music_title">Show Music tab</string>
   <string name="pref_nav_music_summary">Show or hide Music in the bottom navigation bar</string>
   <string name="pref_nav_network_title">Show Network tab</string>
@@ -211,9 +209,6 @@
   <string name="pref_auto_pip_home_only_summary">Only the home gesture or swipe enters PIP; the back button closes the player</string>
   <string name="pref_enable_video_mini_player_title">Enable Video Mini Player</string>
   <string name="pref_enable_video_mini_player_summary">Minimize video playback into a floating Mini Player when pressing Back</string>
-  <string name="pref_video_mini_player_dependency_title">Enable video background playback?</string>
-  <string name="pref_video_mini_player_dependency_message">Video Mini Player needs Video Player Background Playback to keep the video playing after you leave the full player.</string>
-  <string name="pref_video_mini_player_dependency_confirm">Enable and continue</string>
   <string name="pref_player_keep_screen_on_when_paused_title">Keep screen on when paused</string>
   <string name="pref_player_external_display_projection_title">External display projection</string>
   <string name="pref_player_external_display_projection_summary">When an HDMI, USB-C, or wireless display is connected, play video on it and let the phone screen turn off</string>
@@ -2698,8 +2693,6 @@
   <string name="pref_nav_home_title">Home / Files</string>
   <string name="pref_nav_home_summary">Browse local folders and files (always available)</string>
   <string name="pref_nav_actions_section">Navigation actions</string>
-  <string name="connected_mini_player_navigation_title">Connected mini-player and navigation</string>
-  <string name="connected_mini_player_navigation_summary">Use a stacked dock with shared corners instead of separate panels</string>
     <string name="color_picker_field">Picker</string>
     <string name="color_picker_sliders">Sliders</string>
     <string name="color_picker_field_description">Saturation and brightness. Use Sliders for precise adjustment.</string>

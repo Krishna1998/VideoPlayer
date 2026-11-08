@@ -674,7 +674,6 @@ private fun RecentItemsContent(
   val tapThumbnailToSelect by gesturePreferences.tapThumbnailToSelect.collectAsState()
   val showSubtitleIndicator by viewPreferences.showSubtitleIndicator.collectAsState()
   val showVideoThumbnails by viewPreferences.showThumbnails.collectAsState()
-  val showNetworkThumbnails by appearancePreferences.showNetworkThumbnails.collectAsState()
   val unlimitedNameLines by viewPreferences.unlimitedNameLines.collectAsState()
   val showSizeChip by viewPreferences.showSizeChip.collectAsState()
   val showResolutionChip by viewPreferences.showResolutionChip.collectAsState()
@@ -779,7 +778,7 @@ private fun RecentItemsContent(
 
   // Unified thumbnail generation - starts with initial batch and continues as needed
   // This avoids the overhead of multiple conflicting LaunchedEffect calls
-      LaunchedEffect(showVideoThumbnails, showNetworkThumbnails, thumbnailGenerator, thumbWidthPx, thumbHeightPx, recentItems.size) {
+      LaunchedEffect(showVideoThumbnails, thumbnailGenerator, thumbWidthPx, thumbHeightPx, recentItems.size) {
     if (showVideoThumbnails && recentVideos.isNotEmpty()) {
       // Start with all videos - the ThumbnailRepository will handle batching internally
       // This avoids redundant job restarts when scrolling
