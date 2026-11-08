@@ -69,12 +69,8 @@ jobs:
             exit 1
           fi
           source_sha="$GITHUB_SHA"
-          if git rev-parse --verify --quiet "refs/tags/${version_tag}^{commit}" > /dev/null; then
+          if [[ "$GITHUB_REF" == refs/tags/* ]] && git rev-parse --verify --quiet "refs/tags/${version_tag}^{commit}" > /dev/null; then
             source_sha="$(git rev-parse "refs/tags/${version_tag}^{commit}")"
-            if [[ "$GITHUB_EVENT_NAME" == push && "$GITHUB_REF" != refs/tags/* && "$source_sha" != "$GITHUB_SHA" ]]; then
-              echo "The release tag already points to another commit; refusing to replace it."
-              exit 1
-            fi
           fi
 
           # Validate the exact source that all build and publish jobs will check out.

@@ -2,8 +2,9 @@
 
 These notes are written in plain English and focus on what changed for real use.
 
-## Unreleased
+## 3.3.3
 
+- Release version 3.3.3.
 - **Profile Tab & Watching Statistics Streamlining:**
   - Removed "Recents" and "Playlists" shortcut buttons, headers, and horizontal carousel shelves from the Profile tab, turning it into a focused personal hub with the profile card and watching statistics.
   - Removed audio playback tracking and the "Media Breakdown" card from Watching Statistics.
@@ -61,8 +62,25 @@ These notes are written in plain English and focus on what changed for real use.
   - Added optional "Grayscale watched thumbnails" toggle in Sort & View options across video lists, file tree, playlists, and recently played views.
   - Stripped media extension from player control titles when the extension field toggle is disabled.
   - Updated swipe-to-delete confirmation dialog text color to clear black for better readability.
-
-## 3.3.3
+- **Playback Controls & Seeking Performance:**
+  - Refactored playback seeking logic to mirror mpv-android: seeks are sent directly to mpv without artificial delay or client-side coalescing locks.
+  - Seekbar scrubbing now tracks live positions in 0.5s intervals, significantly reducing decoder thrashing.
+  - Smooth horizontal swipe seeking with fast keyframe previews and precise landing when precise seeking is enabled.
+  - Position updates are delivered directly from time-pos events immediately upon seeking, even when paused.
+- **Playback Speed Control:**
+  - Playback speed button is now directly clickable to cycle speed in increments of 0.25x between 1.00x and 2.00x (long press opens the speed sheet).
+  - All playback speed presets in the speed sheet can now be edited or removed.
+- **HW+ Decoding Safety Guard:**
+  - Added warning toast with interactive action button and automatic fallback to switch to HW decoding when attempting features unsupported by HW+ (direct MediaCodec) decoding, such as horizontal flip/mirroring, vertical flip, CPU debanding, and ArtCNN shader mode.
+- **Gesture Cleanup:**
+  - Removed two-finger speed swipe gesture to eliminate conflicts with zoom and volume/brightness interactions.
+- **PiP & Orientation Enhancements:**
+  - Returning from Picture-in-Picture (PiP) now seamlessly preserves video orientation and properly initializes system UI.
+  - PiP rewind and fast-forward controls now use standard relative seeking.
+- **UI & Surface Refinements:**
+  - Dynamic height calculation and marquee scrolling text effect for long video titles in player controls.
+  - Eliminated translucent layered shadow boxes across cards, panels, and badges for clean, unified surfaces.
+  - Fixed blank mini-player clearance spacing on the Preferences screen.
 
 - Release version 3.3.3.
 - **Playback Controls & Seeking Performance:**
