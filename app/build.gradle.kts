@@ -179,9 +179,8 @@ android {
         "proguard-rules.pro",
       )
       ndk {
-        // Include native symbol tables in Play Store app bundles for crash/ANR diagnosis.
-        // Keep the smaller symbol-table level instead of bundling full DWARF info.
-        debugSymbolLevel = "SYMBOL_TABLE"
+        // Strip native debug symbols for minimum release package size.
+        debugSymbolLevel = "none"
       }
     }
 

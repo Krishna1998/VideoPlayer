@@ -22,7 +22,6 @@ These notes are written in plain English and focus on what changed for real use.
   - Replaced deprecated file-watcher constructors in `VisibleDirectoryWatcher` with API 29+ `File` constructor and legacy fallback for Android 8/9.
   - Retained explicit device credential fallback in `DeviceCredentialPrompt` for Android 10 and older.
   - Used public OkHttp telemetry hooks and excluded automatic instrumentation to preserve OkHttp 5.5 compatibility.
-  - Configured native debug symbol generation (`SYMBOL_TABLE`) and artifact staging in CI/CD workflows.
 - **Player & PiP Video Recovery:**
   - Initialize Android 8-10 video system bars before asynchronous setup and update legacy visibility flags atomically in one pass while retaining the Android 11+ controller path.
   - Adopt confirmed session loaded item before restoring playback settings, keeping resume, metadata, and subtitle sources scoped to the confirmed item even when queue collectors are paused.
