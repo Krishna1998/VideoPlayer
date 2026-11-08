@@ -11,6 +11,20 @@ import app.video.player.ui.theme.Spacing
 
 internal enum class BottomSlot { Buttons, Seekbar, Playback }
 
+// Keep gaps relative to the visible button surface, excluding glass shadow padding.
+internal val PlayerSectionGap = 8.dp
+internal val PortraitActionShadowRoom = 6.dp
+internal val PlaybackShadowRoom = 8.dp
+
+internal fun portraitGlassShadowRoom(slot: BottomSlot?, enabled: Boolean): Dp {
+  if (!enabled) return 0.dp
+  return when (slot) {
+    BottomSlot.Buttons -> PortraitActionShadowRoom
+    BottomSlot.Playback -> PlaybackShadowRoom
+    else -> 0.dp
+  }
+}
+
 internal enum class VideoControlsLayoutPreset(
   @StringRes val titleRes: Int,
   val seekbarPlacement: SeekbarPlacement,

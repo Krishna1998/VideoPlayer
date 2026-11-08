@@ -10,7 +10,7 @@ These notes are written in plain English and focus on what changed for real use.
   - Added `PlayerButton.MOTION_INTERPOLATION` quick toggle and configuration button to customizable player controls.
   - Added `MotionInterpolationPreferences` in Decoder settings with search indexing support.
 - **Build, Dependencies & Diagnostics:**
-  - Upgraded mpvlib to 1.1.7.
+  - Upgraded mpvlib to 1.1.8.
   - Replaced deprecated file-watcher constructors in `VisibleDirectoryWatcher` with API 29+ `File` constructor and legacy fallback for Android 8/9.
   - Retained explicit device credential fallback in `DeviceCredentialPrompt` for Android 10 and older.
   - Used public OkHttp telemetry hooks and excluded automatic instrumentation to preserve OkHttp 5.5 compatibility.
@@ -26,6 +26,7 @@ These notes are written in plain English and focus on what changed for real use.
   - Removed local music library scanning, artist image caching, and music tab customization settings.
   - Streamlined the application strictly for video playback.
 - **UI & Gestures:**
+  - Refined player layout overflow with `FlowRow` wrapping for action buttons, custom layout positioning for landscape controls, and unified 8dp section spacing accounting for glass shadow padding.
   - Added optional "Grayscale watched thumbnails" toggle in Sort & View options across video lists, file tree, playlists, and recently played views.
   - Stripped media extension from player control titles when the extension field toggle is disabled.
   - Updated swipe-to-delete confirmation dialog text color to clear black for better readability.

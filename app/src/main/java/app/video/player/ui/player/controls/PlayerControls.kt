@@ -166,7 +166,6 @@ import app.video.player.ui.player.controls.components.LocalForceDarkPlayerButton
 import app.video.player.ui.player.controls.components.LocalPlayerButtonsOpacity
 import app.video.player.ui.player.controls.components.asPlayerButtonBackground
 import app.video.player.ui.player.controls.components.MediaScopesOverlay
-import app.video.player.ui.player.controls.components.fadingHorizontalScroll
 import app.video.player.ui.player.controls.components.MultipleSpeedPlayerUpdate
 import app.video.player.ui.player.controls.components.ResumeAvailablePlayerUpdate
 import app.video.player.ui.player.controls.components.ResumedFromPlayerUpdate
@@ -1193,18 +1192,30 @@ fun PlayerControls(
 
           // Keep the seekbar close to its controls. Bands come from remembered heights, so a
           // layer leaving the layout (buffering, volume/brightness sliders, hidden controls) moves nothing.
-          val clusterEdge = if (isPortrait) spacing.large else spacing.medium
-          val clusterGap = spacing.extraSmall
-          val customButtonsGap = spacing.smaller * 2
+          fun shadowInset(slot: BottomSlot?): Dp =
+            when {
+              isPortrait -> portraitGlassShadowRoom(slot, enableLiquidGlass)
+              enableLiquidGlass && slot == BottomSlot.Playback -> PlaybackShadowRoom
+              else -> 0.dp
+            }
+
+          val clusterEdge = PlayerSectionGap - shadowInset(bottomStack.firstOrNull { bandHeight(it) > 0.dp })
+          val clusterGap = PlayerSectionGap
+          val customButtonsGap = PlayerSectionGap
           val bandCenters = HashMap<BottomSlot, Dp>()
           var nextBandBottom = clusterEdge
           var bottomClusterTop = clusterEdge
+          var previousVisibleSlot: BottomSlot? = null
           for (slot in bottomStack) {
             val height = bandHeight(slot)
+            if (height > 0.dp && previousVisibleSlot != null) {
+              nextBandBottom -= shadowInset(previousVisibleSlot) + shadowInset(slot)
+            }
             bandCenters[slot] = nextBandBottom + height / 2
             if (height > 0.dp) {
               bottomClusterTop = nextBandBottom + height
               nextBandBottom = bottomClusterTop + clusterGap
+              previousVisibleSlot = slot
             }
           }
           val buttonsBandCenter = createGuidelineFromBottom(bandCenters[BottomSlot.Buttons] ?: clusterEdge)
@@ -1951,8 +1962,7 @@ fun PlayerControls(
               Box(Modifier.width(landscapePlaybackWidth).height(playPauseSize))
             } else if (hasPlaylistControls) {
               androidx.compose.foundation.layout.Row(
-                modifier = (if (fullWidthPlaybackRow) Modifier.fillMaxWidth() else Modifier)
-                  .fadingHorizontalScroll(rememberScrollState(), shadowRoom = 0.dp),
+                modifier = if (fullWidthPlaybackRow) Modifier.fillMaxWidth() else Modifier,
                 horizontalArrangement = Arrangement.spacedBy(
                   playbackButtonGap,
                   if (fullWidthPlaybackRow) Alignment.CenterHorizontally else Alignment.Start,
@@ -2286,13 +2296,15 @@ fun PlayerControls(
                   },
                 ).constrainAs(topRightControls) {
                   top.linkTo(parent.top, spacing.small)
+                  start.linkTo(parent.start, spacing.large + LandscapeActionSize + spacing.small)
                   end.linkTo(parent.end, spacing.large)
+                  width = Dimension.preferredWrapContent
+                  horizontalBias = 1f
                 },
           ) {
             PlayerButtonTheme {
               LandscapeActionGroup(
                 buttons = topRightButtons,
-                modifier = Modifier.widthIn(max = resolveLandscapeHeaderMaxWidth(controlsWidth)),
                 endAligned = true,
                 fillWidth = false,
                 renderButton = renderLandscapeButton,

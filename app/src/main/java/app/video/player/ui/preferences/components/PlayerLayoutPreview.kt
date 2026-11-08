@@ -3,19 +3,18 @@ package app.video.player.ui.preferences.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -59,9 +58,9 @@ import app.video.player.ui.liquidglass.LocalKyantPlayerBackdrop
 import app.video.player.ui.player.controls.LandscapeActionGroup
 import app.video.player.ui.player.controls.LandscapeActionSize
 import app.video.player.ui.player.controls.LandscapeControlsRow
-import app.video.player.ui.player.controls.resolveLandscapeHeaderWidth
 import app.video.player.ui.player.controls.BottomSlot
 import app.video.player.ui.player.controls.PlaybackControlsGeometry
+import app.video.player.ui.player.controls.PlayerSectionGap
 import app.video.player.ui.player.controls.PlayerButtonTheme
 import app.video.player.ui.player.controls.PlayerControlsContentTheme
 import app.video.player.ui.player.controls.VideoControlsLayoutPreset
@@ -69,7 +68,6 @@ import app.video.player.ui.player.controls.components.AbLoopIcon
 import app.video.player.ui.player.controls.components.LocalForceDarkPlayerButtonsBackground
 import app.video.player.ui.player.controls.components.LocalPlayerButtonsOpacity
 import app.video.player.ui.player.controls.components.SeekbarStylePreview
-import app.video.player.ui.player.controls.components.fadingHorizontalScroll
 import app.video.player.ui.player.controls.resolveBottomControlsLayout
 import app.video.player.ui.player.controls.resolvePlaybackControlsGeometry
 import app.video.player.ui.preferences.ControlRegion
@@ -221,9 +219,12 @@ private fun PreviewScene(
         if (!region.isPortrait) {
           LandscapeActionGroup(
             buttons = topRightButtons,
-            modifier = Modifier.width(resolveLandscapeHeaderWidth(topRightButtons, sceneWidth))
-              .then(highlightRegion(region == ControlRegion.TOP_RIGHT)),
+            modifier = Modifier.widthIn(
+              max = (sceneWidth - spacing.large * 2 - LandscapeActionSize - spacing.small)
+                .coerceAtLeast(LandscapeActionSize),
+            ).then(highlightRegion(region == ControlRegion.TOP_RIGHT)),
             endAligned = true,
+            fillWidth = false,
             renderButton = previewLandscapeButton,
           )
         }
@@ -234,8 +235,8 @@ private fun PreviewScene(
       Column(
         Modifier.align(Alignment.BottomCenter).fillMaxWidth()
           .padding(horizontal = if (region.isPortrait) spacing.large else 0.dp,
-            vertical = if (region.isPortrait) spacing.large else spacing.medium),
-        verticalArrangement = Arrangement.spacedBy(spacing.extraSmall),
+            vertical = PlayerSectionGap),
+        verticalArrangement = Arrangement.spacedBy(PlayerSectionGap),
       ) {
         layout.bottomToTop.asReversed().forEach { slot ->
           when (slot) {
@@ -255,7 +256,7 @@ private fun PreviewScene(
                   rightButtons = bottomRightButtons,
                   playbackWidth = if (playlist) geometry.playPauseSize + geometry.skipButtonSize * 2 + geometry.buttonGap * 2
                     else geometry.playPauseSize,
-                  modifier = Modifier.padding(horizontal = spacing.medium, vertical = if (glassEnabled) 8.dp else 0.dp),
+                  modifier = Modifier.padding(horizontal = spacing.medium),
                   leftModifier = highlightRegion(region == ControlRegion.BOTTOM_LEFT),
                   rightModifier = highlightRegion(region == ControlRegion.BOTTOM_RIGHT),
                   renderButton = previewLandscapeButton,
@@ -326,13 +327,13 @@ private fun PreviewButtons(
         else Modifier,
       ),
   ) {
-    Row(
-      Modifier.fillMaxWidth().horizontalScroll(rememberScrollState(), reverseScrolling = endAligned),
-      verticalAlignment = Alignment.CenterVertically,
+    FlowRow(
+      Modifier.fillMaxWidth(),
       horizontalArrangement = Arrangement.spacedBy(
         buttonGap,
         if (endAligned) Alignment.End else if (centered) Alignment.CenterHorizontally else Alignment.Start,
       ),
+      verticalArrangement = Arrangement.spacedBy(buttonGap),
     ) {
       buttons.forEach { button ->
         AdaptiveControlsContainer(
@@ -364,7 +365,7 @@ private fun PreviewPlayback(
   evenlySpaced: Boolean = false,
 ) {
   Row(
-    modifier.fadingHorizontalScroll(rememberScrollState(), shadowRoom = 0.dp),
+    modifier,
     verticalAlignment = Alignment.CenterVertically,
     horizontalArrangement =
       if (evenlySpaced) Arrangement.SpaceEvenly else Arrangement.spacedBy(geometry.buttonGap, Alignment.CenterHorizontally),
