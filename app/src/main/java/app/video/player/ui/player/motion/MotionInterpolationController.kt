@@ -88,6 +88,13 @@ class MotionInterpolationController(
   // The video-sync mode that was active before motion interpolation needed display sync.
   private var savedVideoSync: String? = null
   private var applyJob: Job? = null
+  private var suspendedForBatterySaver: Boolean = false
+
+  fun setBatterySaverSuspended(suspended: Boolean) {
+    if (suspendedForBatterySaver == suspended) return
+    suspendedForBatterySaver = suspended
+    apply()
+  }
 
   // A preference change re-runs apply() and cancels the previous run, so keep its toast pending.
   private var announcePending = false
@@ -199,7 +206,7 @@ class MotionInterpolationController(
             else -> MotionAvailability.READY
           }
 
-        val shouldRun = config.enabled && coreReady && availability == MotionAvailability.READY
+        val shouldRun = config.enabled && coreReady && availability == MotionAvailability.READY && !suspendedForBatterySaver
         if (optionKnown && !configOwned) {
           if (shouldRun) {
             if (!running) savedVideoSync = PlaybackSession.getPropertyString("video-sync")

@@ -526,6 +526,7 @@ fun PlayerControls(
   val backgroundPlaybackEnabled by PlaybackSession.videoBackgroundPlaybackEnabled.collectAsState(
     initial = PlaybackSession.isVideoBackgroundPlaybackEnabled(),
   )
+  val isBatterySaver by viewModel.isBatterySaver.collectAsState()
 
   val onOpenSheet: (Sheets) -> Unit = remember(viewModel) {
     {
@@ -2440,6 +2441,7 @@ fun PlayerControls(
         isPostProcessingEnabled,
         isMotionInterpolationEnabled,
         backgroundPlaybackEnabled,
+        isBatterySaver,
         statisticsPage,
         mediaScopesState.overlayVisible,
       ) {
@@ -2455,6 +2457,7 @@ fun PlayerControls(
           if (isAmbientEnabled) add(PlayerButton.AMBIENT_MODE)
           if (isPostProcessingEnabled) add(PlayerButton.POST_PROCESSING)
           if (isMotionInterpolationEnabled) add(PlayerButton.MOTION_INTERPOLATION)
+          if (isBatterySaver) add(PlayerButton.BATTERY_SAVER)
           if (backgroundPlaybackEnabled) add(PlayerButton.BACKGROUND_PLAYBACK)
           if (statisticsPage == 6) add(PlayerButton.TIME_NETWORK)
           if (mediaScopesState.overlayVisible) add(PlayerButton.SCOPES)

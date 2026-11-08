@@ -4,6 +4,14 @@ These notes are written in plain English and focus on what changed for real use.
 
 ## Unreleased
 
+- **Battery Saver Mode:**
+  - Added dedicated low-power Battery Saver mode to minimize battery consumption, reduce GPU rendering load, and minimize thermal output during video playback.
+  - Switches mpv rendering scalers (`scale`, `cscale`, `dscale`) to energy-efficient bilinear passes, disables expensive debanding shader passes, throttles HDR compute peak, sets fast libavcodec decode mode (`vd-lavc-fast`), and increases readahead buffer caching to reduce frequent CPU/IO wakeups.
+  - Automatically suspends GPU motion frame synthesis and restores device display refresh rate while battery saver is active.
+  - Throttles ambient background lighting blur samples and glow radius to low-power profile.
+  - Added quick `PlayerButton.BATTERY_SAVER` toggle button with lightning bolt icon to customizable player controls.
+  - Added automatic battery saver trigger when device battery drops to 20% or lower, or when Android system Battery Saver mode is enabled.
+  - Added Battery Saver and Auto Battery Saver configuration toggles in Decoder Preferences with full in-settings search indexing and live player settings panel integration.
 - **Motion Interpolation:**
   - Added GPU motion interpolation feature support with dedicated controller and live playback statistics readout.
   - Added `MotionInterpolationSheet` for configuring target FPS (Auto, 24, 30, 60, custom), matching display refresh rate, and viewing real-time synthesized frames and GPU compute timings.
@@ -27,6 +35,8 @@ These notes are written in plain English and focus on what changed for real use.
   - Streamlined the application strictly for video playback.
 - **UI & Gestures:**
   - Refined player layout overflow with `FlowRow` wrapping for action buttons, custom layout positioning for landscape controls, and unified 8dp section spacing accounting for glass shadow padding.
+  - Added optional "Grayscale watched thumbnails" toggle in Sort & View options across video lists, file tree, playlists, and recently played views.
+  - Stripped media extension from player control titles when the extension field toggle is disabled.
   - Added optional "Grayscale watched thumbnails" toggle in Sort & View options across video lists, file tree, playlists, and recently played views.
   - Stripped media extension from player control titles when the extension field toggle is disabled.
   - Updated swipe-to-delete confirmation dialog text color to clear black for better readability.

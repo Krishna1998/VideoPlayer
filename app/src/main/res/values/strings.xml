@@ -143,6 +143,13 @@
   <string name="grayscale_watched_thumbnails">Grayscale watched thumbnails</string>
   <string name="video_action_mark_watched">Mark watched</string>
   <string name="video_action_mark_unwatched">Mark unwatched</string>
+  <string name="btn_label_battery_saver">Battery Saver</string>
+  <string name="pref_battery_saver_title">Battery Saver</string>
+  <string name="pref_battery_saver_summary">Maximizes playback battery efficiency with fast bilinear scaling, lower GPU overhead, and pauses heavy shaders, debanding, and motion interpolation.</string>
+  <string name="pref_auto_battery_saver_title">Auto-enable on system battery saver</string>
+  <string name="pref_auto_battery_saver_summary">Automatically enables Battery Saver when Android battery saver is active or battery drops below 20%.</string>
+  <string name="player_battery_saver_on">Battery Saver: ON</string>
+  <string name="player_battery_saver_off">Battery Saver: OFF</string>
   <!-- Theme names -->
   <string name="theme_default">Default</string>
   <string name="theme_dynamic">Dynamic</string>

@@ -2211,6 +2211,17 @@ fun restartFromBeginning() {
   private var ambientPreBatterySaverOpacity: Float = 1.0f
   private var androidSystemInfoBridgeJob: Job? = null
 
+  // ==================== Battery Saver =====================================
+  private val _isBatterySaver = MutableStateFlow(decoderPreferences.batterySaver.get())
+  val isBatterySaver: StateFlow<Boolean> = _isBatterySaver.asStateFlow()
+  private var autoBatterySaverEngaged = false
+  private var manualBatterySaverOverride = false
+  private var savedScaleMode: String? = null
+  private var savedCscaleMode: String? = null
+  private var savedDscaleMode: String? = null
+  private var savedDeband: String? = null
+  private var savedHdrComputePeak: String? = null
+
   // ==================== Post-Processing ===================================
   private val _isPostProcessingEnabled = MutableStateFlow(playerPreferences.isPostProcessingEnabled.get())
   val isPostProcessingEnabled: StateFlow<Boolean> = _isPostProcessingEnabled.asStateFlow()
@@ -2317,6 +2328,13 @@ fun restartFromBeginning() {
       decoderPreferences.useVulkan.changes().collect { enabled ->
         _isVulkanEnabled.value = enabled
         reconcileHdrModeWithRenderer()
+      }
+    }
+    viewModelScope.launch {
+      decoderPreferences.batterySaver.changes().collect { enabled ->
+        if (enabled != _isBatterySaver.value) {
+          setBatterySaver(enabled, manual = true)
+        }
       }
     }
     // Syncplay keeps one set of player bindings; the in-app sheet must not steal the player's.
@@ -7367,19 +7385,103 @@ fun restartFromBeginning() {
     playerUpdate.value = PlayerUpdates.ShowText(appContext.getString(R.string.player_ambient_battery_saver_off))
   }
 
+  fun toggleBatterySaver() {
+    val target = !_isBatterySaver.value
+    manualBatterySaverOverride = true
+    decoderPreferences.batterySaver.set(target)
+    setBatterySaver(target, manual = true)
+  }
+
+  fun setBatterySaver(enabled: Boolean, manual: Boolean = false) {
+    if (manual) {
+      manualBatterySaverOverride = true
+    }
+    if (_isBatterySaver.value == enabled && !manual) return
+    _isBatterySaver.value = enabled
+
+    viewModelScope.launch(playbackStateDispatcher) {
+      if (enabled) {
+        if (savedScaleMode == null) {
+          savedScaleMode = PlaybackSession.getPropertyString("scale")
+          savedCscaleMode = PlaybackSession.getPropertyString("cscale")
+          savedDscaleMode = PlaybackSession.getPropertyString("dscale")
+          savedDeband = PlaybackSession.getPropertyString("deband")
+          savedHdrComputePeak = PlaybackSession.getPropertyString("hdr-compute-peak")
+        }
+        PlaybackSession.setPropertyString("scale", "bilinear")
+        PlaybackSession.setPropertyString("cscale", "bilinear")
+        PlaybackSession.setPropertyString("dscale", "bilinear")
+        PlaybackSession.setPropertyString("correct-downscaling", "no")
+        PlaybackSession.setPropertyString("sigmoid-upscaling", "no")
+        PlaybackSession.setPropertyString("scale-antiring", "0")
+        PlaybackSession.setPropertyString("cscale-antiring", "0")
+        PlaybackSession.setPropertyString("dscale-antiring", "0")
+        PlaybackSession.setPropertyString("deband", "no")
+        PlaybackSession.setPropertyString("hdr-compute-peak", "no")
+        PlaybackSession.setPropertyString("vd-lavc-fast", "yes")
+        PlaybackSession.setPropertyString("demuxer-readahead-secs", "20")
+
+        motionInterpolation.setBatterySaverSuspended(true)
+        if (_isAmbientEnabled.value) {
+          applyBatterySaverPolicy()
+        }
+        playerUpdate.value = PlayerUpdates.ShowText(appContext.getString(R.string.player_battery_saver_on))
+      } else {
+        savedScaleMode?.let { PlaybackSession.setPropertyString("scale", it) }
+        savedCscaleMode?.let { PlaybackSession.setPropertyString("cscale", it) }
+        savedDscaleMode?.let { PlaybackSession.setPropertyString("dscale", it) }
+        PlaybackSession.setPropertyString("correct-downscaling", "yes")
+        PlaybackSession.setPropertyString("sigmoid-upscaling", "yes")
+        savedDeband?.let { PlaybackSession.setPropertyString("deband", it) }
+        savedHdrComputePeak?.let { PlaybackSession.setPropertyString("hdr-compute-peak", it) }
+        PlaybackSession.setPropertyString("vd-lavc-fast", "no")
+        PlaybackSession.setPropertyString("demuxer-readahead-secs", "10")
+
+        savedScaleMode = null
+        savedCscaleMode = null
+        savedDscaleMode = null
+        savedDeband = null
+        savedHdrComputePeak = null
+
+        motionInterpolation.setBatterySaverSuspended(false)
+        if (ambientWasOnBattery) {
+          restoreFromBatterySaver()
+        }
+        playerUpdate.value = PlayerUpdates.ShowText(appContext.getString(R.string.player_battery_saver_off))
+      }
+    }
+  }
+
   fun onBatteryStateChanged(
     isCharging: Boolean,
     level: Int = -1,
     isPowerSaveMode: Boolean = false,
   ) {
-    if (!_isAmbientEnabled.value) return
-    val shouldThrottle = _isAmbientBatterySaver.value &&
-      (!isCharging || isPowerSaveMode || (level in 0..19))
+    if (isCharging) {
+      manualBatterySaverOverride = false
+    }
 
-    if (shouldThrottle) {
-      applyBatterySaverPolicy()
-    } else if (ambientWasOnBattery && (isCharging || (!isPowerSaveMode && (level < 0 || level >= 20)))) {
-      restoreFromBatterySaver()
+    if (decoderPreferences.autoBatterySaver.get() && !manualBatterySaverOverride) {
+      val isLowBattery = !isCharging && level in 0..20
+      val shouldEngage = isPowerSaveMode || isLowBattery
+      if (shouldEngage && !_isBatterySaver.value) {
+        autoBatterySaverEngaged = true
+        setBatterySaver(true, manual = false)
+      } else if (!shouldEngage && _isBatterySaver.value && autoBatterySaverEngaged) {
+        autoBatterySaverEngaged = false
+        setBatterySaver(false, manual = false)
+      }
+    }
+
+    if (_isAmbientEnabled.value) {
+      val shouldThrottle = _isAmbientBatterySaver.value &&
+        (!isCharging || isPowerSaveMode || (level in 0..19))
+
+      if (shouldThrottle) {
+        applyBatterySaverPolicy()
+      } else if (ambientWasOnBattery && (isCharging || (!isPowerSaveMode && (level < 0 || level >= 20)))) {
+        restoreFromBatterySaver()
+      }
     }
   }
 

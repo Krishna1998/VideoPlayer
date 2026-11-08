@@ -117,6 +117,8 @@ private val liveSubtitleSettings = setOf(
 )
 
 private val liveDecoderSettings = setOf(
+  R.string.pref_battery_saver_title,
+  R.string.pref_auto_battery_saver_title,
   R.string.pref_decoder_try_hw_dec_title,
   R.string.pref_decoder_debanding_title,
   // MotionInterpolationController applies these to the running player immediately.

@@ -513,6 +513,22 @@ class MPVView(
     // Let mpv choose the safest path for the active decoder/backend.
     PlaybackSession.setOptionString("vd-lavc-film-grain", "auto")
 
+    val isBatterySaverInitial = decoderPreferences.batterySaver.get()
+    if (isBatterySaverInitial) {
+      PlaybackSession.setOptionString("scale", "bilinear")
+      PlaybackSession.setOptionString("cscale", "bilinear")
+      PlaybackSession.setOptionString("dscale", "bilinear")
+      PlaybackSession.setOptionString("correct-downscaling", "no")
+      PlaybackSession.setOptionString("sigmoid-upscaling", "no")
+      PlaybackSession.setOptionString("scale-antiring", "0")
+      PlaybackSession.setOptionString("cscale-antiring", "0")
+      PlaybackSession.setOptionString("dscale-antiring", "0")
+      PlaybackSession.setOptionString("deband", "no")
+      PlaybackSession.setOptionString("hdr-compute-peak", "no")
+      PlaybackSession.setOptionString("vd-lavc-fast", "yes")
+      PlaybackSession.setOptionString("demuxer-readahead-secs", "20")
+    }
+
     // Cache, TLS, cookie and reconnect settings are applied by PlaybackSession on the first
     // item that actually opens over the network, so a local file never pays for them.
     // Drop only video-output-bound late frames when rendering cannot keep up.
@@ -529,7 +545,8 @@ class MPVView(
     // MotionInterpolationController.
     val motion = inputs.motionInterpolation
     val motionStarts =
-      motion.enabled && MotionInterpolation.barrier(context, decoderPreferences) == MotionAvailability.READY &&
+      !isBatterySaverInitial && motion.enabled &&
+        MotionInterpolation.barrier(context, decoderPreferences) == MotionAvailability.READY &&
         backend.vo == "gpu-next" && useVulkan
     // A new core starts without mpvRx's motion settings; mpv.conf may still enable it.
     MotionInterpolation.appApplied = motionStarts && !MpvConfigOverridePolicy.isOwnedByMpvConf(MotionInterpolation.OPTION)

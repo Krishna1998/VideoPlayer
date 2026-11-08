@@ -900,6 +900,24 @@ object SearchablePreferences {
       )
       add(
         SearchablePreference(
+          titleRes = R.string.pref_battery_saver_title,
+          summaryRes = R.string.pref_battery_saver_summary,
+          keywords = listOf("battery", "power", "saver", "fast", "bilinear", "energy", "save"),
+          category = "Decoder",
+          screen = DecoderPreferencesScreen,
+        ),
+      )
+      add(
+        SearchablePreference(
+          titleRes = R.string.pref_auto_battery_saver_title,
+          summaryRes = R.string.pref_auto_battery_saver_summary,
+          keywords = listOf("battery", "power", "auto", "saver", "low", "level"),
+          category = "Decoder",
+          screen = DecoderPreferencesScreen,
+        ),
+      )
+      add(
+        SearchablePreference(
           titleRes = R.string.pref_decoder_try_hw_dec_title,
           keywords = listOf("hardware", "decoding", "hw", "acceleration", "gpu"),
           category = "Decoder",

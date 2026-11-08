@@ -1684,6 +1684,27 @@ fun RenderPlayerButton(
       }
     }
 
+    PlayerButton.BATTERY_SAVER -> {
+      val isBatterySaver by viewModel.isBatterySaver.collectAsState()
+      val batterySaverColor =
+        if (isBatterySaver) {
+          MaterialTheme.colorScheme.primary
+        } else if (borderless) {
+          controlColor
+        } else {
+          MaterialTheme.colorScheme.onSurface
+        }
+      ControlsButton(
+        icon = Icons.RoundedFilled.Bolt,
+        onClick = {
+          clickEvent()
+          viewModel.toggleBatterySaver()
+        },
+        color = batterySaverColor,
+        modifier = Modifier.size(buttonSize),
+      )
+    }
+
     PlayerButton.TIME_NETWORK -> {
       val clockFormat by playerPreferences.clockFormat.collectAsState()
       val stat by rememberTimeAndNetworkStat(clockFormat)

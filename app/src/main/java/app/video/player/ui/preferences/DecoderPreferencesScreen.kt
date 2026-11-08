@@ -113,6 +113,41 @@ object DecoderPreferencesScreen : Screen {
 
           item {
             PreferenceCard {
+              val batterySaver by preferences.batterySaver.collectAsState()
+              val autoBatterySaver by preferences.autoBatterySaver.collectAsState()
+
+              SwitchPreference(
+                modifier = Modifier.settingsSearchTarget(R.string.pref_battery_saver_title),
+                value = batterySaver,
+                onValueChange = { preferences.batterySaver.set(it) },
+                title = { Text(stringResource(R.string.pref_battery_saver_title)) },
+                summary = {
+                  Text(
+                    stringResource(R.string.pref_battery_saver_summary),
+                    color = MaterialTheme.colorScheme.outline,
+                  )
+                },
+              )
+
+              PreferenceDivider()
+
+              SwitchPreference(
+                modifier = Modifier.settingsSearchTarget(R.string.pref_auto_battery_saver_title),
+                value = autoBatterySaver,
+                onValueChange = { preferences.autoBatterySaver.set(it) },
+                title = { Text(stringResource(R.string.pref_auto_battery_saver_title)) },
+                summary = {
+                  Text(
+                    stringResource(R.string.pref_auto_battery_saver_summary),
+                    color = MaterialTheme.colorScheme.outline,
+                  )
+                },
+              )
+            }
+          }
+
+          item {
+            PreferenceCard {
               val profile by preferences.profile.collectAsState()
               val currentProfile = MPVProfile.fromValue(profile)
               ExpressivePreferenceItem {

@@ -31,6 +31,7 @@ import android.media.MediaMetadata
 import android.media.session.MediaSession
 import android.media.session.PlaybackState
 import android.net.Uri
+import android.os.BatteryManager
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
@@ -457,6 +458,7 @@ class PlayerActivity :
   private var finishAfterSheetCollapse = false
   private var backPressHandlerInstalled = false
   private var noisyReceiverRegistered = false
+  private var batteryReceiverRegistered = false
   private var isInBackgroundPlayback = false // Track if we are currently in background playback mode
   private var screenStateReceiverRegistered = false
   private var mpvInitialized = false // Track MPV initialization state
@@ -594,6 +596,39 @@ class PlayerActivity :
         }
       }
     }
+
+  private val batteryReceiver =
+    object : BroadcastReceiver() {
+      override fun onReceive(
+        context: Context?,
+        intent: Intent?,
+      ) {
+        if (!ownsPlaybackSession()) return
+        updateBatteryState()
+      }
+    }
+
+  private fun updateBatteryState() {
+    val powerManager = getSystemService(Context.POWER_SERVICE) as? PowerManager
+    val isPowerSaveMode = powerManager?.isPowerSaveMode ?: false
+
+    val batteryStatus = registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+    val level = batteryStatus?.let { intent ->
+      val rawLevel = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
+      val scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
+      if (rawLevel >= 0 && scale > 0) (rawLevel * 100) / scale else -1
+    } ?: -1
+
+    val status = batteryStatus?.getIntExtra(BatteryManager.EXTRA_STATUS, -1) ?: -1
+    val isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING ||
+      status == BatteryManager.BATTERY_STATUS_FULL
+
+    viewModel.onBatteryStateChanged(
+      isCharging = isCharging,
+      level = level,
+      isPowerSaveMode = isPowerSaveMode,
+    )
+  }
 
   /**
    * Listener for audio focus changes.
@@ -2069,6 +2104,13 @@ class PlayerActivity :
         screenStateReceiverRegistered = false
       }
     }
+
+    if (batteryReceiverRegistered) {
+      runCatching {
+        unregisterReceiver(batteryReceiver)
+        batteryReceiverRegistered = false
+      }
+    }
   }
 
   private fun registerScreenStateReceiver() {
@@ -2312,6 +2354,11 @@ class PlayerActivity :
         screenStateReceiverRegistered = false
       }
 
+      if (batteryReceiverRegistered) {
+        unregisterReceiver(batteryReceiver)
+        batteryReceiverRegistered = false
+      }
+
       if (
         PlayerLifecyclePolicy.shouldTreatStopAsPipDismissal(
           wasInPictureInPictureMode = wasInPipMode,
@@ -2494,6 +2541,19 @@ class PlayerActivity :
         ContextCompat.registerReceiver(this, noisyReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
         noisyReceiverRegistered = true
       }
+
+      if (!batteryReceiverRegistered) {
+        val filter = IntentFilter().apply {
+          addAction(Intent.ACTION_POWER_CONNECTED)
+          addAction(Intent.ACTION_POWER_DISCONNECTED)
+          addAction(Intent.ACTION_BATTERY_LOW)
+          addAction(Intent.ACTION_BATTERY_OKAY)
+          addAction(PowerManager.ACTION_POWER_SAVE_MODE_CHANGED)
+        }
+        ContextCompat.registerReceiver(this, batteryReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
+        batteryReceiverRegistered = true
+      }
+      updateBatteryState()
 
       // Re-register the screen-state receiver when returning to the
       // foreground. It is unregistered in onStop(). See issue 2.3.

@@ -71,4 +71,8 @@ class DecoderPreferences(
 
   /** Ask Android to run the display at the interpolation target while it runs. */
   val motionInterpolationSwitchDisplayRate = preferenceStore.getBoolean("motion_interpolation_switch_display_rate", true)
+
+  // Battery Saver Mode
+  val batterySaver = preferenceStore.getBoolean("battery_saver_mode", false)
+  val autoBatterySaver = preferenceStore.getBoolean("auto_battery_saver_on_low_battery", true)
 }
