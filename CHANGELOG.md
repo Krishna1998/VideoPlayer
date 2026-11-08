@@ -16,6 +16,7 @@ These notes are written in plain English and focus on what changed for real use.
   - Used public OkHttp telemetry hooks and excluded automatic instrumentation to preserve OkHttp 5.5 compatibility.
   - Configured native debug symbol generation (`SYMBOL_TABLE`) and artifact staging in CI/CD workflows.
 - **Player & PiP Video Recovery:**
+  - Initialize Android 8-10 video system bars before asynchronous setup and update legacy visibility flags atomically in one pass while retaining the Android 11+ controller path.
   - Adopt confirmed session loaded item before restoring playback settings, keeping resume, metadata, and subtitle sources scoped to the confirmed item even when queue collectors are paused.
   - Retry suspended video selection after position restoration publishes READY state (recovering Surface readiness during LOADING).
   - Added bounded unlock recovery for visible PiP when keyguard state changes after screen broadcasts.
