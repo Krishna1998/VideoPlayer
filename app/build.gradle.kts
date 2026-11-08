@@ -75,6 +75,9 @@ if (measureApiKey.isNotBlank()) {
 
 androidComponents {
   onVariants(selector().all()) { variant ->
+    // Measure 0.14 only rewrites OkHttp through 5.3.2. Attach its public SDK hooks
+    // to our clients instead, preserving OkHttp 5.5 and avoiding duplicate instrumentation.
+    variant.instrumentation.excludes.add("okhttp3/OkHttpClient")
     variant.instrumentation.transformClassesWith(
       SmbRpcExceptionCompatibility::class.java,
       InstrumentationScope.ALL,
@@ -174,8 +177,9 @@ android {
         "proguard-rules.pro",
       )
       ndk {
-        // Strip native debug symbols for minimum release package size.
-        debugSymbolLevel = "none"
+        // Include native symbol tables in Play Store app bundles for crash/ANR diagnosis.
+        // Keep the smaller symbol-table level instead of bundling full DWARF info.
+        debugSymbolLevel = "SYMBOL_TABLE"
       }
     }
 

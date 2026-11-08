@@ -4,6 +4,12 @@ These notes are written in plain English and focus on what changed for real use.
 
 ## Unreleased
 
+- **Build, Dependencies & Diagnostics:**
+  - Upgraded mpvlib to 1.1.6.
+  - Replaced deprecated file-watcher constructors in `VisibleDirectoryWatcher` with API 29+ `File` constructor and legacy fallback for Android 8/9.
+  - Retained explicit device credential fallback in `DeviceCredentialPrompt` for Android 10 and older.
+  - Used public OkHttp telemetry hooks and excluded automatic instrumentation to preserve OkHttp 5.5 compatibility.
+  - Configured native debug symbol generation (`SYMBOL_TABLE`) and artifact staging in CI/CD workflows.
 - **Player & PiP Video Recovery:**
   - Adopt confirmed session loaded item before restoring playback settings, keeping resume, metadata, and subtitle sources scoped to the confirmed item even when queue collectors are paused.
   - Retry suspended video selection after position restoration publishes READY state (recovering Surface readiness during LOADING).

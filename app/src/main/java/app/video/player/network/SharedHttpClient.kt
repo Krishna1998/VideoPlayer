@@ -12,6 +12,7 @@ package app.video.player.network
 import okhttp3.ConnectionPool
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
+import app.video.player.utils.telemetry.withMeasureTelemetry
 import java.util.concurrent.TimeUnit
 
 /**
@@ -25,6 +26,7 @@ object SharedHttpClient {
   val base: OkHttpClient by lazy {
     OkHttpClient
       .Builder()
+      .withMeasureTelemetry()
       .dispatcher(Dispatcher().apply { maxRequestsPerHost = 8 })
       .connectionPool(ConnectionPool(8, 5, TimeUnit.MINUTES))
       .connectTimeout(15, TimeUnit.SECONDS)

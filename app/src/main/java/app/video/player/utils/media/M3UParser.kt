@@ -15,6 +15,7 @@ import android.provider.DocumentsContract
 import android.provider.OpenableColumns
 import app.video.player.network.awaitResponse
 import app.video.player.ui.player.resolveLocalPath
+import app.video.player.utils.telemetry.withMeasureTelemetry
 import java.io.BufferedReader
 import java.io.File
 import java.io.FilterInputStream
@@ -92,6 +93,7 @@ object M3UParser {
   private val defaultHttpClient by lazy {
     OkHttpClient
       .Builder()
+      .withMeasureTelemetry()
       .connectTimeout(TIMEOUT_MS, TimeUnit.MILLISECONDS)
       .readTimeout(TIMEOUT_MS, TimeUnit.MILLISECONDS)
       .build()
