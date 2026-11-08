@@ -7,9 +7,11 @@ package app.video.player.ui.browser.music
 import android.net.Uri
 import android.text.format.DateUtils
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -40,13 +42,18 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
@@ -79,6 +86,9 @@ import app.video.player.ui.player.controls.components.tvFocusGroup
 import app.video.player.ui.tv.tvFocusMemory
 import app.video.player.ui.player.PlaybackSession
 import app.video.player.ui.player.controls.components.MiniAudioVisualizer
+import app.video.player.domain.media.model.Video
+import app.video.player.domain.thumbnail.ThumbnailRepository
+import app.video.player.domain.thumbnail.getArtwork
 import app.video.player.ui.theme.AppShapeScale
 import org.koin.compose.koinInject
 
@@ -698,4 +708,78 @@ fun SharedMusicDetailHeader(
       }
     }
   }
+}
+
+@Composable
+fun LocalAlbumArtImage(
+  uri: Uri?,
+  contentDescription: String?,
+  modifier: Modifier = Modifier,
+  audioSong: MusicSong? = null,
+) {
+  val thumbnailRepository = koinInject<ThumbnailRepository>()
+  val revision by thumbnailRepository.cacheRevision.collectAsState()
+  val generator by koinInject<BrowserPreferences>().thumbnailGenerator.collectAsState()
+  val video = remember(audioSong) { audioSong?.toVideo() }
+  val density = LocalDensity.current
+  BoxWithConstraints(modifier = modifier, contentAlignment = Alignment.Center) {
+    val widthPx = with(density) { if (maxWidth.value.isFinite()) maxWidth.roundToPx().coerceAtLeast(1) else 256 }
+    val heightPx = with(density) { if (maxHeight.value.isFinite()) maxHeight.roundToPx().coerceAtLeast(1) else 256 }
+    var retainedBitmap by remember(video, uri, generator, revision) {
+      mutableStateOf<androidx.compose.ui.graphics.ImageBitmap?>(null)
+    }
+    var bitmap by remember(video, uri, widthPx, heightPx, generator, revision) {
+      mutableStateOf(video?.let { thumbnailRepository.peekThumbnailFromMemory(it, widthPx, heightPx) }?.asImageBitmap() ?: retainedBitmap)
+    }
+    LaunchedEffect(video, uri, widthPx, heightPx, generator, revision) {
+      val loaded = if (video != null) {
+        thumbnailRepository.getThumbnail(video, widthPx, heightPx)
+      } else {
+        thumbnailRepository.getArtwork(uri?.toString(), widthPx = widthPx, heightPx = heightPx)
+      }
+      bitmap = loaded?.asImageBitmap()
+      retainedBitmap = bitmap
+    }
+
+    val loaded = bitmap
+    if (loaded != null) {
+      Image(
+        bitmap = loaded,
+        contentDescription = contentDescription,
+        contentScale = ContentScale.Crop,
+        modifier = Modifier.fillMaxSize(),
+      )
+    } else {
+      Icon(
+        imageVector = Icons.RoundedFilled.Audiotrack,
+        contentDescription = contentDescription,
+        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = Modifier.size(24.dp),
+      )
+    }
+  }
+}
+
+private fun MusicSong.toVideo(): Video {
+  return Video(
+    id = id,
+    title = title,
+    displayName = title,
+    path = path,
+    uri = uri,
+    duration = durationMs,
+    durationFormatted = DateUtils.formatElapsedTime(durationMs / 1000),
+    size = size,
+    sizeFormatted = "",
+    dateModified = dateModified,
+    dateAdded = dateAdded,
+    mimeType = "audio/*",
+    bucketId = "",
+    bucketDisplayName = "",
+    width = 0,
+    height = 0,
+    fps = 0f,
+    resolution = "",
+    isAudio = true,
+  )
 }
