@@ -2144,8 +2144,10 @@ fun PlayerControls(
                   },
                 ).constrainAs(seekbar) {
                   linkInBottomStack(BottomSlot.Seekbar)
-                  start.linkTo(parent.start, spacing.large)
-                  end.linkTo(parent.end, spacing.large)
+                  val horizontalSpacing = if (isPortrait) spacing.large else spacing.medium
+                  start.linkTo(parent.start, horizontalSpacing)
+                  end.linkTo(parent.end, horizontalSpacing)
+                  width = Dimension.fillToConstraints
                 }.onSizeChanged { bottomHeights.seekbar = it.height },
           ) {
             val position by PlaybackSession.propInt["time-pos"].collectAsStateWithLifecycle()

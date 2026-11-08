@@ -19,6 +19,7 @@ These notes are written in plain English and focus on what changed for real use.
   - Added `MotionInterpolationPreferences` in Decoder settings with search indexing support.
 - **Build, Dependencies & Diagnostics:**
   - Upgraded mpvlib to 1.1.8.
+  - Optimized CI/CD build and release workflows by removing redundant test/profile compilation steps, enabling Gradle parallel execution with increased memory heap allocation (4GB), build-cache reuse, and resilient archive size reporting.
   - Replaced deprecated file-watcher constructors in `VisibleDirectoryWatcher` with API 29+ `File` constructor and legacy fallback for Android 8/9.
   - Retained explicit device credential fallback in `DeviceCredentialPrompt` for Android 10 and older.
   - Used public OkHttp telemetry hooks and excluded automatic instrumentation to preserve OkHttp 5.5 compatibility.
@@ -40,9 +41,10 @@ These notes are written in plain English and focus on what changed for real use.
   - Cleaned up in-settings search indexing and search navigation anchors across the application.
   - Streamlined the application strictly for video playback.
 - **UI & Gestures:**
-  - Refined player layout overflow with `FlowRow` wrapping for action buttons, custom layout positioning for landscape controls, and unified 8dp section spacing accounting for glass shadow padding.
-  - Added optional "Grayscale watched thumbnails" toggle in Sort & View options across video lists, file tree, playlists, and recently played views.
-  - Stripped media extension from player control titles when the extension field toggle is disabled.
+  - Increased seekbar timer clock font size and readability, ensuring single-line alignment with `maxLines = 1`, `softWrap = false`, and adaptive container width so remaining time never wraps to a second row.
+  - Expanded seekbar length in landscape mode with full width constraint filling and optimized horizontal margins.
+  - Ensured top right player controls always align in a single horizontal line with smooth horizontal scroll overflow rather than wrapping into multiple rows.
+  - Refined player layout overflow, custom layout positioning for landscape controls, and unified 8dp section spacing accounting for glass shadow padding.
   - Added optional "Grayscale watched thumbnails" toggle in Sort & View options across video lists, file tree, playlists, and recently played views.
   - Stripped media extension from player control titles when the extension field toggle is disabled.
   - Updated swipe-to-delete confirmation dialog text color to clear black for better readability.

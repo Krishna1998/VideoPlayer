@@ -3,7 +3,6 @@ package app.video.player.ui.player.controls
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
@@ -29,12 +28,21 @@ internal fun LandscapeActionGroup(
   fillWidth: Boolean = true,
   renderButton: @Composable (PlayerButton) -> Unit,
 ) {
-  FlowRow(
-    modifier = modifier.then(if (fillWidth) Modifier.fillMaxWidth() else Modifier),
-    horizontalArrangement = Arrangement.spacedBy(
-      LandscapeActionGap, if (endAligned) Alignment.End else Alignment.Start,
-    ),
-    verticalArrangement = Arrangement.spacedBy(LandscapeActionGap),
+  Row(
+    modifier =
+      modifier
+        .then(if (fillWidth) Modifier.fillMaxWidth() else Modifier)
+        .fadingHorizontalScroll(
+          rememberScrollState(),
+          reverseScrolling = endAligned,
+          shadowRoom = 0.dp,
+        ),
+    horizontalArrangement =
+      Arrangement.spacedBy(
+        LandscapeActionGap,
+        if (endAligned) Alignment.End else Alignment.Start,
+      ),
+    verticalAlignment = Alignment.CenterVertically,
   ) {
     buttons.filterNot { it == PlayerButton.NONE }.forEach { button ->
       key(button) {
@@ -63,15 +71,13 @@ internal fun LandscapeControlsRow(
     ) {
       LandscapeActionGroup(
         buttons = leftButtons,
-        modifier = Modifier.weight(1f).then(leftModifier)
-          .fadingHorizontalScroll(rememberScrollState(), shadowRoom = 0.dp),
+        modifier = Modifier.weight(1f).then(leftModifier),
         renderButton = renderButton,
       )
       Box(Modifier.width(playbackWidth), contentAlignment = Alignment.Center) { playbackControls() }
       LandscapeActionGroup(
         buttons = rightButtons,
-        modifier = Modifier.weight(1f).then(rightModifier)
-          .fadingHorizontalScroll(rememberScrollState(), reverseScrolling = true, shadowRoom = 0.dp),
+        modifier = Modifier.weight(1f).then(rightModifier),
         endAligned = true,
         renderButton = renderButton,
       )

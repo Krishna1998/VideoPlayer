@@ -32,7 +32,10 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.focus.focusProperties
@@ -444,9 +447,9 @@ internal fun SeekbarWithTimers(
     }
   } else {
     Row(
-      modifier = modifier.height(if (showWavyVisualizer) 64.dp else 48.dp),
+      modifier = modifier.fillMaxWidth().height(if (showWavyVisualizer) 64.dp else 48.dp),
       verticalAlignment = Alignment.CenterVertically,
-      horizontalArrangement = Arrangement.spacedBy(2.dp),
+      horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
       VideoTimer(
         value = if (isUserInteracting) userPosition else position,
@@ -456,7 +459,7 @@ internal fun SeekbarWithTimers(
           clickEvent()
           positionTimerOnClick()
         },
-        modifier = Modifier.width(60.dp),
+        modifier = Modifier.widthIn(min = 64.dp).wrapContentWidth(),
       )
 
       SeekbarContent(
@@ -496,7 +499,7 @@ internal fun SeekbarWithTimers(
           clickEvent()
           durationTimerOnCLick()
         },
-        modifier = Modifier.width(60.dp),
+        modifier = Modifier.widthIn(min = 64.dp).wrapContentWidth(),
       )
     }
   }
@@ -2324,7 +2327,9 @@ fun VideoTimer(
     text = timeText,
     color = textColor,
     textAlign = TextAlign.Center,
-    style = MaterialTheme.typography.labelSmall.withTabularDigits().copy(fontSize = 11.sp),
+    maxLines = 1,
+    softWrap = false,
+    style = MaterialTheme.typography.labelMedium.withTabularDigits().copy(fontSize = 13.5.sp, fontWeight = FontWeight.Medium),
   )
 }
 
