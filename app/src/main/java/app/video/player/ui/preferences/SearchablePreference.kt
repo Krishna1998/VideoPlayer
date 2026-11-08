@@ -1706,10 +1706,6 @@ object SearchablePreferences {
       R.string.ui_yt_dlp_manager,
       R.string.ytdlp_subtitles_language,
       R.string.ytdlp_playlist_behavior,
-      R.string.pref_lyrics_auto_translate,
-      R.string.pref_lyrics_target_language,
-      R.string.pref_lyrics_display_mode,
-      R.string.pref_paxsenix_api_key,
     )
 
   private val excludedSearchScreens: Set<Screen> = emptySet()
