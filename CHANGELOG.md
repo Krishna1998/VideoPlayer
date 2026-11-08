@@ -29,6 +29,14 @@ These notes are written in plain English and focus on what changed for real use.
   - Retry suspended video selection after position restoration publishes READY state (recovering Surface readiness during LOADING).
   - Added bounded unlock recovery for visible PiP when keyguard state changes after screen broadcasts.
   - Read notification positions strictly from the matching loaded file and preserve native playback speed across queue changes.
+- **Audio Player UI, Sheets & Lyrics Removal (App Size Reduction):**
+  - Completely removed the dedicated music/audio player interface (`AudioPlayerControls`, `AudioPlayerScreen`), eliminating thousands of lines of unused UI components.
+  - Completely removed the in-app music player sheet (`InAppMusicPlayerSheet`), sheet drag gesture handlers, and navigation back-press intercepts.
+  - Removed the audio wavy seekbar component and real-time audio visualizer engine (`AudioSpectrumAnalyzer`, `AudioFeatures`, `AudioReactiveSmoother`, `OneUiWaveVisualizer`, `VisualizerPalette`).
+  - Removed Apple Music remote motion artwork repository and motion artwork querying infrastructure.
+  - Removed entire lyrics subsystem including 21 online lyrics providers (LrcLib, Musixmatch, Genius, KuGou, YouTube, etc.), embedded lyrics extractor, lyrics translation service, lyrics sheets, and provider pickers.
+  - Cleaned up Koin dependency injection declarations and removed unused audio orientation and audio ambient preference keys.
+  - Unified all media playback to launch directly into standard `PlayerActivity` and `PlayerControls`, significantly reducing APK size, code footprint, and memory overhead.
 - **Removed Music Section:**
   - Completely removed the dedicated Music library tab and destination from the bottom navigation bar and TV side navigation rail.
   - Removed local music library scanning, artist image caching, and music tab customization settings.

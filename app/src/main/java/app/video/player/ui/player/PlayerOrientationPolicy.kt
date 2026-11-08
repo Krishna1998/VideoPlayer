@@ -5,7 +5,6 @@
 package app.video.player.ui.player
 
 import android.content.pm.ActivityInfo
-import app.video.player.preferences.AudioPlayerOrientation
 
 /**
  * Single source of truth for which `requestedOrientation` the player should hold.
@@ -59,13 +58,6 @@ internal object PlayerOrientationPolicy {
       PlayerOrientation.Landscape -> ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
       PlayerOrientation.ReverseLandscape -> ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE
       PlayerOrientation.SensorLandscape -> ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
-    }
-
-  fun forAudioPreference(preference: AudioPlayerOrientation): Int =
-    when (preference) {
-      AudioPlayerOrientation.Auto -> ActivityInfo.SCREEN_ORIENTATION_SENSOR
-      AudioPlayerOrientation.Portrait -> ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
-      AudioPlayerOrientation.Landscape -> ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
     }
 
   /**

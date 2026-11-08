@@ -116,7 +116,6 @@ import app.video.player.ui.icons.Icon
 import app.video.player.ui.icons.AnimatedIcon
 import app.video.player.ui.icons.Icons
 import app.video.player.ui.player.DeclaredPlaybackMediaKind
-import app.video.player.ui.player.LocalInAppMusicSheet
 import app.video.player.ui.player.MediaPlaybackService
 import app.video.player.ui.player.PlaybackPhase
 import app.video.player.ui.player.PlaybackSession
@@ -125,7 +124,6 @@ import app.video.player.ui.player.PlayerSheetDestination
 import app.video.player.ui.player.PlayerSheetTransitions
 import app.video.player.ui.player.TrackNode
 import app.video.player.ui.player.declaredMediaKind
-import app.video.player.ui.player.inAppMusicSheetDrag
 import app.video.player.ui.player.playerSheetAnchor
 import app.video.player.ui.player.swipeUpToFullPlayer
 import app.video.player.ui.player.toObject
@@ -378,14 +376,10 @@ private fun MiniPlayerContent(
   val towardCloseButton = if (LocalLayoutDirection.current == LayoutDirection.Rtl) -1f else 1f
   val reduceMotion = AppMotion.playerReducedMotion()
   val currentOnDismiss by rememberUpdatedState(onDismiss)
-  val musicSheet = LocalInAppMusicSheet.current
-  val useInAppSheet = isAudioOnlyItem && musicSheet?.isAvailable == true
   val isTelevision = DeviceFormFactor.isTelevision(context)
 
-  val launchPlayer = remember(context, isAudioOnlyItem, reduceMotion, musicSheet) {
+  val launchPlayer = remember(context, isAudioOnlyItem, reduceMotion) {
     launch@{
-      // Music opens as a live sheet in this window; video and TV keep the player screen.
-      if (isAudioOnlyItem && musicSheet?.isAvailable == true) return@launch musicSheet.expand()
       val mediaId = PlaybackSession.state.value.currentItem?.stableId
       if (!PlayerSheetTransitions.holdExpansion(mediaId)) return@launch false
       videoSurface[0]?.setPlaybackActive(false)
@@ -529,23 +523,14 @@ private fun MiniPlayerContent(
       )
       .clip(miniPlayerShape)
       .then(
-        when {
-          // A remote cannot drag; the title and the buttons cover expanding and dismissing.
-          isTelevision -> Modifier
-          useInAppSheet ->
-            // The live sheet follows the finger from the first pixel; touching down starts warming it.
-            Modifier.inAppMusicSheetDrag(
-              state = musicSheet,
-              collapsing = false,
-              enabled = !tossed,
-              onDown = musicSheet::prewarm,
-            )
-          else ->
-            Modifier.swipeUpToFullPlayer(
-              mediaId = currentItem?.stableId,
-              animateSheet = isAudioOnlyItem,
-              onExpand = { !tossed && launchPlayer() },
-            )
+        if (isTelevision) {
+          Modifier
+        } else {
+          Modifier.swipeUpToFullPlayer(
+            mediaId = currentItem?.stableId,
+            animateSheet = isAudioOnlyItem,
+            onExpand = { !tossed && launchPlayer() },
+          )
         },
       )
       .pointerInput(dismissThresholdPx, dismissFlingVelocityPx, reduceMotion, isTelevision) {

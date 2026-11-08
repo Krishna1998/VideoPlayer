@@ -618,28 +618,6 @@ fun PlayerSheets(
       )
     }
 
-    Sheets.Lyrics -> {
-      app.video.player.ui.player.controls.components.sheets.LyricsSheet(
-        viewModel = viewModel,
-        onDismiss = onDismissRequest,
-        onOpenProviderSheet = {
-          viewModel.lyricsProviderSheetOrigin = Sheets.Lyrics
-          onShowSheet(Sheets.LyricsProvider)
-        },
-      )
-    }
-
-    Sheets.LyricsProvider -> {
-      app.video.player.ui.player.controls.components.sheets.LyricsProviderSheet(
-        viewModel = viewModel,
-        onDismissRequest = {
-          val origin = viewModel.lyricsProviderSheetOrigin
-          viewModel.lyricsProviderSheetOrigin = Sheets.None
-          onShowSheet(origin)
-        },
-      )
-    }
-
     Sheets.Scopes -> {
       ScopesSheet(
         viewModel = viewModel,

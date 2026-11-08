@@ -36,7 +36,6 @@ import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.video.player.R
-import app.video.player.data.lyrics.LyricsLanguageOptions
 import app.video.player.data.network.client.NetworkMimeTypes
 import app.video.player.data.network.proxy.NetworkStreamingProxy
 import app.video.player.domain.anime4k.Anime4KManager
@@ -230,8 +229,6 @@ class PlayerViewModel(
   private val onlineSubtitleOrchestrator: OnlineSubtitleOrchestrator by inject()
   private val introDbRepository: IntroDbRepository by inject()
   val syncplayManager: app.video.player.domain.syncplay.SyncplayManager by inject()
-  private val lyricsRepository: app.video.player.repository.lyrics.LyricsRepository by inject()
-  private val lyricsTranslationService: app.video.player.data.lyrics.LyricsTranslationService by inject()
   private val introMarkerCachePrefs by lazy {
     appContext.getSharedPreferences(INTRO_MARKER_CACHE_PREFS, Context.MODE_PRIVATE)
   }
@@ -1016,36 +1013,6 @@ class PlayerViewModel(
     )
   private var equalizerMpvDebounceJob: Job? = null
 
-  data class LyricsUiState(
-    val isLoading: Boolean = false,
-    val isTranslating: Boolean = false,
-    val isTranslationActive: Boolean = false,
-    val targetLanguage: String = "en",
-    val lyrics: app.video.player.domain.lyrics.Lyrics? = null,
-    val originalLyrics: app.video.player.domain.lyrics.Lyrics? = null,
-    val embeddedLyrics: app.video.player.domain.lyrics.Lyrics? = null,
-    val onlineLyrics: app.video.player.domain.lyrics.Lyrics? = null,
-    val activeLineIndex: Int = -1,
-    val selectedSource: app.video.player.domain.lyrics.LyricsSourceType = app.video.player.domain.lyrics.LyricsSourceType.EMBEDDED,
-    val availableSources: List<app.video.player.domain.lyrics.LyricsSourceType> = emptyList(),
-    /** Which provider the current online lyrics actually came from. */
-    val onlineProvider: app.video.player.domain.lyrics.LyricsProvider? = null,
-    /** What the picker is set to, or null for the automatic lookup. */
-    val preferredProvider: app.video.player.domain.lyrics.LyricsProvider? = null,
-    /** Every provider that has answered for this track, for the source sheet. */
-    val fetchedProviders: Set<app.video.player.domain.lyrics.LyricsProvider> = emptySet(),
-    /** Providers asked for this track that came back empty. */
-    val missingProviders: Set<app.video.player.domain.lyrics.LyricsProvider> = emptySet(),
-    /** Providers asked for this track that errored out or timed out. */
-    val failedProviders: Set<app.video.player.domain.lyrics.LyricsProvider> = emptySet(),
-    /** Whether this item may be looked up online at all (false for audiobooks). */
-    val onlineEnabled: Boolean = false,
-    val syncOffsetMs: Int = 0,
-    val errorMessage: String? = null,
-  )
-
-  val lyricsUiState = MutableStateFlow(LyricsUiState())
-
   private val _mediaScopesUiState =
     MutableStateFlow(
       app.video.player.ui.player.scopes.MediaScopesUiState(
@@ -1094,45 +1061,6 @@ class PlayerViewModel(
     val bounded = frameRate.coerceIn(5, 30)
     playerPreferences.mediaScopeFrameRate.set(bounded)
     _mediaScopesUiState.update { it.copy(frameRate = bounded) }
-  }
-
-  private data class LyricsLoadRequest(
-    val path: String,
-    val title: String,
-    val artist: String,
-    val durationSeconds: Int,
-    val allowOnline: Boolean,
-    val autoFetchOnline: Boolean,
-    val album: String?,
-    val isrc: String?,
-  )
-
-  private var lyricsLoadJob: Job? = null
-  private var lyricsTranslateJob: Job? = null
-  private var lastLyricsLoadRequest: LyricsLoadRequest? = null
-
-  /** The file the lyrics state on screen belongs to, so a track change nobody saw is noticed. */
-  private var lyricsStatePath: String? = null
-
-  /**
-   * Brings the lyrics back in line with what is actually playing.
-   *
-   * Lyrics are normally reloaded by [onVideoLoadCompleted], which only runs while the player
-   * screen is alive. With the app in the background the queue keeps advancing, so on return
-   * the panel still held the previous song's lyrics. This is called when the track changes
-   * and when the screen resumes, and does nothing if the lyrics already belong to this file.
-   */
-  fun syncLyricsWithPlayback() {
-    // A collapsed in-app sheet must not fetch lyrics for playback it is not showing.
-    if (hostedInBrowser && !_isMpvCoreReady.value) return
-    if (!isAudioOnly.value) return
-    val path = currentLyricsPath() ?: return
-    if (path == lyricsStatePath) return
-    lyricsLoadJob?.cancel()
-    lyricsTranslateJob?.cancel()
-    lastLyricsLoadRequest = null
-    lyricsUiState.value = LyricsUiState()
-    loadLyricsForCurrentTrack()
   }
 
   fun setEqualizerEnabled(enabled: Boolean) {
@@ -1195,468 +1123,6 @@ class PlayerViewModel(
     equalizerState.value = equalizerState.value.copy(toneFocused = focused)
     audioPreferences.equalizerFocused.set(focused)
     applyEqualizerMpvFilters(immediate = true)
-  }
-
-  private fun currentLyricsPath(): String? = PlaybackSession.state.value.currentItem?.originalUri?.takeIf(String::isNotBlank)
-    ?: PlaybackSession.getPropertyString("path") ?: PlaybackSession.getPropertyString("stream-open-filename")
-
-  /** Queue song metadata is stable across track changes; native/display tags can lag behind. */
-  private fun currentLyricsTitle(): String =
-    PlaybackSession.state.value.currentItem?.title?.takeIf { it.isNotBlank() }
-      ?: PlaybackSession.getPropertyString("metadata/by-key/Title")?.takeIf { it.isNotBlank() }
-      ?: currentMediaTitle.takeIf { it.isNotBlank() }
-      ?: PlaybackSession.getPropertyString("media-title").orEmpty()
-
-  private fun currentLyricsArtist(): String =
-    PlaybackSession.state.value.currentItem?.artist?.takeIf { it.isNotBlank() }
-      ?: PlaybackSession.getPropertyString("metadata/by-key/Artist")
-      ?: PlaybackSession.getPropertyString("metadata/by-key/ARTIST")
-      ?: PlaybackSession.getPropertyString("metadata/by-key/album_artist")
-      ?: ""
-
-  fun loadLyricsForCurrentTrack(
-    forceRefresh: Boolean = false,
-    titleOverride: String? = null,
-    forceOnline: Boolean = false,
-  ) {
-    val session = PlaybackSession.state.value
-    // Do not send the previous song's native tags to online providers during file loading.
-    if (session.phase != PlaybackPhase.READY && session.phase != PlaybackPhase.BACKGROUND) return
-    val allowOnline = session.currentItem?.audiobook == null
-    val path = currentLyricsPath() ?: return
-    if (path.isBlank()) return
-    if (forceRefresh) lyricsRepository.invalidate(path, allowOnline)
-    val generation = session.generation
-
-    val title = titleOverride ?: currentLyricsTitle()
-    val artist = currentLyricsArtist()
-    val duration = session.currentItem?.durationSeconds?.takeIf { it > 0 }
-      ?: PlaybackSession.getPropertyDouble("duration")?.toInt() ?: 0
-    val album = PlaybackSession.getPropertyString("metadata/by-key/Album")
-      ?: PlaybackSession.getPropertyString("metadata/by-key/album")
-    val isrc = PlaybackSession.getPropertyString("metadata/by-key/isrc")
-    val request = LyricsLoadRequest(
-      path, title, artist, duration, allowOnline, audioPreferences.lyricsAutoFetchOnline.get(), album, isrc,
-    )
-    if (!forceRefresh && !forceOnline && request == lastLyricsLoadRequest) return
-    lastLyricsLoadRequest = request
-    val isNewTrack = lyricsStatePath != path
-    lyricsStatePath = path
-
-    lyricsUiState.value = if (isNewTrack) {
-      LyricsUiState(isLoading = true, onlineEnabled = allowOnline)
-    } else {
-      lyricsUiState.value.copy(
-        isLoading = true,
-        errorMessage = null,
-        syncOffsetMs = 0,
-        onlineEnabled = allowOnline,
-      )
-    }
-
-    // Cancel any in-flight lyrics load/translate for the previous track, otherwise a slow
-    // fetch for the old song can resolve after the new song's fetch and overwrite it with
-    // stale (previous track's) lyrics.
-    lyricsLoadJob?.cancel()
-    lyricsTranslateJob?.cancel()
-
-    lyricsLoadJob = viewModelScope.launch(Dispatchers.IO) {
-      val result = lyricsRepository.loadLyricsForTrack(
-        mediaPath = path,
-        title = title,
-        artist = artist,
-        durationSeconds = duration,
-        forceRefresh = forceRefresh,
-        allowOnline = allowOnline,
-        forceOnline = forceOnline,
-        album = album,
-        isrc = isrc,
-      )
-
-      ensureActive()
-      // The track may have changed again while this fetch was in-flight; only apply the
-      // result if we're still on the same track (extra guard on top of job cancellation).
-      val stillCurrentPath = currentLyricsPath()
-      if (!PlaybackSession.isCurrentGeneration(generation) || stillCurrentPath != path) return@launch
-
-      val activeIndex = app.video.player.utils.media.LyricsUtils.getActiveLineIndex(
-        syncedLines = result.activeLyrics?.synced,
-        positionMs = (precisePosition.value * 1000).toLong(),
-        offsetMs = 0,
-      )
-      val autoTranslate = allowOnline && audioPreferences.lyricsAutoTranslate.get()
-      val defaultTargetLang = LyricsLanguageOptions.sanitize(audioPreferences.lyricsTargetLanguage.get())
-
-      lyricsUiState.value = lyricsUiState.value.copy(
-        isLoading = false,
-        isTranslationActive = false,
-        targetLanguage = defaultTargetLang,
-        lyrics = result.activeLyrics,
-        originalLyrics = result.activeLyrics,
-        embeddedLyrics = result.embeddedLyrics,
-        onlineLyrics = result.onlineLyrics,
-        activeLineIndex = activeIndex,
-        selectedSource = result.selectedSource,
-        availableSources = result.availableSources,
-        onlineProvider = result.onlineProvider,
-        preferredProvider = result.preferredOnlineProvider,
-        fetchedProviders = result.onlineByProvider.keys,
-        missingProviders = result.missingProviders,
-        failedProviders = result.failedProviders,
-        onlineEnabled = allowOnline,
-        syncOffsetMs = 0,
-      )
-
-      val hasSynced = result.activeLyrics?.synced?.isNotEmpty() == true
-
-      if (autoTranslate && hasSynced) {
-        translateLyrics(defaultTargetLang)
-      }
-    }
-  }
-
-  /**
-   * The "Search Online" action behind an empty panel.
-   *
-   * The automatic load can come back empty because the query mpv publishes for
-   * the track had not landed yet, and that empty answer sits in the cache. This
-   * drops the cached answer and searches again, using the file name when the
-   * metadata is still missing, so the first tap always asks the providers.
-   */
-  fun searchLyricsOnline() {
-    val path = currentLyricsPath() ?: return
-    loadLyricsForCurrentTrack(forceRefresh = true, titleOverride = trackSearchTitle(path), forceOnline = true)
-  }
-
-  /** What to search for when mpv has not published a title for [mediaPath] yet. */
-  private fun trackSearchTitle(mediaPath: String): String {
-    val fromMetadata = currentLyricsTitle().takeIf { it.isNotBlank() }
-    if (!fromMetadata.isNullOrBlank()) return fromMetadata
-    return mediaPath
-      .substringAfterLast('/')
-      .substringBefore('?')
-      .substringBeforeLast('.')
-      .replace(Regex("""[._]+"""), " ")
-      .trim()
-  }
-
-  fun switchLyricsSource(sourceType: app.video.player.domain.lyrics.LyricsSourceType) {
-    val allowOnline = PlaybackSession.state.value.currentItem?.audiobook == null
-    if (!allowOnline && sourceType == app.video.player.domain.lyrics.LyricsSourceType.ONLINE) return
-    val path = currentLyricsPath() ?: return
-    if (path.isBlank()) return
-
-    if (lyricsStatePath != path) return
-    val current = lyricsUiState.value
-    val autoTranslate = allowOnline && audioPreferences.lyricsAutoTranslate.get()
-    val defaultTargetLang = LyricsLanguageOptions.sanitize(audioPreferences.lyricsTargetLanguage.get())
-
-    if (sourceType == app.video.player.domain.lyrics.LyricsSourceType.ONLINE && current.onlineLyrics == null) {
-      lyricsUiState.value = current.copy(isLoading = true)
-      lyricsLoadJob?.cancel()
-      lyricsTranslateJob?.cancel()
-      val generation = PlaybackSession.state.value.generation
-      lyricsLoadJob = viewModelScope.launch(Dispatchers.IO) {
-        val title = currentLyricsTitle()
-        val artist = currentLyricsArtist()
-        val duration = PlaybackSession.state.value.currentItem?.durationSeconds?.takeIf { it > 0 }
-          ?: PlaybackSession.getPropertyDouble("duration")?.toInt() ?: 0
-        val album = PlaybackSession.getPropertyString("metadata/by-key/Album")
-          ?: PlaybackSession.getPropertyString("metadata/by-key/album")
-
-        val fetched = lyricsRepository.fetchOnlineLyrics(
-          rawTitle = title,
-          rawArtist = artist,
-          durationSeconds = duration,
-          provider = lyricsRepository.preferredProvider,
-          album = album,
-          mediaPath = path,
-        )
-
-        ensureActive()
-        if (!PlaybackSession.isCurrentGeneration(generation) || currentLyricsPath() != path ||
-          lyricsStatePath != path) return@launch
-
-        val updated = lyricsRepository.mergeOnline(path, fetched, allowOnline)
-        val online = updated?.onlineLyrics ?: fetched.lyrics
-        val updatedSources = if (online != null) {
-          (current.availableSources + app.video.player.domain.lyrics.LyricsSourceType.ONLINE).distinct()
-        } else {
-          current.availableSources
-        }
-        val activeLyrics = online ?: current.embeddedLyrics
-        val activeIndex = app.video.player.utils.media.LyricsUtils.getActiveLineIndex(
-          syncedLines = activeLyrics?.synced,
-          positionMs = (precisePosition.value * 1000).toLong(),
-          offsetMs = current.syncOffsetMs,
-        )
-        val hasSynced = activeLyrics?.synced?.isNotEmpty() == true
-
-        lyricsUiState.value = current.copy(
-          isLoading = false,
-          isTranslationActive = false,
-          onlineLyrics = online,
-          lyrics = activeLyrics,
-          originalLyrics = activeLyrics,
-          selectedSource = if (online != null) app.video.player.domain.lyrics.LyricsSourceType.ONLINE else current.selectedSource,
-          availableSources = updatedSources,
-          onlineProvider = updated?.onlineProvider ?: fetched.provider,
-          preferredProvider = updated?.preferredOnlineProvider ?: if (fetched.raced) null else fetched.provider,
-          fetchedProviders = (updated?.onlineByProvider ?: fetched.byProvider).keys,
-          missingProviders = updated?.missingProviders ?: fetched.missing,
-          failedProviders = updated?.failedProviders ?: fetched.failed,
-          activeLineIndex = activeIndex,
-        )
-
-        if (autoTranslate && hasSynced) {
-          translateLyrics(defaultTargetLang)
-        }
-      }
-      return
-    }
-
-    val updatedResult = lyricsRepository.switchSource(path, sourceType, allowOnline)
-    if (updatedResult != null) {
-      val activeLyrics = updatedResult.activeLyrics
-      val activeIndex = app.video.player.utils.media.LyricsUtils.getActiveLineIndex(
-        syncedLines = activeLyrics?.synced,
-        positionMs = (precisePosition.value * 1000).toLong(),
-        offsetMs = current.syncOffsetMs,
-      )
-      val hasSynced = activeLyrics?.synced?.isNotEmpty() == true
-
-      lyricsUiState.value = current.copy(
-        lyrics = activeLyrics,
-        originalLyrics = activeLyrics,
-        isTranslationActive = false,
-        selectedSource = updatedResult.selectedSource,
-        activeLineIndex = activeIndex,
-        fetchedProviders = updatedResult.onlineByProvider.keys,
-        missingProviders = updatedResult.missingProviders,
-        failedProviders = updatedResult.failedProviders,
-      )
-
-      if (autoTranslate && hasSynced) {
-        translateLyrics(defaultTargetLang)
-      }
-    }
-  }
-
-  /**
-   * Moves the online half of the panel onto [provider], or back onto the
-   * automatic lookup when it is null.
-   *
-   * An answer already fetched for this track is reused; only a source the
-   * track has not been asked yet costs a request, and a source that misses
-   * falls through to the automatic lookup rather than blanking the panel.
-   */
-  fun switchLyricsProvider(provider: app.video.player.domain.lyrics.LyricsProvider?) {
-    val allowOnline = PlaybackSession.state.value.currentItem?.audiobook == null
-    if (!allowOnline) return
-    val path = currentLyricsPath() ?: return
-    if (path.isBlank() || lyricsStatePath != path) return
-    val generation = PlaybackSession.state.value.generation
-
-    val current = lyricsUiState.value
-    val autoTranslate = audioPreferences.lyricsAutoTranslate.get()
-    val defaultTargetLang = LyricsLanguageOptions.sanitize(audioPreferences.lyricsTargetLanguage.get())
-
-    lyricsLoadJob?.cancel()
-    lyricsTranslateJob?.cancel()
-    val cached = lyricsRepository.switchProvider(path, provider, allowOnline)
-    if (cached != null && cached.onlineLyrics != null) {
-      val activeLyrics = cached.onlineLyrics
-      lyricsUiState.value = current.copy(
-        isLoading = false,
-        lyrics = activeLyrics,
-        originalLyrics = activeLyrics,
-        onlineLyrics = activeLyrics,
-        isTranslationActive = false,
-        selectedSource = app.video.player.domain.lyrics.LyricsSourceType.ONLINE,
-        onlineProvider = cached.onlineProvider,
-        preferredProvider = cached.preferredOnlineProvider,
-        fetchedProviders = cached.onlineByProvider.keys,
-        missingProviders = cached.missingProviders,
-        failedProviders = cached.failedProviders,
-        activeLineIndex = currentActiveLineIndex(activeLyrics, current.syncOffsetMs),
-        availableSources = (current.availableSources + app.video.player.domain.lyrics.LyricsSourceType.ONLINE)
-          .distinct(),
-        errorMessage = null,
-      )
-      if (autoTranslate && activeLyrics.synced?.isNotEmpty() == true) translateLyrics(defaultTargetLang)
-      return
-    }
-
-    lyricsUiState.value = current.copy(isLoading = true, errorMessage = null, preferredProvider = provider)
-    lyricsLoadJob = viewModelScope.launch(Dispatchers.IO) {
-      val title = currentLyricsTitle()
-      val artist = currentLyricsArtist()
-      val duration = PlaybackSession.state.value.currentItem?.durationSeconds?.takeIf { it > 0 }
-        ?: PlaybackSession.getPropertyDouble("duration")?.toInt() ?: 0
-      val album = PlaybackSession.getPropertyString("metadata/by-key/Album")
-        ?: PlaybackSession.getPropertyString("metadata/by-key/album")
-
-      val fetched = lyricsRepository.fetchOnlineLyrics(
-        rawTitle = title,
-        rawArtist = artist,
-        durationSeconds = duration,
-        provider = provider,
-        album = album,
-        mediaPath = path,
-      )
-
-      ensureActive()
-      if (!PlaybackSession.isCurrentGeneration(generation) || currentLyricsPath() != path) return@launch
-
-      val updated = lyricsRepository.mergeOnline(path, fetched, allowOnline)
-      val online = updated?.onlineLyrics ?: fetched.lyrics
-      val activeLyrics = online ?: current.embeddedLyrics
-      val hasSynced = activeLyrics?.synced?.isNotEmpty() == true
-      val answered = (updated?.onlineByProvider ?: fetched.byProvider).keys
-      val failed = updated?.failedProviders ?: ((current.failedProviders - answered - fetched.missing) + fetched.failed)
-      val missing = updated?.missingProviders ?: ((current.missingProviders - answered - fetched.failed) + fetched.missing)
-
-      lyricsUiState.value = current.copy(
-        isLoading = false,
-        isTranslationActive = false,
-        onlineLyrics = online,
-        lyrics = activeLyrics,
-        originalLyrics = activeLyrics,
-        selectedSource = if (online == null) {
-          current.selectedSource
-        } else {
-          app.video.player.domain.lyrics.LyricsSourceType.ONLINE
-        },
-        availableSources = if (online == null) {
-          current.availableSources
-        } else {
-          (current.availableSources + app.video.player.domain.lyrics.LyricsSourceType.ONLINE).distinct()
-        },
-        onlineProvider = updated?.onlineProvider ?: fetched.provider,
-        preferredProvider = updated?.preferredOnlineProvider ?: if (fetched.raced) null else fetched.provider,
-        fetchedProviders = answered,
-        missingProviders = missing,
-        failedProviders = failed,
-        activeLineIndex = currentActiveLineIndex(activeLyrics, current.syncOffsetMs),
-        errorMessage = if (online == null && provider != null) {
-          appContext.getString(R.string.lyrics_provider_not_found, provider.label)
-        } else {
-          null
-        },
-      )
-
-      if (autoTranslate && hasSynced) translateLyrics(defaultTargetLang)
-    }
-  }
-
-  private fun currentActiveLineIndex(
-    lyrics: app.video.player.domain.lyrics.Lyrics?,
-    offsetMs: Int,
-  ): Int = app.video.player.utils.media.LyricsUtils.getActiveLineIndex(
-    syncedLines = lyrics?.synced,
-    positionMs = (precisePosition.value * 1000).toLong(),
-    offsetMs = offsetMs,
-  )
-
-  fun adjustLyricsSyncOffset(deltaMs: Int) {
-    val newOffset = lyricsUiState.value.syncOffsetMs + deltaMs
-    lyricsUiState.value = lyricsUiState.value.copy(syncOffsetMs = newOffset)
-    updateLyricsActiveLine()
-  }
-
-  fun resetLyricsSyncOffset() {
-    lyricsUiState.value = lyricsUiState.value.copy(syncOffsetMs = 0)
-    updateLyricsActiveLine()
-  }
-
-  fun updateLyricsActiveLine() {
-    val state = lyricsUiState.value
-    val synced = state.lyrics?.synced ?: return
-    val posMs = (precisePosition.value * 1000).toLong()
-    val index = app.video.player.utils.media.LyricsUtils.getActiveLineIndex(synced, posMs, state.syncOffsetMs)
-    if (index != state.activeLineIndex) {
-      lyricsUiState.value = state.copy(activeLineIndex = index)
-    }
-  }
-
-  fun translateLyrics(targetLang: String? = null) {
-    // Play builds omit translation: it relies on Google Translate's unofficial web endpoint.
-    if (app.video.player.BuildConfig.IS_PLAY_STORE_BUILD) return
-    val current = lyricsUiState.value
-    val baseLyrics = current.originalLyrics ?: current.lyrics ?: return
-    val lang = LyricsLanguageOptions.sanitize(targetLang ?: audioPreferences.lyricsTargetLanguage.get())
-    val path = currentLyricsPath() ?: return
-    if (lyricsStatePath != path) return
-    val generation = PlaybackSession.state.value.generation
-
-    audioPreferences.lyricsAutoTranslate.set(true)
-    audioPreferences.lyricsTargetLanguage.set(lang)
-
-    lyricsUiState.value = current.copy(
-      isTranslating = true,
-      targetLanguage = lang,
-      originalLyrics = current.originalLyrics ?: current.lyrics,
-      errorMessage = null,
-    )
-
-    lyricsTranslateJob?.cancel()
-    lyricsTranslateJob = viewModelScope.launch(Dispatchers.IO) {
-      val outcome = lyricsTranslationService.translateLyrics(
-        lyrics = baseLyrics,
-        targetLanguage = lang,
-        cacheKey = path,
-      )
-
-      // Bail out if the track changed while translation was in-flight, so a slow
-      // translation for the previous song can't overwrite the new song's lyrics.
-      ensureActive()
-      if (!PlaybackSession.isCurrentGeneration(generation) || currentLyricsPath() != path ||
-        lyricsStatePath != path) return@launch
-
-      if (!outcome.isSuccessful) {
-        lyricsUiState.value = lyricsUiState.value.copy(
-          isTranslating = false,
-          isTranslationActive = false,
-          lyrics = baseLyrics,
-          errorMessage = appContext.getString(R.string.lyrics_translation_failed),
-        )
-        return@launch
-      }
-
-      val translated = outcome.lyrics
-      val activeIndex = app.video.player.utils.media.LyricsUtils.getActiveLineIndex(
-        syncedLines = translated.synced,
-        positionMs = (precisePosition.value * 1000).toLong(),
-        offsetMs = current.syncOffsetMs,
-      )
-      lyricsUiState.value = lyricsUiState.value.copy(
-        isTranslating = false,
-        isTranslationActive = true,
-        lyrics = translated,
-        activeLineIndex = activeIndex,
-        errorMessage =
-          if (outcome.isComplete) null else appContext.getString(R.string.lyrics_translation_partial),
-      )
-    }
-  }
-
-  fun showOriginalLyrics() {
-    audioPreferences.lyricsAutoTranslate.set(false)
-    lyricsTranslateJob?.cancel()
-    val current = lyricsUiState.value
-    val original = current.originalLyrics ?: current.lyrics ?: return
-    val activeIndex = app.video.player.utils.media.LyricsUtils.getActiveLineIndex(
-      syncedLines = original.synced,
-      positionMs = (precisePosition.value * 1000).toLong(),
-      offsetMs = current.syncOffsetMs,
-    )
-    lyricsUiState.value = current.copy(
-      isTranslating = false,
-      isTranslationActive = false,
-      lyrics = original,
-      activeLineIndex = activeIndex,
-      errorMessage = null,
-    )
   }
 
   fun setEqualizerVolumeBoost(db: Int) {
@@ -1920,12 +1386,6 @@ fun restartFromBeginning() {
 
   val sheetShown = MutableStateFlow(Sheets.None)
 
-  /**
-   * Which sheet opened [Sheets.LyricsProvider], so dismissing it can go back to
-   * that sheet instead of closing the panel outright. [Sheets.None] means the
-   * picker was opened from the in-place lyrics, where there is nothing to go back to.
-   */
-  var lyricsProviderSheetOrigin = Sheets.None
   private val _bookmarkDraft = MutableStateFlow<app.video.player.database.entities.PlaybackBookmarkEntity?>(null)
   val bookmarkDraft = _bookmarkDraft.asStateFlow()
 
@@ -2301,23 +1761,6 @@ fun restartFromBeginning() {
     // Clean up any stale ambient shader files left in cacheDir from previous abnormal exits
     appContext.cacheDir.listFiles { _, name -> name.startsWith("ambient_") && name.endsWith(".glsl") }
       ?.forEach { runCatching { it.delete() } }
-    // Immediately clear old lyrics when a track changes, even without a foreground Activity.
-    // Allow mpv to finish publishing the next song's tags before the fallback lookup.
-    viewModelScope.launch {
-      PlaybackSession.state
-        .map { it.currentItem?.stableId to it.generation }
-        .distinctUntilChanged()
-        .drop(1)
-        .collectLatest {
-          lyricsLoadJob?.cancel()
-          lyricsTranslateJob?.cancel()
-          lastLyricsLoadRequest = null
-          lyricsStatePath = null
-          lyricsUiState.value = LyricsUiState()
-          delay(1_000)
-          syncLyricsWithPlayback()
-        }
-    }
     viewModelScope.launch {
       decoderPreferences.gpuNext.changes().collect { enabled ->
         _isGpuNextEnabled.value = enabled
@@ -2716,11 +2159,6 @@ fun restartFromBeginning() {
         _isMpvCoreReady.value = true
         startMpvStateCollectors()
         refreshPlaylistItems()
-        launch {
-          // The audio-only verdict needs the track list, which can land just after attaching.
-          withTimeoutOrNull(2_000L) { isAudioOnly.first { it } }
-          withContext(Dispatchers.Main) { syncLyricsWithPlayback() }
-        }
         launch { PlaybackSession.queue.drop(1).collect { refreshPlaylistItems() } }
         launch {
           // Notification and widget shuffle toggles change the queue directly.
@@ -2750,7 +2188,6 @@ fun restartFromBeginning() {
                   startedGeneration = generation
                   loadedGeneration = generation
                   refreshPlaylistItems()
-                  withContext(Dispatchers.Main) { syncLyricsWithPlayback() }
                 }
               else -> Unit
             }
@@ -2873,13 +2310,6 @@ fun restartFromBeginning() {
     cancelFrameSeek()
     isGestureSeeking = false
     lastScrubTarget = Double.NaN
-    lyricsLoadJob?.cancel()
-    lyricsLoadJob = null
-    lyricsTranslateJob?.cancel()
-    lyricsTranslateJob = null
-    lastLyricsLoadRequest = null
-    lyricsStatePath = null
-    lyricsUiState.value = LyricsUiState()
     introLookupJob?.cancel()
     cancelAutoCropAnalysis()
     autoCropAnalyzedGeneration = -1L
@@ -2920,7 +2350,6 @@ fun restartFromBeginning() {
     }
     syncplayManager.updateFileInfo(currentSyncplayFileInfo())
     applyEqualizerMpvFilters()
-    if (isAudioOnly.value) loadLyricsForCurrentTrack()
     scheduleAutoCropAnalysis()
   }
 
@@ -3334,7 +2763,6 @@ fun restartFromBeginning() {
     val posFloat = time.toFloat()
     if (isGestureSeeking || _precisePosition.value == posFloat) return
     _precisePosition.value = posFloat
-    updateLyricsActiveLine()
   }
 
   private companion object {

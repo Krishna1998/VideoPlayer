@@ -145,7 +145,6 @@ import app.video.player.preferences.preference.plusAssign
 import app.video.player.ui.icons.Icon
 import app.video.player.ui.icons.Icons
 import app.video.player.ui.player.Decoder.Companion.getDecoderFromValue
-import app.video.player.ui.player.InAppMusicSheetState
 import app.video.player.ui.player.Panels
 import app.video.player.ui.player.PlayerActivity
 import app.video.player.ui.player.PlayerUpdates
@@ -211,161 +210,6 @@ fun <T> playerControlsExitAnimationSpec(durationMillis: Int = 300): FiniteAnimat
 
 fun <T> playerControlsEnterAnimationSpec(durationMillis: Int = 100): FiniteAnimationSpec<T> =
   tween(durationMillis = durationMillis, easing = LinearOutSlowInEasing)
-
-/**
- * The full music player with its sheets and panels. PlayerActivity shows it for audio, and the
- * browser's in-app sheet ([inAppSheet]) shows the same screen live while the service keeps playing.
- */
-@Composable
-@Suppress("ViewModelForwarding")
-internal fun AudioPlayerScreen(
-  viewModel: PlayerViewModel,
-  onBackPress: () -> Unit,
-  modifier: Modifier = Modifier,
-  titleForControls: () -> String? = { null },
-  inAppSheet: InAppMusicSheetState? = null,
-) {
-  val playerPreferences = koinInject<PlayerPreferences>()
-  val appearancePreferences = koinInject<AppearancePreferences>()
-  val enableLiquidGlass by appearancePreferences.liquidGlassEnabled.collectAsState()
-  val playbackQueue by PlaybackSession.queue.collectAsStateWithLifecycle()
-  val currentPlaybackItem = playbackQueue.currentItem
-  val chapters by viewModel.playbackChapters.collectAsStateWithLifecycle(persistentListOf())
-  val playbackSpeed by PlaybackSession.propFloat["speed"].collectAsStateWithLifecycle()
-  val configuredDecoder by PlaybackSession.propString["hwdec"].collectAsStateWithLifecycle()
-  val activeDecoder by PlaybackSession.propString["hwdec-current"].collectAsStateWithLifecycle()
-  val decoder = remember(activeDecoder, configuredDecoder) {
-    getDecoderFromValue(activeDecoder?.takeIf { it.isNotBlank() } ?: configuredDecoder ?: "auto")
-  }
-  val onOpenSheet: (Sheets) -> Unit = remember(viewModel) {
-    {
-      viewModel.sheetShown.update { _ -> it }
-      if (it == Sheets.None) {
-        viewModel.showControls()
-      } else {
-        viewModel.hideControls()
-        viewModel.panelShown.update { Panels.None }
-      }
-    }
-  }
-  val onOpenPanel: (Panels) -> Unit = remember(viewModel) {
-    {
-      viewModel.panelShown.update { _ -> it }
-      if (it == Panels.None) {
-        viewModel.showControls()
-      } else {
-        viewModel.hideControls()
-        viewModel.sheetShown.update { Sheets.None }
-      }
-    }
-  }
-
-  val audioBook by app.video.player.ui.player.AudiobookPlayback.book.collectAsState()
-  val audioPositionState = viewModel.precisePosition.collectAsStateWithLifecycle()
-  // Only the chapter index is needed here. Reading the position clock directly re-ran this whole
-  // screen every polling tick; a derived index recomposes only when the chapter changes.
-  val audioChapterIndex by remember(chapters, currentPlaybackItem, audioBook) {
-    derivedStateOf {
-      val audioPosition = audioPositionState.value
-      val audioTimelinePosition = currentPlaybackItem?.audiobook?.let { info ->
-        audioBook?.takeIf { it.book.id == info.bookId }?.positionInBook(info.trackId, (audioPosition * 1000).toLong())?.div(1000f)
-      } ?: audioPosition
-      chapters.indexOfLast {
-        it.start <= audioTimelinePosition
-      }
-    }
-  }
-  val rawMediaTitle by PlaybackSession.propString["media-title"].collectAsStateWithLifecycle()
-  val queuedTitle =
-    playbackQueue.currentItem?.title?.takeIf { playbackQueue.isExplicitQueue && it.isNotBlank() }
-  val currentTitleForControls by rememberUpdatedState(titleForControls)
-  val isYouTubeSource = app.video.player.utils.media.HttpUtils.isYouTubeUrl(currentPlaybackItem?.originalUri)
-  val mediaTitle =
-    remember(queuedTitle, rawMediaTitle, currentPlaybackItem?.title, isYouTubeSource) {
-      sequenceOf(queuedTitle, currentTitleForControls(), rawMediaTitle, currentPlaybackItem?.title)
-        .filterNotNull()
-        .firstOrNull { it.isNotBlank() && (!isYouTubeSource || !app.video.player.utils.media.HttpUtils.isLikelyJunkTitle(it)) }
-    }
-
-  val sheetShown by viewModel.sheetShown.collectAsState()
-  val panel by viewModel.panelShown.collectAsState()
-  val subtitles by viewModel.subtitleTracks.collectAsState(persistentListOf())
-  val audioTracks by viewModel.audioTracks.collectAsState(persistentListOf())
-  val speedPresets by playerPreferences.speedPresets.collectAsState()
-  val sortedSpeedPresets = remember(speedPresets) { speedPresets.map { it.toFloat() }.sorted() }
-
-  if (inAppSheet != null) {
-    // PlayerActivity closes sheets and panels from its own back handling; the browser does not.
-    BackHandler(enabled = sheetShown != Sheets.None || panel != Panels.None) {
-      if (panel != Panels.None) onOpenPanel(Panels.None) else onOpenSheet(Sheets.None)
-    }
-  }
-
-  // Only sheets and panels sample this layer; the controls would otherwise sample themselves.
-  val audioBackdrop = rememberLayerBackdrop()
-  Box(modifier = modifier.fillMaxSize()) {
-    AudioPlayerControls(
-      viewModel = viewModel,
-      mediaTitle = mediaTitle,
-      onBackPress = onBackPress,
-      onOpenSheet = onOpenSheet,
-      onOpenPanel = onOpenPanel,
-      modifier = if (enableLiquidGlass) Modifier.layerBackdrop(audioBackdrop) else Modifier,
-      sheetBackdrop = audioBackdrop.takeIf { enableLiquidGlass },
-      inAppSheet = inAppSheet,
-    )
-
-    CompositionLocalProvider(
-      LocalKyantPlayerBackdrop provides audioBackdrop.takeIf { enableLiquidGlass },
-    ) {
-      PlayerSheets(
-        viewModel = viewModel,
-        sheetShown = sheetShown,
-        subtitles = subtitles.toImmutableList(),
-        onAddSubtitle = viewModel::addSubtitle,
-        onToggleSubtitle = viewModel::toggleSubtitle,
-        isSubtitleSelected = viewModel::isSubtitleSelected,
-        subtitleSelectionIndicator = viewModel::subtitleSelectionIndicator,
-        onRemoveSubtitle = viewModel::removeSubtitle,
-        audioTracks = audioTracks.toImmutableList(),
-        onAddAudio = viewModel::addAudio,
-        onSelectAudio = viewModel::selectAudioTrack,
-        chapter = chapters.getOrNull(audioChapterIndex),
-        chapters = chapters.toImmutableList(),
-        onSeekToChapter = {
-          chapters.getOrNull(it)?.let(viewModel::seekToPlaybackChapter)
-        },
-        decoder = decoder,
-        onUpdateDecoder = { PlaybackSession.setPropertyString("hwdec", it.value) },
-        speed = playbackSpeed ?: playerPreferences.defaultSpeed.get(),
-        onSpeedChange = {
-          if (currentPlaybackItem?.audiobook != null) app.video.player.ui.player.AudiobookPlayback.setSpeed(it.toFixed(2))
-          else PlaybackSession.setPropertyFloat("speed", it.toFixed(2))
-        },
-        onMakeDefaultSpeed = { playerPreferences.defaultSpeed.set(it.toFixed(2)) },
-        onAddSpeedPreset = { playerPreferences.speedPresets += it.toFixed(2).toString() },
-        onRemoveSpeedPreset = { removeSpeedPreset(playerPreferences, it) },
-        onResetSpeedPresets = playerPreferences.speedPresets::delete,
-        speedPresets = sortedSpeedPresets,
-        onResetDefaultSpeed = {
-          val speed = playerPreferences.defaultSpeed.deleteAndGet().toFixed(2)
-          if (currentPlaybackItem?.audiobook != null) app.video.player.ui.player.AudiobookPlayback.setSpeed(speed)
-          else PlaybackSession.setPropertyFloat("speed", speed)
-        },
-        onStartSleepTimer = viewModel::startTimer,
-        onOpenPanel = onOpenPanel,
-        onShowSheet = onOpenSheet,
-        onDismissRequest = { onOpenSheet(Sheets.None) },
-      )
-
-      PlayerPanels(
-        panelShown = panel,
-        viewModel = viewModel,
-        onDismissRequest = { onOpenPanel(Panels.None) },
-      )
-    }
-  }
-}
 
 @OptIn(
   ExperimentalMaterial3Api::class,
@@ -555,22 +399,6 @@ fun PlayerControls(
   val isAudioOnly by viewModel.isAudioOnly.collectAsState()
   val activity = LocalActivity.current as? PlayerActivity
   val currentPlaybackItem = playbackQueue.currentItem
-  val useAudioPlayer =
-    when (currentPlaybackItem?.declaredMediaKind()) {
-      null -> activity?.isCurrentMediaKnownAudio() == true
-      DeclaredPlaybackMediaKind.VIDEO -> false
-      DeclaredPlaybackMediaKind.AUDIO -> true
-      DeclaredPlaybackMediaKind.UNKNOWN -> isAudioOnly || activity?.isCurrentMediaKnownAudio() == true
-    }
-  if (useAudioPlayer) {
-    AudioPlayerScreen(
-      viewModel = viewModel,
-      onBackPress = onBackPress,
-      modifier = modifier,
-      titleForControls = { activity?.getTitleForControls() },
-    )
-    return
-  }
 
   val playerActivity = LocalActivity.current as PlayerActivity
   val configuration = LocalConfiguration.current

@@ -979,16 +979,8 @@ class PlayerActivity :
     }
 
     lifecycleScope.launch {
-      audioPreferences.audioOrientation.changes().drop(1).collect {
-        if (isKnownAudioLaunch(intent) || viewModel.isAudioOnly.value) {
-          setOrientation()
-        }
-      }
-    }
-
-    lifecycleScope.launch {
       playerPreferences.orientation.changes().drop(1).collect {
-        if (!isKnownAudioLaunch(intent) && !viewModel.isAudioOnly.value) setOrientation()
+        setOrientation()
       }
     }
 
@@ -6690,7 +6682,8 @@ private suspend fun restorePlaybackPosition(state: PlaybackStateEntity?, loadGen
 
     val target =
       if (isCurrentMediaKnownAudio() || viewModel.isAudioOnly.value) {
-        PlayerOrientationPolicy.forAudioPreference(audioPreferences.audioOrientation.get())
+        PlayerOrientationPolicy.forPreference(playerPreferences.orientation.get()) { null }
+          ?: ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
       } else {
         val preference = playerPreferences.orientation.get()
         // A saved custom ratio is re-applied to every file and is already part of mpv's reported
@@ -6735,7 +6728,8 @@ private suspend fun restorePlaybackPosition(state: PlaybackStateEntity?, loadGen
     val isAudio = isAudioHint || item?.declaredMediaKind() == DeclaredPlaybackMediaKind.AUDIO
     val target =
       if (isAudio) {
-        PlayerOrientationPolicy.forAudioPreference(audioPreferences.audioOrientation.get())
+        PlayerOrientationPolicy.forPreference(playerPreferences.orientation.get()) { null }
+          ?: ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
       } else {
         PlayerOrientationPolicy.forPreference(playerPreferences.orientation.get()) {
           PlayerOrientationPolicy.rememberedVideoAspect(item?.stableId)

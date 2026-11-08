@@ -53,17 +53,6 @@ class AudioPreferences(
   val equalizerToneY = preferenceStore.getInt("audio_equalizer_tone_y", 0)
   val equalizerFocused = preferenceStore.getBoolean("audio_equalizer_focused", false)
   val equalizerVolumeBoost = preferenceStore.getInt("audio_equalizer_volume_boost", 0)
-  val audioOrientation = preferenceStore.getEnum("audio_player_orientation", AudioPlayerOrientation.Portrait)
-  val audioAmbientMode = preferenceStore.getBoolean("audio_ambient_mode", true)
-  val animatedAlbumArtwork = preferenceStore.getBoolean("audio_animated_album_artwork", false)
-  val audioWavySeekbar = preferenceStore.getBoolean("audio_wavy_seekbar", true)
-
-  /** Fetch from external lyric providers automatically only when local lyrics are absent. */
-  val lyricsAutoFetchOnline = preferenceStore.getBoolean("lyrics_auto_fetch_online", true)
-  val lyricsAutoTranslate = preferenceStore.getBoolean("lyrics_auto_translate", false)
-  val lyricsTargetLanguage = preferenceStore.getString("lyrics_target_language", "en")
-  val lyricsTranslationDisplayMode = preferenceStore.getEnum("lyrics_translation_display_mode", LyricsTranslationDisplayMode.DualLine)
-  val paxsenixApiKey = preferenceStore.getString("paxsenix_api_key", "")
 
   fun getVideoBackgroundPlayback(mediaId: String?): Boolean =
     resolveVideoBackgroundPlayback(backgroundPlaybackBehavior.get(), backgroundPlayback.get(), videoBackgroundPlaybackIds.get(), mediaId)
@@ -115,21 +104,6 @@ enum class BackgroundPlaybackBehavior(
 ) {
   Remember(R.string.pref_background_playback_remember, R.string.pref_background_playback_remember_summary),
   PerVideo(R.string.pref_background_playback_per_video, R.string.pref_background_playback_per_video_summary),
-}
-
-enum class LyricsTranslationDisplayMode(
-  @StringRes val title: Int,
-) {
-  DualLine(R.string.pref_lyrics_display_dual_line),
-  Replace(R.string.pref_lyrics_display_replace),
-}
-
-enum class AudioPlayerOrientation(
-  @StringRes val titleRes: Int,
-) {
-  Auto(R.string.pref_audio_channels_auto),
-  Portrait(R.string.pref_player_orientation_portrait),
-  Landscape(R.string.pref_player_orientation_landscape),
 }
 
 enum class AudioChannels(

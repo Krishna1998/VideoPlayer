@@ -50,9 +50,5 @@ val domainModule =
       app.video.player.domain.syncplay
         .SyncplayManager(androidContext())
     }
-    single { app.video.player.data.lyrics.LrcLibApiService(get()) }
-    single { app.video.player.data.artwork.AppleMusicArtworkRepository(get()) }
-    single { app.video.player.data.lyrics.LyricsTranslationService(get()) }
-    single { app.video.player.repository.lyrics.LyricsRepository(androidContext(), get(), get()) }
     single { app.video.player.repository.SeerrRepository(get(), get(), get()) }
   }

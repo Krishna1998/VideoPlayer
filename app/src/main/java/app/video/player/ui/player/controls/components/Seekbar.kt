@@ -114,9 +114,6 @@ import app.video.player.ui.player.SkipSegment
 import app.video.player.ui.player.SkipSegmentType
 import app.video.player.ui.player.clip.ClipEditorUiState
 import app.video.player.ui.player.controls.LocalPlayerButtonsClickEvent
-import app.video.player.ui.player.visualizer.AudioFeatures
-import app.video.player.ui.player.visualizer.VisualizerPalette
-import app.video.player.ui.player.visualizer.WaveVisualizerOverlay
 import app.video.player.ui.theme.AppConnectedControlShapeTokens
 import app.video.player.ui.theme.AppMotion
 import app.video.player.ui.theme.ConnectedLayout
@@ -337,10 +334,6 @@ internal fun SeekbarWithTimers(
   paused: Boolean,
   seekbarStyle: SeekbarStyle = SeekbarStyle.Wavy,
   useWavySeekbar: Boolean = true,
-  showWavyVisualizer: Boolean = false,
-  waveFeatures: AudioFeatures? = null,
-  wavePalette: VisualizerPalette? = null,
-  waveSheetOpen: Boolean = false,
   loopStart: Float? = null,
   loopEnd: Float? = null,
   bufferDuration: Float? = null,
@@ -401,10 +394,6 @@ internal fun SeekbarWithTimers(
         isUserInteracting = isUserInteracting,
         seekbarStyle = seekbarStyle,
         useWavySeekbar = useWavySeekbar,
-        showWavyVisualizer = showWavyVisualizer,
-        waveFeatures = waveFeatures,
-        wavePalette = wavePalette,
-        waveSheetOpen = waveSheetOpen,
         loopStart = loopStart,
         loopEnd = loopEnd,
         bufferDuration = bufferDuration,
@@ -414,7 +403,7 @@ internal fun SeekbarWithTimers(
         onValueChangeFinished = onValueChangeFinished,
         scope = scope,
         animatedPosition = animatedPosition,
-        modifier = Modifier.fillMaxWidth().height(if (showWavyVisualizer) 64.dp else 44.dp),
+        modifier = Modifier.fillMaxWidth().height(44.dp),
       )
 
       Row(
@@ -447,7 +436,7 @@ internal fun SeekbarWithTimers(
     }
   } else {
     Row(
-      modifier = modifier.fillMaxWidth().height(if (showWavyVisualizer) 64.dp else 48.dp),
+      modifier = modifier.fillMaxWidth().height(48.dp),
       verticalAlignment = Alignment.CenterVertically,
       horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
@@ -475,10 +464,6 @@ internal fun SeekbarWithTimers(
         isUserInteracting = isUserInteracting,
         seekbarStyle = seekbarStyle,
         useWavySeekbar = useWavySeekbar,
-        showWavyVisualizer = showWavyVisualizer,
-        waveFeatures = waveFeatures,
-        wavePalette = wavePalette,
-        waveSheetOpen = waveSheetOpen,
         loopStart = loopStart,
         loopEnd = loopEnd,
         bufferDuration = bufferDuration,
@@ -488,7 +473,7 @@ internal fun SeekbarWithTimers(
         onValueChangeFinished = onValueChangeFinished,
         scope = scope,
         animatedPosition = animatedPosition,
-        modifier = Modifier.weight(1f).height(if (showWavyVisualizer) 64.dp else 48.dp),
+        modifier = Modifier.weight(1f).height(48.dp),
       )
 
       VideoTimer(
@@ -517,10 +502,6 @@ private fun SeekbarContent(
   isUserInteracting: Boolean,
   seekbarStyle: SeekbarStyle,
   useWavySeekbar: Boolean,
-  showWavyVisualizer: Boolean = false,
-  waveFeatures: AudioFeatures? = null,
-  wavePalette: VisualizerPalette? = null,
-  waveSheetOpen: Boolean = false,
   loopStart: Float?,
   loopEnd: Float?,
   bufferDuration: Float?,
@@ -667,23 +648,7 @@ private fun SeekbarContent(
     modifier = modifier.then(seekKeyModifier),
     contentAlignment = Alignment.Center,
   ) {
-    val waveSeekbarActive = showWavyVisualizer && waveFeatures != null && wavePalette != null
-    if (waveSeekbarActive) {
-      val waveTrackHeight = if (seekbarStyle == SeekbarStyle.Wavy) 5.dp else overlayTrackHeight
-      WaveVisualizerOverlay(
-        palette = wavePalette,
-        isSheetOpen = waveSheetOpen,
-        features = waveFeatures,
-        isPlaying = !paused && !isVisuallyInteracting,
-        progressProvider = {
-          if (safeDuration > 0f) (positionProvider() / safeDuration).coerceIn(0f, 1f) else 0f
-        },
-        trackHeight = waveTrackHeight,
-        trackColor = MaterialTheme.colorScheme.primary,
-        modifier = Modifier.fillMaxWidth().matchParentSize(),
-      )
-    }
-    // Visual seekbar (smaller, centered) - always drawn on top of the wave
+    // Visual seekbar (smaller, centered)
     Box(
       modifier =
         Modifier

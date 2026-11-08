@@ -36,7 +36,6 @@ import app.video.player.preferences.GesturePreferences
 import app.video.player.preferences.PlayerPreferences
 import app.video.player.preferences.preference.collectAsState
 import app.video.player.ui.player.NavigationAnimStyle
-import app.video.player.ui.player.LocalInAppMusicSheet
 import app.video.player.ui.theme.AppMotion
 import app.video.player.ui.tv.isTelevision
 import kotlin.math.abs
@@ -53,15 +52,9 @@ private val PassThroughPageScrollConnection = object : NestedScrollConnection {}
 
 @Composable
 internal fun NavigationBackHandler(enabled: Boolean = true, onBack: () -> Unit) {
-  // The live music sheet shares this window. Covered browser pages must not consume its Back
-  // gesture or change tabs, even if a lazy page registered its callback after the player.
-  val musicSheet = LocalInAppMusicSheet.current
   BackHandler(
-    enabled = enabled && LocalNavigationPageActive.current && musicSheet?.isVisible != true,
-    onBack = {
-      // Also cover a Back event arriving before the disabled state reaches the dispatcher.
-      if (musicSheet?.isVisible == true) musicSheet.collapse() else onBack()
-    },
+    enabled = enabled && LocalNavigationPageActive.current,
+    onBack = onBack,
   )
 }
 
