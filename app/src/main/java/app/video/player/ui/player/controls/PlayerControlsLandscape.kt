@@ -63,7 +63,7 @@ fun TopLeftPlayerControlsLandscape(
     val titleHeight = playerTitleHeight(45.dp, MaterialTheme.typography.titleMedium.lineHeight)
 
     Column(
-      modifier = Modifier.width(IntrinsicSize.Max),
+      modifier = Modifier.fillMaxWidth(),
     ) {
       Row(
         verticalAlignment = Alignment.CenterVertically,

@@ -2254,7 +2254,7 @@ fun PlayerControls(
                     end.linkTo(parent.end, spacing.large)
                   } else {
                     width = Dimension.fillToConstraints
-                    end.linkTo(topRightControls.start, spacing.extraSmall)
+                    end.linkTo(topRightControls.start, spacing.small)
                   }
                 },
           ) {
@@ -2299,10 +2299,8 @@ fun PlayerControls(
                   },
                 ).constrainAs(topRightControls) {
                   top.linkTo(parent.top, spacing.small)
-                  start.linkTo(parent.start, spacing.large + LandscapeActionSize + spacing.small)
-                  end.linkTo(parent.end, spacing.large)
-                  width = Dimension.preferredWrapContent
-                  horizontalBias = 1f
+                  end.linkTo(parent.end, spacing.medium)
+                  width = Dimension.wrapContent
                 },
           ) {
             PlayerButtonTheme {

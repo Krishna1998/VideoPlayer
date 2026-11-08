@@ -168,7 +168,7 @@ class AppearancePreferences(
   val topRightControls =
     preferenceStore.getString(
       "top_right_controls",
-      "AUDIO_TRACK,SUBTITLES,MORE_OPTIONS",
+      "AUDIO_TRACK,SUBTITLES,BATTERY_SAVER,MORE_OPTIONS",
     )
 
   val bottomRightControls =

@@ -17,8 +17,8 @@ import androidx.compose.ui.unit.dp
 import app.video.player.preferences.PlayerButton
 import app.video.player.ui.player.controls.components.fadingHorizontalScroll
 
-internal val LandscapeActionSize = 48.dp
-internal val LandscapeActionGap = 8.dp
+internal val LandscapeActionSize = 44.dp
+internal val LandscapeActionGap = 6.dp
 
 @Composable
 internal fun LandscapeActionGroup(
@@ -28,14 +28,24 @@ internal fun LandscapeActionGroup(
   fillWidth: Boolean = true,
   renderButton: @Composable (PlayerButton) -> Unit,
 ) {
+  val activeButtons = remember(buttons) { buttons.filterNot { it == PlayerButton.NONE } }
+  val shouldScroll = activeButtons.size > 4
+  val scrollState = rememberScrollState()
+
   Row(
     modifier =
       modifier
         .then(if (fillWidth) Modifier.fillMaxWidth() else Modifier)
-        .fadingHorizontalScroll(
-          rememberScrollState(),
-          reverseScrolling = endAligned,
-          shadowRoom = 0.dp,
+        .then(
+          if (shouldScroll) {
+            Modifier.fadingHorizontalScroll(
+              scrollState,
+              reverseScrolling = endAligned,
+              shadowRoom = 0.dp,
+            )
+          } else {
+            Modifier
+          },
         ),
     horizontalArrangement =
       Arrangement.spacedBy(
@@ -44,7 +54,7 @@ internal fun LandscapeActionGroup(
       ),
     verticalAlignment = Alignment.CenterVertically,
   ) {
-    buttons.filterNot { it == PlayerButton.NONE }.forEach { button ->
+    activeButtons.forEach { button ->
       key(button) {
         Box(Modifier.align(Alignment.CenterVertically)) { renderButton(button) }
       }

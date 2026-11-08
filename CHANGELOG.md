@@ -40,6 +40,8 @@ These notes are written in plain English and focus on what changed for real use.
   - Cleaned up in-settings search indexing and search navigation anchors across the application.
   - Streamlined the application strictly for video playback.
 - **UI & Gestures:**
+  - Guaranteed all four toggle buttons in top-right player controls remain fully visible on a single line by eliminating constraint competition with the video title, reserving uncompressed right-edge layout bounds, optimizing button padding (44dp with 6dp spacing), and disabling unnecessary scroll fading for up to 4 toggles.
+  - Added Battery Saver toggle by default to top-right controls alongside audio track, subtitles, and more options.
   - Increased seekbar timer clock font size and readability, ensuring single-line alignment with `maxLines = 1`, `softWrap = false`, and adaptive container width so remaining time never wraps to a second row.
   - Expanded seekbar length in landscape mode with full width constraint filling and optimized horizontal margins.
   - Ensured top right player controls always align in a single horizontal line with smooth horizontal scroll overflow rather than wrapping into multiple rows.
