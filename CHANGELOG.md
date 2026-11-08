@@ -4,6 +4,11 @@ These notes are written in plain English and focus on what changed for real use.
 
 ## Unreleased
 
+- **Player & PiP Video Recovery:**
+  - Adopt confirmed session loaded item before restoring playback settings, keeping resume, metadata, and subtitle sources scoped to the confirmed item even when queue collectors are paused.
+  - Retry suspended video selection after position restoration publishes READY state (recovering Surface readiness during LOADING).
+  - Added bounded unlock recovery for visible PiP when keyguard state changes after screen broadcasts.
+  - Read notification positions strictly from the matching loaded file and preserve native playback speed across queue changes.
 - **Removed Music Section:**
   - Completely removed the dedicated Music library tab and destination from the bottom navigation bar and TV side navigation rail.
   - Removed local music library scanning, artist image caching, and music tab customization settings.
