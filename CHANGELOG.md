@@ -19,7 +19,6 @@ These notes are written in plain English and focus on what changed for real use.
   - Added `MotionInterpolationPreferences` in Decoder settings with search indexing support.
 - **Build, Dependencies & Diagnostics:**
   - Upgraded mpvlib to 1.1.8.
-  - Optimized CI/CD build and release workflows by removing redundant test/profile compilation steps, enabling Gradle parallel execution with increased memory heap allocation (4GB), build-cache reuse, and resilient archive size reporting.
   - Replaced deprecated file-watcher constructors in `VisibleDirectoryWatcher` with API 29+ `File` constructor and legacy fallback for Android 8/9.
   - Retained explicit device credential fallback in `DeviceCredentialPrompt` for Android 10 and older.
   - Used public OkHttp telemetry hooks and excluded automatic instrumentation to preserve OkHttp 5.5 compatibility.
