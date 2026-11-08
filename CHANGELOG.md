@@ -4,6 +4,11 @@ These notes are written in plain English and focus on what changed for real use.
 
 ## Unreleased
 
+- **Profile Tab & Watching Statistics Streamlining:**
+  - Removed "Recents" and "Playlists" shortcut buttons, headers, and horizontal carousel shelves from the Profile tab, turning it into a focused personal hub with the profile card and watching statistics.
+  - Removed audio playback tracking and the "Media Breakdown" card from Watching Statistics.
+  - Streamlined the "Most Watched" leaderboard to showcase watched videos directly without redundant source filter chips (`All`, `Videos`, `Audio`).
+  - Restricted watch statistics artwork generation and legacy MediaStore resolution exclusively to video content.
 - **Battery Saver Mode:**
   - Added dedicated low-power Battery Saver mode to minimize battery consumption, reduce GPU rendering load, and minimize thermal output during video playback.
   - Switches mpv rendering scalers (`scale`, `cscale`, `dscale`) to energy-efficient bilinear passes, disables expensive debanding shader passes, throttles HDR compute peak, sets fast libavcodec decode mode (`vd-lavc-fast`), and increases readahead buffer caching to reduce frequent CPU/IO wakeups.

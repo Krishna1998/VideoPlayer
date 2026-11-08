@@ -3,9 +3,7 @@ package app.video.player.repository
 import android.content.Context
 import android.util.AtomicFile
 import android.util.Log
-import app.video.player.ui.player.DeclaredPlaybackMediaKind
 import app.video.player.ui.player.PlaybackItem
-import app.video.player.ui.player.declaredMediaKind
 import java.io.File
 import java.time.Instant
 import java.time.ZoneId
@@ -70,14 +68,12 @@ class WatchStatsRepository(context: Context) {
   suspend fun recordPlayback(item: PlaybackItem, seconds: Long) {
     if (seconds <= 0) return
     update { current ->
-      val isAudio = item.declaredMediaKind() == DeclaredPlaybackMediaKind.AUDIO
       val key = item.stableId.ifBlank { item.originalUri }
       val existing = current.media[key]
       val day = Instant.now().atZone(ZoneId.systemDefault()).toLocalDate().toString()
       current.copy(
         totalSeconds = current.totalSeconds + seconds,
-        audioSeconds = current.audioSeconds + seconds.takeIf { isAudio }.orZero(),
-        videoSeconds = current.videoSeconds + seconds.takeUnless { isAudio }.orZero(),
+        videoSeconds = current.videoSeconds + seconds,
         days = (current.days + (day to ((current.days[day] ?: 0) + seconds))).trimDays(),
         media = (current.media + (key to existingStats(item, existing).copy(
           seconds = (existing?.seconds ?: 0) + seconds,
@@ -135,7 +131,7 @@ class WatchStatsRepository(context: Context) {
       sourceUri = item.originalUri.takeIf(String::isNotBlank) ?: existing?.sourceUri,
       seconds = existing?.seconds ?: 0,
       sessions = existing?.sessions ?: 0,
-      isAudio = item.declaredMediaKind() == DeclaredPlaybackMediaKind.AUDIO,
+      isAudio = false,
       lastWatchedAt = existing?.lastWatchedAt ?: 0,
     )
 

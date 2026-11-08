@@ -15,7 +15,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,9 +26,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import app.video.player.presentation.components.AppAlertDialog as AlertDialog
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -68,7 +65,6 @@ import app.video.player.repository.WatchStatsSnapshot
 import app.video.player.ui.icons.Icon
 import app.video.player.ui.icons.Icons
 import app.video.player.ui.theme.AppConnectedShapeTokens
-import app.video.player.ui.theme.AppConnectedControlShapeTokens
 import app.video.player.ui.theme.AppShapeScale
 import app.video.player.ui.theme.AppMotion
 import app.video.player.ui.theme.ConnectedLayout
@@ -93,7 +89,6 @@ internal fun ProfileWatchStatistics() {
   val revision by repository.revision.collectAsStateWithLifecycle()
   val stats by produceState(WatchStatsSnapshot(), repository, revision) { value = repository.snapshot() }
   var confirmReset by rememberSaveable { mutableStateOf(false) }
-  var mediaFilter by rememberSaveable { mutableStateOf(0) }
 
   val horizontalPadding = if (isTablet) 24.dp else 16.dp
 
@@ -132,13 +127,12 @@ internal fun ProfileWatchStatistics() {
 
     // Bento Grid Section
     WatchTimeBentoCard(stats)
-    WatchSplitBentoCard(stats)
     WeeklyActivityBentoCard(stats.days)
 
     val topMedia =
-      remember(stats.media, mediaFilter) {
+      remember(stats.media) {
         stats.media.entries
-          .filter { it.value.seconds > 0 && (mediaFilter == 0 || it.value.isAudio == (mediaFilter == 2)) }
+          .filter { it.value.seconds > 0 && !it.value.isAudio }
           .sortedByDescending { it.value.seconds }
           .take(8)
           .map { it.value }
@@ -146,8 +140,6 @@ internal fun ProfileWatchStatistics() {
 
     TopMediaLeaderboardBentoCard(
       topMedia = topMedia,
-      mediaFilter = mediaFilter,
-      onFilterChange = { mediaFilter = it },
     )
   }
 
@@ -265,124 +257,6 @@ private fun WatchTimeBentoCard(stats: WatchStatsSnapshot) {
   }
 }
 
-@Composable
-private fun WatchSplitBentoCard(stats: WatchStatsSnapshot) {
-  val total = stats.videoSeconds + stats.audioSeconds
-  val videoFraction = if (total > 0) stats.videoSeconds.toFloat() / total.toFloat() else 0f
-  val audioFraction = if (total > 0) stats.audioSeconds.toFloat() / total.toFloat() else 0f
-  val videoPercent = (videoFraction * 100f).toInt()
-  val audioPercent = if (total > 0) 100 - videoPercent else 0
-
-  BentoCard(modifier = Modifier.fillMaxWidth()) {
-    Column(
-      modifier = Modifier.padding(20.dp),
-      verticalArrangement = Arrangement.spacedBy(16.dp),
-    ) {
-      Row(
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
-        verticalAlignment = Alignment.CenterVertically,
-      ) {
-        Surface(
-          shape = CircleShape,
-          color = MaterialTheme.colorScheme.secondaryContainer,
-          contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-          modifier = Modifier.size(36.dp),
-        ) {
-          Box(contentAlignment = Alignment.Center) {
-            Icon(Icons.RoundedFilled.SmartDisplay, null, modifier = Modifier.size(18.dp))
-          }
-        }
-        Text(
-          text = stringResource(R.string.watch_stats_media_breakdown),
-          style = MaterialTheme.typography.titleMediumEmphasized,
-        )
-      }
-
-      Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(AppConnectedShapeTokens.spacing),
-      ) {
-        MediaShareTile(
-          title = stringResource(R.string.watch_stats_video),
-          duration = stats.videoSeconds,
-          percentage = videoPercent,
-          fraction = videoFraction,
-          color = MaterialTheme.colorScheme.primary,
-          shape = rememberConnectedShape(0, 2, ConnectedLayout.Horizontal),
-          modifier = Modifier.weight(1f),
-        )
-        MediaShareTile(
-          title = stringResource(R.string.watch_stats_audio),
-          duration = stats.audioSeconds,
-          percentage = audioPercent,
-          fraction = audioFraction,
-          color = MaterialTheme.colorScheme.tertiary,
-          shape = rememberConnectedShape(1, 2, ConnectedLayout.Horizontal),
-          modifier = Modifier.weight(1f),
-        )
-      }
-    }
-  }
-}
-
-@Composable
-private fun MediaShareTile(
-  title: String,
-  duration: Long,
-  percentage: Int,
-  fraction: Float,
-  color: Color,
-  shape: androidx.compose.ui.graphics.Shape,
-  modifier: Modifier = Modifier,
-) {
-  val animatedFraction by animateFloatAsState(
-    targetValue = fraction.coerceIn(0f, 1f),
-    animationSpec = if (AppMotion.shouldReduceMotion()) snap() else AppMotion.Effect.Alpha,
-    label = "mediaShareProgress",
-  )
-  Surface(
-    modifier = modifier,
-    shape = shape,
-    color = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.72f),
-  ) {
-    Column(
-      modifier = Modifier.padding(14.dp),
-      verticalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-      Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-      ) {
-        Text(
-          text = title,
-          style = MaterialTheme.typography.titleSmallEmphasized,
-          color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        Box(contentAlignment = Alignment.Center, modifier = Modifier.size(44.dp)) {
-          CircularProgressIndicator(
-            progress = { animatedFraction },
-            modifier = Modifier.fillMaxSize(),
-            color = color,
-            trackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-            strokeWidth = 5.dp,
-          )
-          Text(
-            text = "$percentage%",
-            style = MaterialTheme.typography.labelMediumEmphasized,
-            fontFamily = expressiveDisplayFontForText(percentage.toString()),
-          )
-        }
-      }
-      Text(
-        text = formatHumanDuration(duration),
-        style = MaterialTheme.typography.headlineSmallEmphasized,
-        fontFamily = expressiveDisplayFontForText(formatHumanDuration(duration)),
-        color = color,
-      )
-    }
-  }
-}
 
 @Composable
 private fun WeeklyActivityBentoCard(days: Map<String, Long>) {
@@ -541,12 +415,9 @@ private fun WeeklyActivityBentoCard(days: Map<String, Long>) {
   }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun TopMediaLeaderboardBentoCard(
   topMedia: List<WatchMediaStats>,
-  mediaFilter: Int,
-  onFilterChange: (Int) -> Unit,
 ) {
   BentoCard(modifier = Modifier.fillMaxWidth()) {
     Column(
@@ -580,38 +451,6 @@ private fun TopMediaLeaderboardBentoCard(
             text = stringResource(R.string.watch_stats_top_media),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.SemiBold,
-          )
-        }
-      }
-
-      // A single connected horizontal selection control. Material handles selection color
-      // transitions, while shared shape tokens handle logical RTL corners.
-      Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(AppConnectedControlShapeTokens.spacing),
-      ) {
-        listOf(
-          R.string.pref_all_sources,
-          R.string.watch_stats_video,
-          R.string.watch_stats_audio,
-        ).forEachIndexed { index, labelRes ->
-          FilterChip(
-            modifier = Modifier.weight(1f),
-            selected = mediaFilter == index,
-            onClick = { onFilterChange(index) },
-            label = {
-              Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                Text(
-                  text = stringResource(labelRes),
-                  maxLines = 1,
-                  overflow = TextOverflow.Ellipsis,
-                )
-              }
-            },
-            shape = rememberConnectedShape(
-              index, 3, ConnectedLayout.Horizontal,
-              tokens = AppConnectedControlShapeTokens,
-            ),
           )
         }
       }
@@ -740,8 +579,7 @@ private fun WatchMediaArtwork(media: WatchMediaStats) {
   val context = LocalContext.current
   val thumbnailRepository = koinInject<ThumbnailRepository>()
   val density = LocalDensity.current
-  val isAudio = media.isAudio
-  val widthPx = with(density) { (if (isAudio) 48.dp else 68.dp).roundToPx() }
+  val widthPx = with(density) { 68.dp.roundToPx() }
   val heightPx = with(density) { 48.dp.roundToPx() }
 
   val generatedThumbnail by
@@ -749,7 +587,6 @@ private fun WatchMediaArtwork(media: WatchMediaStats) {
       initialValue = null,
       media.sourceUri,
       media.title,
-      media.isAudio,
       media.artworkUri,
       widthPx,
       heightPx,
@@ -765,7 +602,7 @@ private fun WatchMediaArtwork(media: WatchMediaStats) {
   Box(
     modifier =
       Modifier
-        .size(width = if (isAudio) 48.dp else 68.dp, height = 48.dp)
+        .size(width = 68.dp, height = 48.dp)
         .clip(RoundedCornerShape(12.dp))
         .background(MaterialTheme.colorScheme.surfaceContainerHighest),
     contentAlignment = Alignment.Center,
@@ -791,12 +628,7 @@ private fun WatchMediaArtwork(media: WatchMediaStats) {
 
       else -> {
         Icon(
-          imageVector =
-            if (media.isAudio) {
-              Icons.RoundedFilled.Audiotrack
-            } else {
-              Icons.RoundedFilled.PlayArrow
-            },
+          imageVector = Icons.RoundedFilled.PlayArrow,
           contentDescription = null,
           tint = MaterialTheme.colorScheme.onSurfaceVariant,
           modifier = Modifier.size(24.dp),
@@ -813,7 +645,7 @@ private fun resolveWatchStatsVideo(
   val source =
     media.sourceUri
       ?.takeIf(String::isNotBlank)
-      ?: findLegacyMediaUri(context, media.title, media.isAudio)?.toString()
+      ?: findLegacyMediaUri(context, media.title)?.toString()
       ?: return null
 
   val parsed = runCatching { Uri.parse(source) }.getOrNull()
@@ -836,35 +668,34 @@ private fun resolveWatchStatsVideo(
     sizeFormatted = "",
     dateModified = 0L,
     dateAdded = 0L,
-    mimeType = if (media.isAudio) "audio/*" else "video/*",
+    mimeType = "video/*",
     bucketId = "",
     bucketDisplayName = "",
     width = 0,
     height = 0,
     fps = 0f,
     resolution = "",
-    isAudio = media.isAudio,
+    isAudio = false,
   )
 }
 
 /**
- * Older watch_stats.json entries predate sourceUri. Recover a local video/audio by its display name so
+ * Older watch_stats.json entries predate sourceUri. Recover a local video by its display name so
  * those rows can get thumbnails immediately instead of waiting for the item to be played again.
  */
 private fun findLegacyMediaUri(
   context: Context,
   title: String,
-  isAudio: Boolean,
 ): Uri? {
   val displayName = title.substringAfterLast('/').substringAfterLast('\\').trim()
   if (displayName.isBlank()) return null
 
   val resolver = context.contentResolver
-  val contentUri = if (isAudio) MediaStore.Audio.Media.EXTERNAL_CONTENT_URI else MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+  val contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
   val projection =
     arrayOf(
-      if (isAudio) MediaStore.Audio.Media._ID else MediaStore.Video.Media._ID,
-      if (isAudio) MediaStore.Audio.Media.DISPLAY_NAME else MediaStore.Video.Media.DISPLAY_NAME,
+      MediaStore.Video.Media._ID,
+      MediaStore.Video.Media.DISPLAY_NAME,
     )
 
   fun query(selection: String, argument: String): Uri? =
