@@ -246,15 +246,6 @@ object SearchablePreferences {
           screen = AppearancePreferencesScreen,
         ),
       )
-      add(
-        SearchablePreference(
-          titleRes = R.string.pref_appearance_show_network_thumbnails_title,
-          summaryRes = R.string.pref_appearance_show_network_thumbnails_summary,
-          keywords = listOf("network", "thumbnail", "stream", "preview", "images"),
-          category = "Appearance",
-          screen = AppearancePreferencesScreen,
-        ),
-      )
       // Layout preferences
       add(
         SearchablePreference(
@@ -1308,15 +1299,6 @@ object SearchablePreferences {
         SearchEntrySpec(R.string.pref_nav_network_title, listOf("network", "stream", "tab", "navigation")),
         SearchEntrySpec(R.string.pref_quick_play_fab_title, listOf("quick play", "fab", "floating button", "random")),
         SearchEntrySpec(R.string.pref_quick_play_fab_direct_title, listOf("quick play", "direct", "random", "chooser")),
-      )
-      addSearchEntries(
-        category = "Appearance",
-        screen = AppearancePreferencesScreen,
-        anchorItemIndex = 9,
-        SearchEntrySpec(
-          R.string.connected_mini_player_navigation_title,
-          listOf("mini player", "navigation", "connected", "dock", "separate", "classic"),
-        ),
       )
 
       addSearchEntries(

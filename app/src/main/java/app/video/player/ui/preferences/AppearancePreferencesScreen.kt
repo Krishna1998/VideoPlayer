@@ -644,7 +644,7 @@ object AppearancePreferencesScreen : Screen {
           item {
             ExpressivePreferenceGroup {
               val showFramePosition = thumbnailGenerator != ThumbnailGenerator.MediaStore && thumbnailMode == ThumbnailMode.FrameAtPosition
-              val itemCount = if (showFramePosition) 8 else 7
+              val itemCount = if (showFramePosition) 7 else 6
               val showVideoThumbnails by browserPreferences.showVideoThumbnails.collectAsState()
               SwitchPreference(
                 modifier = Modifier.settingsSearchTarget(R.string.pref_appearance_show_video_thumbnails_title),
@@ -860,33 +860,6 @@ object AppearancePreferencesScreen : Screen {
                   )
                 },
                 enabled = showVideoThumbnails,
-                groupIndex = if (showFramePosition) 6 else 5,
-                groupSize = itemCount,
-              )
-
-              val showNetworkThumbnails by preferences.showNetworkThumbnails.collectAsState()
-              SwitchPreference(
-                modifier = Modifier.settingsSearchTarget(R.string.pref_appearance_show_network_thumbnails_title),
-                value = showNetworkThumbnails,
-                onValueChange = { preferences.showNetworkThumbnails.set(it) },
-                title = {
-                  Text(
-                    text =
-                      stringResource(
-                        id = R.string.pref_appearance_show_network_thumbnails_title,
-                      ),
-                  )
-                },
-                summary = {
-                  Text(
-                    text =
-                      stringResource(
-                        id = R.string.pref_appearance_show_network_thumbnails_summary,
-                      ),
-                    color = MaterialTheme.colorScheme.outline,
-                  )
-                },
-                enabled = showVideoThumbnails,
                 groupIndex = itemCount - 1,
                 groupSize = itemCount,
               )
@@ -958,7 +931,7 @@ object AppearancePreferencesScreen : Screen {
                     )
                   },
                   groupIndex = 0,
-                  groupSize = 6,
+                  groupSize = 5,
                 )
                 val quickPlayFabDirect by preferences.quickPlayFabDirect.collectAsState()
                 SwitchPreference(
@@ -974,7 +947,7 @@ object AppearancePreferencesScreen : Screen {
                     )
                   },
                   groupIndex = 1,
-                  groupSize = 6,
+                  groupSize = 5,
                 )
                 val navigationBarGlow by preferences.navigationBarGlow.collectAsState()
                 SwitchPreference(
@@ -984,7 +957,7 @@ object AppearancePreferencesScreen : Screen {
                   title = { Text(stringResource(R.string.navbar_glow_title)) },
                   summary = { Text(stringResource(R.string.navbar_glow_summary), color = MaterialTheme.colorScheme.outline) },
                   groupIndex = 2,
-                  groupSize = 6,
+                  groupSize = 5,
                 )
                 val legacyNavigationBar by preferences.legacyNavigationBar.collectAsState()
                 val progressiveNavigationBlur by preferences.progressiveNavigationBlur.collectAsState()
@@ -1003,7 +976,7 @@ object AppearancePreferencesScreen : Screen {
                   title = { Text(stringResource(R.string.legacy_navigation_bar_title)) },
                   summary = { Text(stringResource(R.string.legacy_navigation_bar_summary), color = MaterialTheme.colorScheme.outline) },
                   groupIndex = 3,
-                  groupSize = 6,
+                  groupSize = 5,
                 )
                 SwitchPreference(
                   modifier = Modifier.settingsSearchTarget(R.string.progressive_navigation_blur_title),
@@ -1013,18 +986,7 @@ object AppearancePreferencesScreen : Screen {
                   title = { Text(stringResource(R.string.progressive_navigation_blur_title)) },
                   summary = { Text(stringResource(R.string.progressive_navigation_blur_summary), color = MaterialTheme.colorScheme.outline) },
                   groupIndex = 4,
-                  groupSize = 6,
-                )
-                val connectedMiniPlayerNavigation by preferences.connectedMiniPlayerNavigation.collectAsState()
-                SwitchPreference(
-                  modifier = Modifier.settingsSearchTarget(R.string.connected_mini_player_navigation_title),
-                  value = connectedMiniPlayerNavigation && !legacyNavigationBar,
-                  onValueChange = preferences.connectedMiniPlayerNavigation::set,
-                  enabled = !legacyNavigationBar,
-                  title = { Text(stringResource(R.string.connected_mini_player_navigation_title)) },
-                  summary = { Text(stringResource(R.string.connected_mini_player_navigation_summary), color = MaterialTheme.colorScheme.outline) },
-                  groupIndex = 5,
-                  groupSize = 6,
+                  groupSize = 5,
                 )
               }
             }

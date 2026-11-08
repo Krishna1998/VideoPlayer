@@ -3894,9 +3894,7 @@ class PlayerActivity :
     return if (isCurrentPlaybackAudio()) {
       true
     } else {
-      !isTelevision && playerPreferences.enableVideoMiniPlayer.get() &&
-        (audioPreferences.backgroundPlaybackBehavior.get() != app.video.player.preferences.BackgroundPlaybackBehavior.PerVideo ||
-          PlaybackSession.isVideoBackgroundPlaybackEnabled())
+      !isTelevision && playerPreferences.enableVideoMiniPlayer.get()
     }
   }
 

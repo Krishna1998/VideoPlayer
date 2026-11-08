@@ -96,7 +96,6 @@ class AppearancePreferences(
   val liquidGlassHighlightWidth = preferenceStore.getFloat("liquid_glass_highlight_width", 1f)
   val liquidGlassHighlightBlur = preferenceStore.getFloat("liquid_glass_highlight_blur", 1f)
   val navigationBarGlow = preferenceStore.getBoolean("navigation_bar_glow", false)
-  val connectedMiniPlayerNavigation = preferenceStore.getBoolean("connected_mini_player_navigation", true)
   // Android 11 and older have no RenderEffect blur for the floating bar.
   val legacyNavigationBar =
     preferenceStore.getBoolean("legacy_navigation_bar", Build.VERSION.SDK_INT < Build.VERSION_CODES.S)
@@ -109,7 +108,6 @@ class AppearancePreferences(
   val forceDarkPlayerButtonsBackground = preferenceStore.getBoolean("force_dark_player_buttons_background", false)
   val showUnplayedOldVideoLabel = preferenceStore.getBoolean("show_unplayed_old_video_label", true)
   val unplayedOldVideoDays = preferenceStore.getInt("unplayed_old_video_days", 7)
-  val showNetworkThumbnails = preferenceStore.getBoolean("show_network_thumbnails", false)
   val seekbarStyle = preferenceStore.getEnum("seekbar_style", SeekbarStyle.Thick)
   val portraitSeekbarPlacement =
     preferenceStore.getEnum("portrait_seekbar_placement", SeekbarPlacement.AboveButtons)
