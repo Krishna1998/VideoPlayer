@@ -64,7 +64,6 @@ import app.video.player.ui.preferences.components.AppTextFieldPreference as Text
 import org.koin.compose.koinInject
 
 import androidx.compose.runtime.setValue
-import app.video.player.ui.browser.music.MusicTab
 
 @Serializable
 object AudioPreferencesScreen : Screen {
@@ -192,7 +191,7 @@ object AudioPreferencesScreen : Screen {
                 )
                 Text(
                   text =
-                    "Applies to Music and audio in Files • Included: ${
+                    "Applies to audio in Files • Included: ${
                       if (minimumAudioDurationSeconds <= 0) {
                         "0s"
                       } else {
@@ -204,43 +203,6 @@ object AudioPreferencesScreen : Screen {
                 )
               }
 
-            }
-          }
-
-          item {
-            PreferenceSectionHeader(
-              position = PreferenceSectionPosition.Middle,
-              title = stringResource(R.string.pref_music_tabs_title),
-              modifier = Modifier.settingsSearchTarget(R.string.pref_music_tabs_title),
-            )
-          }
-          item {
-            val enabledMusicTabs by preferences.enabledMusicTabs.collectAsState()
-            val musicTabOrder by preferences.musicTabOrder.collectAsState()
-            val tabMap = MusicTab.entries.associateBy { it.name }
-            val orderedTabs = (musicTabOrder.mapNotNull(tabMap::get) + MusicTab.entries).distinct()
-            ExpressivePreferenceGroup {
-              ReorderableTabPreferences(
-                tabs = orderedTabs.map { tab ->
-                  ReorderableTabItem(
-                    id = tab.name,
-                    titleRes = tab.titleRes,
-                    title = stringResource(tab.titleRes),
-                    summary = "",
-                    enabled = tab.name in enabledMusicTabs,
-                  )
-                },
-                onEnabledChange = { id, enabled ->
-                  val next = if (enabled) enabledMusicTabs + id else enabledMusicTabs - id
-                  if (next.isNotEmpty()) preferences.enabledMusicTabs.set(next)
-                },
-                onMove = { id, destination ->
-                  val next = orderedTabs.map { it.name }.toMutableList()
-                  next.remove(id)
-                  next.add(destination.coerceIn(0, next.size), id)
-                  preferences.musicTabOrder.set(next)
-                },
-              )
             }
           }
 

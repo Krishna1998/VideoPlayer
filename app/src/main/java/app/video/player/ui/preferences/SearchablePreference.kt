@@ -14,7 +14,6 @@ import app.video.player.R
 import app.video.player.presentation.Screen
 import app.video.player.ui.background.BackgroundType
 import app.video.player.ui.background.RandomInterval
-import app.video.player.ui.browser.music.MusicTab
 import app.video.player.ui.securefolder.SecureFolderSettingsScreen
 import java.text.Normalizer
 import kotlin.math.abs
@@ -1312,7 +1311,6 @@ object SearchablePreferences {
         category = "Appearance",
         screen = AppearancePreferencesScreen,
         anchorItemIndex = 7,
-        SearchEntrySpec(R.string.pref_nav_music_title, listOf("music", "audio", "tab", "navigation")),
         SearchEntrySpec(R.string.pref_nav_profile_title, listOf("profile", "you", "library", "tab", "navigation")),
         SearchEntrySpec(R.string.navbar_glow_title, listOf("glass", "glow", "navbar", "rim", "highlight", "liquid glass")),
         SearchEntrySpec(
@@ -1456,7 +1454,6 @@ object SearchablePreferences {
         anchorItemIndex = 1,
         SearchEntrySpec(R.string.ui_include_audio_files, listOf("audio", "files", "browser", "folders", "library")),
         SearchEntrySpec(R.string.ui_minimum_audio_duration, listOf("audio", "minimum", "duration", "short", "filter")),
-        SearchEntrySpec(R.string.pref_music_tabs_title, listOf("music", "library", "tabs", "order", "songs", "albums")),
       )
       addSearchEntries(
         category = "Audio",
@@ -1556,17 +1553,6 @@ object SearchablePreferences {
         anchorItemIndex = 0,
         SearchEntrySpec(R.string.ui_button_title, listOf("custom", "button", "title", "name"), R.string.pref_custom_lua_title),
       )
-      MusicTab.entries.forEach { tab ->
-        add(
-          SearchablePreference(
-            titleRes = tab.titleRes,
-            keywords = listOf("music", "tabs", "order", "navigation", "enable"),
-            category = "Audio",
-            screen = AudioPreferencesScreen,
-            anchorItemIndex = 3,
-          ),
-        )
-      }
       addSearchEntries(
         category = "Player",
         screen = PlayerPreferencesScreen,
@@ -1643,7 +1629,7 @@ object SearchablePreferences {
         keywords =
           listOf(
             "theme dark light system dynamic amoled font names labels thumbnails frame quality position",
-            "navigation home music profile network quick play fab auto scroll",
+            "navigation home profile network quick play fab auto scroll",
             "grid columns list folder cards video cards chips path extension duration resolution framerate subtitle",
           ),
         category = "Appearance",
@@ -1677,7 +1663,7 @@ object SearchablePreferences {
         keywords =
           listOf(
             "preferred language delay pitch correction channels volume boost normalization drc",
-            "audio player background playback orientation ambient wavy seekbar music tabs order minimum duration",
+            "audio player background playback orientation ambient wavy seekbar minimum duration",
           ),
         category = "Audio",
         screen = AudioPreferencesScreen,

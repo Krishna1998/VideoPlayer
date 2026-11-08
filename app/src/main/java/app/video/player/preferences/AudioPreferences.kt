@@ -57,20 +57,6 @@ class AudioPreferences(
   val audioAmbientMode = preferenceStore.getBoolean("audio_ambient_mode", true)
   val animatedAlbumArtwork = preferenceStore.getBoolean("audio_animated_album_artwork", false)
   val audioWavySeekbar = preferenceStore.getBoolean("audio_wavy_seekbar", true)
-  val enabledMusicTabs = preferenceStore.getStringSet(
-    "enabled_music_tabs",
-    setOf("SONGS", "ALBUMS", "ARTISTS", "PLAYLISTS", "FOLDERS", "FAVORITES"),
-  )
-  val musicTabOrder = preferenceStore.getObject(
-    key = "music_tab_order",
-    defaultValue = listOf("SONGS", "ALBUMS", "ARTISTS", "PLAYLISTS", "FOLDERS", "FAVORITES"),
-    serializer = { list -> list.joinToString(",") },
-    deserializer = { str ->
-      val parsed = str.split(",").map { it.trim() }.filter { it.isNotEmpty() }
-      val missing = listOf("SONGS", "ALBUMS", "ARTISTS", "PLAYLISTS", "FOLDERS", "FAVORITES") - parsed.toSet()
-      parsed + missing
-    },
-  )
 
   /** Fetch from external lyric providers automatically only when local lyrics are absent. */
   val lyricsAutoFetchOnline = preferenceStore.getBoolean("lyrics_auto_fetch_online", true)

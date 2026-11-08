@@ -4,6 +4,13 @@ These notes are written in plain English and focus on what changed for real use.
 
 ## Unreleased
 
+- **Removed Music Section:**
+  - Completely removed the dedicated Music library tab and destination from the bottom navigation bar and TV side navigation rail.
+  - Removed local music library scanning, artist image caching, and music tab customization settings.
+  - Streamlined the application strictly for video playback.
+- **UI & Gestures:**
+  - Updated swipe-to-delete confirmation dialog text color to clear black for better readability.
+
 ## 3.3.3
 
 - Release version 3.3.3.

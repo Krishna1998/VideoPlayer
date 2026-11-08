@@ -124,8 +124,6 @@ import kotlin.math.abs
 import kotlin.math.roundToInt
 import app.video.player.R
 import app.video.player.preferences.AppearancePreferences
-import app.video.player.preferences.MediaServerPreferences
-import app.video.player.preferences.MusicSourceProvider
 import app.video.player.preferences.PlayerPreferences
 import app.video.player.preferences.preference.collectAsState
 import com.kyant.backdrop.backdrops.rememberLayerBackdrop
@@ -137,9 +135,6 @@ import app.video.player.presentation.components.ProvideLiquidGlassBackdrop
 import app.video.player.ui.utils.LocalBackStack
 import app.video.player.ui.utils.navigateTo
 import app.video.player.ui.browser.folderlist.FolderListScreen
-import app.video.player.ui.browser.music.MusicLibraryContent
-import app.video.player.ui.browser.music.MusicLibraryViewModel
-import app.video.player.ui.browser.music.MusicTab
 import app.video.player.ui.browser.networkstreaming.NetworkStreamingScreen
 import app.video.player.ui.icons.Icon
 import app.video.player.ui.icons.Icons
@@ -184,7 +179,6 @@ import app.video.player.ui.tv.tryRequestFocus
 object MainScreen : Screen, TvEdgeToEdgeScreen {
   internal enum class MainTab {
     HOME,
-    MUSIC,
     PROFILE,
   }
 
@@ -233,11 +227,6 @@ object MainScreen : Screen, TvEdgeToEdgeScreen {
     val duration = navigationDurationMillis(animSpeed)
     val reduceMotion = AppMotion.shouldReduceMotion()
     var persistentSelectedTab by rememberSaveable { mutableStateOf(MainTab.HOME) }
-    val mediaServerPreferences = koinInject<MediaServerPreferences>()
-    val musicSourceProvider by mediaServerPreferences.musicSourceProvider.collectAsState()
-    val musicLibraryViewModel: MusicLibraryViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
-    val localMusicTabs by musicLibraryViewModel.visibleTabs.collectAsStateWithLifecycle()
-    val showMusicTab by appearancePreferences.showMusicTab.collectAsState()
     val showProfileTab by appearancePreferences.showProfileTab.collectAsState()
     val liquidGlassEnabled by appearancePreferences.liquidGlassEnabled.collectAsState()
     val legacyNavigationBar by appearancePreferences.legacyNavigationBar.collectAsState()
@@ -264,9 +253,8 @@ object MainScreen : Screen, TvEdgeToEdgeScreen {
 
     val bottomNavigationOrder by appearancePreferences.bottomNavigationOrder.collectAsState()
     val visibleTabs =
-      remember(showMusicTab, showProfileTab, bottomNavigationOrder) {
+      remember(showProfileTab, bottomNavigationOrder) {
         mainNavigationTabs(
-          showMusic = showMusicTab,
           showProfile = showProfileTab,
           order = bottomNavigationOrder,
         )
@@ -377,12 +365,6 @@ object MainScreen : Screen, TvEdgeToEdgeScreen {
 
     val targetPage = pagerState.targetPage.coerceIn(0, (visibleTabs.size - 1).coerceAtLeast(0))
     val selectedTab = visibleTabs.getOrNull(targetPage) ?: visibleTabs.firstOrNull() ?: MainTab.HOME
-
-    LaunchedEffect(persistentSelectedTab) {
-      if (persistentSelectedTab == MainTab.MUSIC) {
-        musicLibraryViewModel.setTab(localMusicTabs.firstOrNull() ?: MusicTab.SONGS)
-      }
-    }
 
     val onTabSelected: (MainScreen.MainTab) -> Unit = { tab ->
       val targetIndex = visibleTabs.indexOf(tab)
@@ -543,21 +525,6 @@ object MainScreen : Screen, TvEdgeToEdgeScreen {
       } else {
         PaddingValues(0.dp)
       }
-    val context = androidx.compose.ui.platform.LocalContext.current
-    val jellyfinViewModel: app.video.player.ui.browser.jellyfin.JellyfinViewModel =
-      androidx.lifecycle.viewmodel.compose.viewModel(
-        factory =
-          app.video.player.ui.browser.jellyfin.JellyfinViewModel.factory(
-            context.applicationContext as android.app.Application,
-          ),
-      )
-    val navidromeViewModel: app.video.player.ui.browser.navidrome.NavidromeViewModel =
-      androidx.lifecycle.viewmodel.compose.viewModel(
-        factory =
-          app.video.player.ui.browser.navidrome.NavidromeViewModel.factory(
-            context.applicationContext as android.app.Application,
-          ),
-      )
     // Scaffold with bottom navigation bar
     Scaffold(
       modifier = Modifier.fillMaxSize(),
@@ -621,185 +588,6 @@ object MainScreen : Screen, TvEdgeToEdgeScreen {
               val tab = visibleTabs.getOrNull(page) ?: return@NavigationPager
               when (tab) {
                 MainTab.HOME -> FolderListScreen.Content()
-                MainTab.MUSIC -> {
-                  if (musicSourceProvider == MusicSourceProvider.JELLYFIN) {
-                    val jellyfinUiState by jellyfinViewModel.uiState.collectAsStateWithLifecycle()
-                    if (jellyfinUiState.activeServer == null) {
-                      Box(
-                        modifier = Modifier.fillMaxSize().padding(24.dp),
-                        contentAlignment = Alignment.Center,
-                      ) {
-                        androidx.compose.material3.Card(
-                          shape = MaterialTheme.shapes.extraLarge,
-                          colors =
-                            androidx.compose.material3.CardDefaults.cardColors(
-                              containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
-                            ),
-                        ) {
-                          Column(
-                            modifier = Modifier.padding(24.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(16.dp),
-                          ) {
-                            androidx.compose.material3.Icon(
-                              painter = painterResource(R.drawable.ic_jellyfin),
-                              contentDescription = null,
-                              modifier = Modifier.size(56.dp),
-                              tint = MaterialTheme.colorScheme.primary,
-                            )
-                            Text(
-                              text = stringResource(R.string.music_source_jellyfin),
-                              style = MaterialTheme.typography.titleLarge,
-                              fontWeight = FontWeight.Bold,
-                            )
-                            Text(
-                              text = stringResource(R.string.pref_jellyfin_no_server),
-                              style = MaterialTheme.typography.bodyMedium,
-                              color = MaterialTheme.colorScheme.onSurfaceVariant,
-                              textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                            )
-                            androidx.compose.material3.FilledTonalButton(
-                              onClick = {
-                                backStack.navigateTo(app.video.player.ui.preferences.PreferencesScreen)
-                              },
-                            ) {
-                              Text(stringResource(R.string.generic_configure))
-                            }
-                            androidx.compose.material3.TextButton(
-                              onClick = {
-                                mediaServerPreferences.musicSourceProvider.set(MusicSourceProvider.LOCAL)
-                              },
-                            ) {
-                              Text(stringResource(R.string.music_source_local))
-                            }
-                          }
-                        }
-                      }
-                    } else if (!jellyfinUiState.isLoading && !jellyfinUiState.hasMusicLibrary && jellyfinUiState.libraries.isNotEmpty()) {
-                      Box(
-                        modifier = Modifier.fillMaxSize().padding(24.dp),
-                        contentAlignment = Alignment.Center,
-                      ) {
-                        androidx.compose.material3.Card(
-                          shape = MaterialTheme.shapes.extraLarge,
-                          colors =
-                            androidx.compose.material3.CardDefaults.cardColors(
-                              containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
-                            ),
-                        ) {
-                          Column(
-                            modifier = Modifier.padding(24.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(16.dp),
-                          ) {
-                            androidx.compose.material3.Icon(
-                              painter = painterResource(R.drawable.ic_jellyfin),
-                              contentDescription = null,
-                              modifier = Modifier.size(56.dp),
-                              tint = MaterialTheme.colorScheme.primary,
-                            )
-                            Text(
-                              text = stringResource(R.string.music_source_jellyfin),
-                              style = MaterialTheme.typography.titleLarge,
-                              fontWeight = FontWeight.Bold,
-                            )
-                            Text(
-                              text = stringResource(R.string.jellyfin_no_music_library),
-                              style = MaterialTheme.typography.bodyMedium,
-                              color = MaterialTheme.colorScheme.onSurfaceVariant,
-                              textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                            )
-                            androidx.compose.material3.FilledTonalButton(
-                              onClick = {
-                                mediaServerPreferences.musicSourceProvider.set(MusicSourceProvider.LOCAL)
-                              },
-                            ) {
-                              Text(stringResource(R.string.music_source_local))
-                            }
-                            androidx.compose.material3.TextButton(
-                              onClick = {
-                                backStack.navigateTo(app.video.player.ui.preferences.PreferencesScreen)
-                              },
-                            ) {
-                              Text(stringResource(R.string.generic_configure))
-                            }
-                          }
-                        }
-                      }
-                    } else {
-                      LaunchedEffect(jellyfinUiState.libraries) {
-                        jellyfinViewModel.ensureMusicDataLoaded()
-                      }
-                      app.video.player.ui.browser.jellyfin.JellyfinContent(
-                        viewModel = jellyfinViewModel,
-                        isMusicOnlyMode = true,
-                      )
-                    }
-                  } else if (musicSourceProvider == MusicSourceProvider.NAVIDROME) {
-                    val navidromeUiState by navidromeViewModel.uiState.collectAsStateWithLifecycle()
-                    if (navidromeUiState.activeServer == null) {
-                      Box(
-                        modifier = Modifier.fillMaxSize().padding(24.dp),
-                        contentAlignment = Alignment.Center,
-                      ) {
-                        androidx.compose.material3.Card(
-                          shape = MaterialTheme.shapes.extraLarge,
-                          colors =
-                            androidx.compose.material3.CardDefaults.cardColors(
-                              containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
-                            ),
-                        ) {
-                          Column(
-                            modifier = Modifier.padding(24.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(16.dp),
-                          ) {
-                            androidx.compose.material3.Icon(
-                              painter = painterResource(R.drawable.ic_navidrome),
-                              contentDescription = null,
-                              modifier = Modifier.size(56.dp),
-                              tint = MaterialTheme.colorScheme.primary,
-                            )
-                            Text(
-                              text = stringResource(R.string.music_source_navidrome),
-                              style = MaterialTheme.typography.titleLarge,
-                              fontWeight = FontWeight.Bold,
-                            )
-                            Text(
-                              text = stringResource(R.string.pref_navidrome_no_server),
-                              style = MaterialTheme.typography.bodyMedium,
-                              color = MaterialTheme.colorScheme.onSurfaceVariant,
-                              textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                            )
-                            androidx.compose.material3.FilledTonalButton(
-                              onClick = {
-                                backStack.navigateTo(app.video.player.ui.preferences.PreferencesScreen)
-                              },
-                            ) {
-                              Text(stringResource(R.string.generic_configure))
-                            }
-                            androidx.compose.material3.TextButton(
-                              onClick = {
-                                mediaServerPreferences.musicSourceProvider.set(MusicSourceProvider.LOCAL)
-                              },
-                            ) {
-                              Text(stringResource(R.string.music_source_local))
-                            }
-                          }
-                        }
-                      }
-                    } else {
-                      app.video.player.ui.browser.navidrome.NavidromeContent(
-                        viewModel = navidromeViewModel,
-                        isMusicOnlyMode = true,
-                      )
-                    }
-                  } else {
-                    MusicLibraryContent(
-                      musicViewModel = musicLibraryViewModel,
-                    )
-                  }
-                }
                 MainTab.PROFILE -> app.video.player.ui.browser.profile.ProfileScreen.Content()
               }
             }
@@ -1264,7 +1052,6 @@ internal fun ExpressivePillNavigationBar(
 internal fun mainNavigationLabel(tab: MainScreen.MainTab): String =
   stringResource(when (tab) {
     MainScreen.MainTab.HOME -> R.string.ui_home
-    MainScreen.MainTab.MUSIC -> R.string.ui_music
     MainScreen.MainTab.PROFILE -> R.string.ui_profile
   })
 
@@ -1319,7 +1106,6 @@ internal fun MainTabIcon(
   }
   val icon = when (tab) {
     MainScreen.MainTab.HOME -> Icons.RoundedFilled.Home
-    MainScreen.MainTab.MUSIC -> Icons.RoundedFilled.Audiotrack
     MainScreen.MainTab.PROFILE -> Icons.RoundedFilled.AccountCircle
   }
   Icon(
@@ -1342,13 +1128,11 @@ private const val TV_TAB_FOCUS_RETRY_MS = 100L
  * tab. The Profile tab absorbs Recents, Playlists and Snapshots, which stay reachable from inside it.
  */
 internal fun mainNavigationTabs(
-  showMusic: Boolean,
   showProfile: Boolean,
   order: List<String> = emptyList(),
 ): List<MainScreen.MainTab> {
   val available = buildList {
     add(MainScreen.MainTab.HOME)
-    if (showMusic) add(MainScreen.MainTab.MUSIC)
     if (showProfile) add(MainScreen.MainTab.PROFILE)
   }
   val byName = available.associateBy { it.name }
