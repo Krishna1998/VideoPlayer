@@ -1787,12 +1787,14 @@ private fun SearchResultsContent(
   val centerGridTitles by browserPreferences.centerGridTitles.collectAsState()
   val thumbnailQuality by browserPreferences.thumbnailQuality.collectAsState()
   val thumbnailGenerator by browserPreferences.thumbnailGenerator.collectAsState()
+  val grayscaleWatchedThumbnails by browserPreferences.grayscaleWatchedThumbnails.collectAsState()
   val swipeLeft by browserPreferences.videoSwipeLeft.collectAsState()
   val swipeRight by browserPreferences.videoSwipeRight.collectAsState()
   val videoCardUiConfig =
     remember(
       unlimitedNameLines,
       showVideoThumbnails,
+      grayscaleWatchedThumbnails,
       showSizeChip,
       showResolutionChip,
       showFramerateInResolution,
@@ -1812,6 +1814,7 @@ private fun SearchResultsContent(
       VideoCardUiConfig(
         unlimitedNameLines = unlimitedNameLines,
         showThumbnails = showVideoThumbnails,
+        grayscaleWatchedThumbnails = grayscaleWatchedThumbnails,
         showSizeChip = showSizeChip,
         showResolutionChip = showResolutionChip,
         showFramerateInResolution = showFramerateInResolution,

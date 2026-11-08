@@ -688,6 +688,7 @@ private fun RecentItemsContent(
   val showExtensionField by viewPreferences.showExtensionField.collectAsState()
   val showDurationField by viewPreferences.showDurationField.collectAsState()
   val centerGridTitles by viewPreferences.centerGridTitles.collectAsState()
+  val grayscaleWatchedThumbnails by viewPreferences.grayscaleWatchedThumbnails.collectAsState()
   val thumbnailQuality by browserPreferences.thumbnailQuality.collectAsState()
   val thumbnailGenerator by browserPreferences.thumbnailGenerator.collectAsState()
   val swipeLeft by browserPreferences.videoSwipeLeft.collectAsState()
@@ -732,6 +733,7 @@ private fun RecentItemsContent(
     remember(
       unlimitedNameLines,
       showVideoThumbnails,
+      grayscaleWatchedThumbnails,
       showSizeChip,
       showResolutionChip,
       showFramerateInResolution,
@@ -751,6 +753,7 @@ private fun RecentItemsContent(
       VideoCardUiConfig(
         unlimitedNameLines = unlimitedNameLines,
         showThumbnails = showVideoThumbnails,
+        grayscaleWatchedThumbnails = grayscaleWatchedThumbnails,
         showSizeChip = showSizeChip,
         showResolutionChip = showResolutionChip,
         showFramerateInResolution = showFramerateInResolution,

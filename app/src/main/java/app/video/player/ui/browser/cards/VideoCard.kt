@@ -46,6 +46,8 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
@@ -75,6 +77,8 @@ import kotlinx.coroutines.withContext
 import org.koin.compose.koinInject
 import kotlin.math.roundToInt
 
+private val WatchedThumbnailFilter = ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(0f) })
+
 @Immutable
 data class VideoCardUiConfig(
   val unlimitedNameLines: Boolean,
@@ -87,6 +91,7 @@ data class VideoCardUiConfig(
   val showDateChip: Boolean,
   val showUnplayedOldVideoLabel: Boolean,
   val unplayedOldVideoDays: Int,
+  val grayscaleWatchedThumbnails: Boolean = true,
   val showExtensionField: Boolean = true,
   val showDurationField: Boolean = true,
   val centerGridTitles: Boolean = false,
@@ -109,6 +114,7 @@ fun rememberVideoCardUiConfig(): VideoCardUiConfig {
   val showFramerateInResolutionConfig by browserPreferences.showFramerateInResolution.collectAsState()
   val showCodecSupportIndicator by browserPreferences.showCodecSupportIndicator.collectAsState()
   val showProgressBarConfig by browserPreferences.showProgressBar.collectAsState()
+  val grayscaleWatchedThumbnailsConfig by browserPreferences.grayscaleWatchedThumbnails.collectAsState()
   val showDateChipConfig by browserPreferences.showDateChip.collectAsState()
   val showUnplayedOldVideoLabelConfig by appearancePreferences.showUnplayedOldVideoLabel.collectAsState()
   val unplayedOldVideoDaysConfig by appearancePreferences.unplayedOldVideoDays.collectAsState()
@@ -128,6 +134,7 @@ fun rememberVideoCardUiConfig(): VideoCardUiConfig {
     showFramerateInResolutionConfig,
     showCodecSupportIndicator,
     showProgressBarConfig,
+    grayscaleWatchedThumbnailsConfig,
     showDateChipConfig,
     showUnplayedOldVideoLabelConfig,
     unplayedOldVideoDaysConfig,
@@ -147,6 +154,7 @@ fun rememberVideoCardUiConfig(): VideoCardUiConfig {
       showFramerateInResolution = showFramerateInResolutionConfig,
       showCodecSupportIndicator = showCodecSupportIndicator,
       showProgressBar = showProgressBarConfig,
+      grayscaleWatchedThumbnails = grayscaleWatchedThumbnailsConfig,
       showDateChip = showDateChipConfig,
       showUnplayedOldVideoLabel = showUnplayedOldVideoLabelConfig,
       unplayedOldVideoDays = unplayedOldVideoDaysConfig,
@@ -297,6 +305,7 @@ fun VideoCard(
 
   val selectionContainerColor = animatedSelectionColor(isSelected)
   val showSelectionBadge = isSelected || selectionContainerColor.alpha > 0.001f
+  val thumbnailColorFilter = if (isWatched && resolvedUiConfig.grayscaleWatchedThumbnails) WatchedThumbnailFilter else null
 
   // Hold the last displayed thumbnail for this file across grid/list size changes.
   // Repository memory remains the source of truth for new requests.
@@ -438,6 +447,7 @@ fun VideoCard(
                   contentDescription = stringResource(R.string.ui_thumbnail),
                   modifier = Modifier.matchParentSize(),
                   contentScale = ContentScale.Crop,
+                  colorFilter = thumbnailColorFilter,
                 )
               } else thumbnailBitmap?.let {
                 Image(
@@ -447,6 +457,7 @@ fun VideoCard(
                       .stringResource(app.video.player.R.string.ui_thumbnail),
                   modifier = Modifier.matchParentSize().then(if (showingSoftPreview) Modifier.blur(2.dp) else Modifier),
                   contentScale = ContentScale.Crop,
+                  colorFilter = thumbnailColorFilter,
                 )
               } ?: run {
                 Icon(
@@ -782,6 +793,7 @@ fun VideoCard(
                   contentDescription = stringResource(R.string.ui_thumbnail),
                   modifier = Modifier.matchParentSize(),
                   contentScale = ContentScale.Crop,
+                  colorFilter = thumbnailColorFilter,
                 )
               } else listThumbnailBitmap?.let {
                 Image(
@@ -791,6 +803,7 @@ fun VideoCard(
                       .stringResource(app.video.player.R.string.ui_thumbnail),
                   modifier = Modifier.matchParentSize().then(if (showingSoftPreview) Modifier.blur(2.dp) else Modifier),
                   contentScale = ContentScale.Crop,
+                  colorFilter = thumbnailColorFilter,
                 )
               } ?: run {
                 Icon(

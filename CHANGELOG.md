@@ -26,6 +26,8 @@ These notes are written in plain English and focus on what changed for real use.
   - Removed local music library scanning, artist image caching, and music tab customization settings.
   - Streamlined the application strictly for video playback.
 - **UI & Gestures:**
+  - Added optional "Grayscale watched thumbnails" toggle in Sort & View options across video lists, file tree, playlists, and recently played views.
+  - Stripped media extension from player control titles when the extension field toggle is disabled.
   - Updated swipe-to-delete confirmation dialog text color to clear black for better readability.
 
 ## 3.3.3

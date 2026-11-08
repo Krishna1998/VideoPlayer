@@ -9,10 +9,12 @@
 
 package app.video.player.ui.player.controls
 
+import app.video.player.preferences.BrowserPreferences
 import app.video.player.ui.player.DeclaredPlaybackMediaKind
 import app.video.player.ui.player.PlaybackSession
 import app.video.player.ui.player.declaredMediaKind
 import app.video.player.utils.media.MediaUtils
+import app.video.player.utils.storage.FileTypeUtils
 import android.content.res.Configuration.ORIENTATION_PORTRAIT
 import android.database.ContentObserver
 import android.media.AudioManager
@@ -583,14 +585,26 @@ fun PlayerControls(
     }
   val aspect by viewModel.videoAspect.collectAsState()
   val currentZoom by viewModel.videoZoom.collectAsState()
+  val showMediaExtensions by koinInject<BrowserPreferences>().showExtensionField.collectAsState()
   val rawMediaTitle by PlaybackSession.propString["media-title"].collectAsStateWithLifecycle()
   val queuedTitle =
     playbackQueue.currentItem?.title?.takeIf { playbackQueue.isExplicitQueue && it.isNotBlank() }
   val mediaTitle =
-    remember(queuedTitle, rawMediaTitle, playerActivity) {
-      queuedTitle
-        ?: playerActivity.getTitleForControls().takeIf { it.isNotBlank() }
-        ?: rawMediaTitle
+    remember(queuedTitle, rawMediaTitle, playerActivity, showMediaExtensions) {
+      val title =
+        queuedTitle
+          ?: playerActivity.getTitleForControls().takeIf { it.isNotBlank() }
+          ?: rawMediaTitle
+      title?.let { rawTitle ->
+        val extension = rawTitle.substringAfterLast('.', "").lowercase(java.util.Locale.ROOT)
+        if (!showMediaExtensions &&
+          (extension in FileTypeUtils.VIDEO_EXTENSIONS || extension in FileTypeUtils.AUDIO_EXTENSIONS)
+        ) {
+          FileTypeUtils.stripExtension(rawTitle)
+        } else {
+          rawTitle
+        }
+      }
     }
 
   val topRightControlsPref by appearancePreferences.topRightControls.collectAsState()

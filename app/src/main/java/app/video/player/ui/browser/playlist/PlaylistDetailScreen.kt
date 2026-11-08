@@ -918,6 +918,7 @@ private fun PlaylistVideoListContent(
   val showDurationField by viewPreferences.showDurationField.collectAsState()
   val centerGridTitles by viewPreferences.centerGridTitles.collectAsState()
   val musicCoverArtSize by viewPreferences.audioCoverArtSize.collectAsState()
+  val grayscaleWatchedThumbnails by viewPreferences.grayscaleWatchedThumbnails.collectAsState()
   val thumbnailQuality by browserPreferences.thumbnailQuality.collectAsState()
   val thumbnailGenerator by browserPreferences.thumbnailGenerator.collectAsState()
   val swipeLeft by browserPreferences.videoSwipeLeft.collectAsState()
@@ -928,6 +929,7 @@ private fun PlaylistVideoListContent(
     remember(
       unlimitedNameLines,
       showVideoThumbnails,
+      grayscaleWatchedThumbnails,
       showSizeChip,
       showResolutionChip,
       showFramerateInResolution,
@@ -947,6 +949,7 @@ private fun PlaylistVideoListContent(
       VideoCardUiConfig(
         unlimitedNameLines = unlimitedNameLines,
         showThumbnails = showVideoThumbnails,
+        grayscaleWatchedThumbnails = grayscaleWatchedThumbnails,
         showSizeChip = showSizeChip,
         showResolutionChip = showResolutionChip,
         showFramerateInResolution = showFramerateInResolution,

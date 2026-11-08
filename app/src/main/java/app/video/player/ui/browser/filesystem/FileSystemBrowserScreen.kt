@@ -1412,12 +1412,14 @@ private fun FileSystemBrowserContent(
   val centerGridTitles by browserPreferences.centerGridTitles.collectAsState()
   val thumbnailQuality by browserPreferences.thumbnailQuality.collectAsState()
   val thumbnailGenerator by browserPreferences.thumbnailGenerator.collectAsState()
+  val grayscaleWatchedThumbnails by browserPreferences.grayscaleWatchedThumbnails.collectAsState()
   val swipeLeft by browserPreferences.videoSwipeLeft.collectAsState()
   val swipeRight by browserPreferences.videoSwipeRight.collectAsState()
   val videoCardUiConfig =
     remember(
       unlimitedNameLines,
       showVideoThumbnails,
+      grayscaleWatchedThumbnails,
       showSizeChip,
       showResolutionChip,
       showFramerateInResolution,
@@ -1438,6 +1440,7 @@ private fun FileSystemBrowserContent(
       VideoCardUiConfig(
         unlimitedNameLines = unlimitedNameLines,
         showThumbnails = showVideoThumbnails && !archiveMode,
+        grayscaleWatchedThumbnails = grayscaleWatchedThumbnails,
         showSizeChip = showSizeChip,
         showResolutionChip = showResolutionChip && !archiveMode,
         showFramerateInResolution = showFramerateInResolution && !archiveMode,
@@ -1899,12 +1902,14 @@ private fun FileSystemSearchContent(
   val centerGridTitles by browserPreferences.centerGridTitles.collectAsState()
   val thumbnailQuality by browserPreferences.thumbnailQuality.collectAsState()
   val thumbnailGenerator by browserPreferences.thumbnailGenerator.collectAsState()
+  val grayscaleWatchedThumbnails by browserPreferences.grayscaleWatchedThumbnails.collectAsState()
   val swipeLeft by browserPreferences.videoSwipeLeft.collectAsState()
   val swipeRight by browserPreferences.videoSwipeRight.collectAsState()
   val videoCardUiConfig =
     remember(
       unlimitedNameLines,
       showVideoThumbnails,
+      grayscaleWatchedThumbnails,
       showSizeChip,
       showResolutionChip,
       showFramerateInResolution,
@@ -1925,6 +1930,7 @@ private fun FileSystemSearchContent(
       VideoCardUiConfig(
         unlimitedNameLines = unlimitedNameLines,
         showThumbnails = showVideoThumbnails && !archiveMode,
+        grayscaleWatchedThumbnails = grayscaleWatchedThumbnails,
         showSizeChip = showSizeChip,
         showResolutionChip = showResolutionChip && !archiveMode,
         showFramerateInResolution = showFramerateInResolution && !archiveMode,
