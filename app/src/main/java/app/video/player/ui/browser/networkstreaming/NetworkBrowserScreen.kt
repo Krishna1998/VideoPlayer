@@ -329,10 +329,13 @@ data class NetworkBrowserScreen(
             },
             onCancelSelection = { selectionManager.clear() },
             onSortClick = { sortDialogOpen.value = true },
-            onSearchClick = { isSearching = true },
-            onSettingsClick = {
-              backstack.navigateTo(PreferencesScreen)
-            },
+            onSearchClick = if (!canBookmarkCurrentFolder) { { isSearching = true } } else null,
+            onSettingsClick =
+              if (!canBookmarkCurrentFolder) {
+                { backstack.navigateTo(PreferencesScreen) }
+              } else {
+                null
+              },
             onDeleteClick = null,
             onRenameClick = null,
             isSingleSelection = false,

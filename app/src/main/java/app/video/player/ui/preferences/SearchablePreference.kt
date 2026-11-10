@@ -148,6 +148,15 @@ object SearchablePreferences {
       )
       add(
         SearchablePreference(
+          titleRes = R.string.pref_appearance_font_size_title,
+          summaryRes = R.string.pref_appearance_font_size_summary,
+          keywords = listOf("font", "size", "text", "scale", "increase", "decrease", "typography", "appearance"),
+          category = "Appearance",
+          screen = AppearancePreferencesScreen,
+        ),
+      )
+      add(
+        SearchablePreference(
           titleRes = R.string.pref_appearance_ui_scale_title,
           summaryRes = R.string.pref_appearance_ui_scale_summary,
           keywords = listOf("scale", "size", "zoom", "ui", "display", "appearance"),

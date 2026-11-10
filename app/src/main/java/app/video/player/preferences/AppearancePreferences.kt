@@ -103,6 +103,7 @@ class AppearancePreferences(
   val useSystemFont = preferenceStore.getBoolean("use_system_font", true)
   val googleFontFamily = preferenceStore.getString("google_font_family", "")
   val googleFontRevision = preferenceStore.getInt("google_font_revision", 0)
+  val appFontScale = preferenceStore.getFloat("app_font_scale", 1.0f)
   val appUiScale = preferenceStore.getFloat("app_ui_scale", 0.95f)
   val unlimitedNameLines = preferenceStore.getBoolean("unlimited_name_lines", false)
   val forceDarkPlayerButtonsBackground = preferenceStore.getBoolean("force_dark_player_buttons_background", false)

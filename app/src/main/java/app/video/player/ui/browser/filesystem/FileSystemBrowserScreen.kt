@@ -616,12 +616,18 @@ fun FileSystemBrowserScreen(path: String? = null) {
               },
             onCancelSelection = { selectionManager.clear() },
             onSortClick = { sortDialogOpen.value = true },
-            onSearchClick = {
-              isSearching = !isSearching
-            },
-            onSettingsClick = {
-              backstack.navigateTo(app.video.player.ui.preferences.PreferencesScreen)
-            },
+            onSearchClick =
+              if (isAppRoot) {
+                { isSearching = !isSearching }
+              } else {
+                null
+              },
+            onSettingsClick =
+              if (isAppRoot) {
+                { backstack.navigateTo(app.video.player.ui.preferences.PreferencesScreen) }
+              } else {
+                null
+              },
             onTitleDoubleTap = { backstack.navigateTo(SecureFolderGateScreen) },
             onTitleLongPress = { backstack.navigateTo(SecureFolderGateScreen) },
             isSingleSelection = selectionManager.isSingleSelection,

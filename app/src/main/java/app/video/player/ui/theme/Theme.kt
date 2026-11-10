@@ -61,6 +61,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.core.view.drawToBitmap
 import app.video.player.R
@@ -371,8 +372,19 @@ fun VideoPlayerTheme(
       )
     }
 
+  val appFontScale by appearancePreferences.appFontScale.collectAsState()
+  val currentDensity = LocalDensity.current
+  val customDensity =
+    remember(currentDensity.density, appFontScale) {
+      Density(
+        density = currentDensity.density,
+        fontScale = appFontScale,
+      )
+    }
+
   // Provide theme transition state first, OUTSIDE MaterialExpressiveTheme
   CompositionLocalProvider(
+    LocalDensity provides customDensity,
     LocalSpacing provides Spacing(),
     LocalThemeTransitionState provides transitionState,
     LocalMotionPolicy provides rememberMotionPolicy(),

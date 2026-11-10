@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -57,6 +58,7 @@ import app.video.player.preferences.TreeFlattenDepth
 import app.video.player.preferences.preference.collectAsState
 import app.video.player.presentation.Screen
 import app.video.player.presentation.components.ConfirmDialog
+import app.video.player.ui.components.AppSlider
 import app.video.player.ui.icons.Icon
 import app.video.player.ui.icons.Icons
 import app.video.player.ui.preferences.components.SwitchPreference
@@ -417,6 +419,89 @@ object AppearancePreferencesScreen : Screen {
                     onClick = { isAppFontSheetOpen = true },
                     action = PreferenceAction.Dialog,
                   )
+                  }
+
+                  PreferenceDivider()
+
+                  val appFontScale by preferences.appFontScale.collectAsState()
+                  ExpressivePreferenceItem {
+                    Preference(
+                      modifier = Modifier.settingsSearchTarget(R.string.pref_appearance_font_size_title),
+                      title = { Text(stringResource(R.string.pref_appearance_font_size_title)) },
+                      summary = {
+                        Column {
+                          Text(
+                            text =
+                              if (appFontScale == 1.0f) {
+                                stringResource(
+                                  R.string.pref_appearance_font_size_default,
+                                  (appFontScale * 100).roundToInt(),
+                                )
+                              } else {
+                                stringResource(
+                                  R.string.pref_appearance_font_size_summary,
+                                  (appFontScale * 100).roundToInt(),
+                                ),
+                              },
+                            color = MaterialTheme.colorScheme.outline,
+                          )
+                          Row(
+                            modifier =
+                              Modifier
+                                .fillMaxWidth()
+                                .padding(top = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                          ) {
+                            IconButton(
+                              onClick = {
+                                val newScale = ((appFontScale - 0.05f) * 100).roundToInt() / 100f
+                                preferences.appFontScale.set(newScale.coerceIn(0.75f, 1.40f))
+                              },
+                              enabled = appFontScale > 0.75f,
+                            ) {
+                              Icon(
+                                Icons.RoundedFilled.Remove,
+                                contentDescription = stringResource(R.string.generic_decrease),
+                                tint =
+                                  if (appFontScale > 0.75f) {
+                                    MaterialTheme.colorScheme.primary
+                                  } else {
+                                    MaterialTheme.colorScheme.outline
+                                  },
+                              )
+                            }
+                            AppSlider(
+                              value = appFontScale,
+                              onValueChange = { newScale ->
+                                val stepped = ((newScale * 20).roundToInt() / 20f).coerceIn(0.75f, 1.40f)
+                                preferences.appFontScale.set(stepped)
+                              },
+                              modifier = Modifier.weight(1f),
+                              valueRange = 0.75f..1.40f,
+                              steps = 12,
+                            )
+                            IconButton(
+                              onClick = {
+                                val newScale = ((appFontScale + 0.05f) * 100).roundToInt() / 100f
+                                preferences.appFontScale.set(newScale.coerceIn(0.75f, 1.40f))
+                              },
+                              enabled = appFontScale < 1.40f,
+                            ) {
+                              Icon(
+                                Icons.RoundedFilled.Add,
+                                contentDescription = stringResource(R.string.generic_increase),
+                                tint =
+                                  if (appFontScale < 1.40f) {
+                                    MaterialTheme.colorScheme.primary
+                                  } else {
+                                    MaterialTheme.colorScheme.outline
+                                  },
+                              )
+                            }
+                          }
+                        }
+                      },
+                    )
                   }
 
                   PreferenceDivider()

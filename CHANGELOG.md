@@ -5,6 +5,9 @@ These notes are written in plain English and focus on what changed for real use.
 ## 3.3.3
 
 - Release version 3.3.3.
+- **Appearance & Navigation Enhancements:**
+  - Added Font size increase and decrease controls with slider in Appearance settings, supporting real-time app text scaling.
+  - Removed settings and search buttons from top bar when browsing inside any folder across video lists, file tree, and network storage.
 - **Mini-Player & Navigation Streamlining:**
   - Enabled video mini-player in the app by default and removed the legacy background playback dependency requirement and dialog.
   - Removed "Connected mini-player and navigation" option, preserving an independent floating mini-player panel layout.

@@ -9,6 +9,8 @@ import android.content.res.Configuration
 
 const val MIN_APP_UI_SCALE = 0.5f
 const val MAX_APP_UI_SCALE = 1.5f
+const val MIN_APP_FONT_SCALE = 0.5f
+const val MAX_APP_FONT_SCALE = 2.0f
 
 /**
  * Builds the activity override configuration for the app UI scale preference.
@@ -20,10 +22,10 @@ const val MAX_APP_UI_SCALE = 1.5f
 fun appUiScaleOverrideConfiguration(
   base: Context,
   scale: Float,
+  fontScale: Float = 1.0f,
 ): Configuration =
   Configuration().apply {
     val systemDensityDpi = base.resources.configuration.densityDpi
     densityDpi = (systemDensityDpi * scale.coerceIn(MIN_APP_UI_SCALE, MAX_APP_UI_SCALE)).toInt()
-    // This preference is the only text-size input; the system font scale stays out of it.
-    fontScale = 1f
+    this.fontScale = fontScale.coerceIn(MIN_APP_FONT_SCALE, MAX_APP_FONT_SCALE)
   }

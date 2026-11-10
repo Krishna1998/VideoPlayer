@@ -413,13 +413,8 @@ data class VideoListScreen(
           },
           onCancelSelection = { selectionManager.clear() },
           onSortClick = { sortDialogOpen.value = true },
-          onSearchClick = { internalIsSearching = true },
-          onSettingsClick =
-            if (isDualPane) {
-              null
-            } else {
-              { backstack.navigateTo(app.video.player.ui.preferences.PreferencesScreen) }
-            },
+          onSearchClick = null,
+          onSettingsClick = null,
           onTitleDoubleTap = { backstack.navigateTo(SecureFolderGateScreen) },
           onTitleLongPress = { backstack.navigateTo(SecureFolderGateScreen) },
           isSingleSelection = selectionManager.isSingleSelection,

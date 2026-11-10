@@ -346,7 +346,13 @@ open class MainActivity : AppCompatActivity() {
     // An override configuration is re-merged by the framework on every configuration change.
     // createConfigurationContext() is not, so rotation would drop the scale on devices that
     // handle the rotation themselves instead of recreating the activity.
-    applyOverrideConfiguration(appUiScaleOverrideConfiguration(newBase, appearancePreferences.appUiScale.get()))
+    applyOverrideConfiguration(
+      appUiScaleOverrideConfiguration(
+        newBase,
+        appearancePreferences.appUiScale.get(),
+        appearancePreferences.appFontScale.get(),
+      ),
+    )
     super.attachBaseContext(newBase)
   }
 
