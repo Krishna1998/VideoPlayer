@@ -56,6 +56,8 @@ Video Player pushes the mpv-android experience further with deep customization, 
 | **AMOLED Pure Black Mode** | Every theme has a dedicated variant with pure black backgrounds |
 | **Always Dark Mode** | Option to keep player controls in dark theme regardless of app theme |
 | **Themed Player Controls** | Adaptive controls that match your app theme or system accent |
+| **Font Size Adjustment** | Real-time app text scaling (75% to 140%) with granular decrease/increase controls and slider in Appearance settings |
+| **Liquid Glass Controls** | Translucent backdrop-filtered controls with specular highlights, fluid depth, and animated states |
 | **Material 3 Expressive UI** | Expressive components, spring-based navigation, responsive grids, and polished predictive-back motion |
 
 </details>
@@ -84,6 +86,7 @@ Video Player pushes the mpv-android experience further with deep customization, 
 |---|---|
 | **Shader-Based HDR Pipeline** | Powered by [hdr-toys](https://github.com/natural-harmonia-gropius/hdr-toys) — 83 bundled GLSL shaders |
 | **Four HDR Modes** | BT.2100 PQ (HDR10), BT.2100 HLG, BT.2020 gamut mapping, Linear HDR |
+| **GPU Motion Interpolation** | Real-time video frame rate synthesis with target FPS controls (Auto, 24, 30, 60, custom) and live synthesized frame readouts |
 | **SDR-to-HDR Boost** | Boost SDR content into HDR range when using Linear HDR pipeline |
 | **GPU Deband** | CPU (gradfun) or GPU deband with configurable iterations, threshold, range, grain |
 | **Smart Render Backend** | Auto-selects between OpenGL/Vulkan and gpu/gpu-next based on device support |
@@ -96,6 +99,7 @@ Video Player pushes the mpv-android experience further with deep customization, 
 
 | Feature | Description |
 |---|---|
+| **Dedicated Battery Saver Mode** | Low-power playback profile with energy-efficient bilinear scaling, disabled deband, fast decoding (`vd-lavc-fast`), and auto-triggering on low battery (≤20%) or system battery saver |
 | **ThermalMonitor** | Samples thermal headroom every 10s during playback |
 | **Adaptive Shader Budget** | Ambient shader budget auto-capped based on thermal headroom |
 | **Anime4K Proactive Throttling** | Auto-downgrades Anime4K quality when thermal headroom drops below 40% |
@@ -134,7 +138,8 @@ Video Player pushes the mpv-android experience further with deep customization, 
 | Feature | Description |
 |---|---|
 | **Fully Customizable Layout** | Four configurable zones (top-left/right, bottom-left/right) + portrait bottom row |
-| **25+ Button Types** | Cast, Mirror, Vertical Flip, A-B Loop, Custom Skip, Background Playback, Ambient, and more |
+| **25+ Button Types** | Cast, Battery Saver, Motion Interpolation, Mirror, Vertical Flip, A-B Loop, Custom Skip, Background Playback, Ambient, and more |
+| **Live Playback Speed Toggle** | Dynamic pill button with real-time animated width adjustment when cycling through speeds (1.25x, 1.5x, 1.75x, 2x) |
 | **Custom User Buttons** | Create arbitrary buttons executing Lua, JavaScript, or mpv commands |
 | **Landscape/Portrait Adaptive Layouts** | Completely different control layouts per orientation |
 | **One-Tap Control Unlock** | When playback controls are locked, tap the unlock button at the top-left or top-right according to the side you touch |
@@ -179,6 +184,8 @@ Video Player pushes the mpv-android experience further with deep customization, 
 | Feature | Description |
 |---|---|
 | **Dual Browser Modes** | Album View (folder grid) and Tree View (file manager hierarchy) |
+| **Distraction-Free Folder Browsing** | Search and settings actions automatically hide when inside any folder across video lists, file tree, and network storage |
+| **Built-in Video Mini-Player** | Smooth floating mini-player active across folder and library navigation |
 | **Folder Pinning** | Pin frequently accessed folders to top |
 | **Single-Child Auto-Flatten** | Folders with one subfolder auto-flatten for faster browsing |
 | **Auto-Scroll to Last Played** | Opens to the last played video position |
@@ -188,9 +195,8 @@ Video Player pushes the mpv-android experience further with deep customization, 
 | **Multi-Protocol Network** | Built-in SMB, FTP, and WebDAV clients |
 | **Syncplay Rooms** | Join a Syncplay server room to synchronize pause, resume, seeking, and playback position with other viewers |
 | **Responsive & Dual-Pane Layouts** | Automatic grid sizing plus optional folder/settings dual-pane views on tablets |
-| **Audio Library Mode** | MediaStore and filesystem audio browsing with square artwork, metadata titles, and mixed sibling playlists |
 | **Home-First Back Navigation** | Main tabs return to Home before Back exits the app; selection, search, and nested screens handle Back first |
-| **Swipeable Main Tabs** | Swipe between main destinations with a sliding dock highlight; nested category tabs remain selectable by tapping |
+| **Swipeable Main Tabs** | Swipe between main destinations (Home and Profile) with a sliding dock highlight |
 </details>
 
 <details close>
@@ -228,6 +234,7 @@ Video Player pushes the mpv-android experience further with deep customization, 
 
 | Feature | Description |
 |---|---|
+| **Personal Profile & Video Statistics** | Focused personal profile hub with video watch history and top watched video leaderboard |
 | **Stats Page 6** | Live system monitor: FPS, dropped frames, codecs, network sparkline, battery |
 | **Video Compressor** | Built-in FFmpeg-based compression with presets |
 | **12 Video Filter Presets** | Vivid, Cinematic, Dramatic, Ghibli Style, Neon Pop, Deep Black, and more |
@@ -246,7 +253,7 @@ Video Player pushes the mpv-android experience further with deep customization, 
 | **Dynamic Refresh Rate** | Matches supported display refresh rates to the current video's frame rate for smoother motion |
 | **Secure Folder** | PIN-protected access with optional biometrics, media move/restore actions, and a hideable entry point |
 
-Local playlist discovery runs when the Playlists page is first loaded and after media-index or storage-mount changes. Pull to refresh to rescan manually, or use **Playlist options > Add local playlist folder** to grant access to a folder. Android's restrictions on protected directories such as `Android/data` and `Android/obb` still apply; discovery cannot bypass them. HLS segment manifests are not imported as channel lists. Removing a discovered playlist does not delete its source file, and that source stays hidden until explicitly imported again. Remote video thumbnails respect the existing network-thumbnail setting.
+Local playlist discovery runs when the Playlists page is first loaded and after media-index or storage-mount changes. Pull to refresh to rescan manually, or use **Playlist options > Add local playlist folder** to grant access to a folder. Android's restrictions on protected directories such as `Android/data` and `Android/obb` still apply; discovery cannot bypass them. HLS segment manifests are not imported as channel lists. Removing a discovered playlist does not delete its source file, and that source stays hidden until explicitly imported again.
 
 </details>
 
