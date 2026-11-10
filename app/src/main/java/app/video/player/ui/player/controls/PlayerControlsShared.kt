@@ -18,6 +18,7 @@ import android.os.BatteryManager
 import android.text.format.DateFormat
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.fadeIn
@@ -312,75 +313,28 @@ fun RenderPlayerButton(
           onOpenSheet(Sheets.PlaybackSpeed)
         }
       }
-      if (isSpeedNonOne) {
-        if (enableLiquidGlass) {
-          LiquidPillButton(
-            onClick = onCycleSpeed,
-            onLongClick = onOpenSpeedSheet,
-            onLongClickLabel = stringResource(R.string.btn_label_speed),
-            isInteractive = !configOwned,
-            height = buttonSize,
-            horizontalPadding = MaterialTheme.spacing.small,
-          ) {
-            AppSymbolIcon(
-              imageVector = Icons.RoundedFilled.Speed,
-              contentDescription =
-                androidx.compose.ui.res
-                  .stringResource(app.video.player.R.string.ui_playback_speed),
-              tint = if (configOwned) disabledColor else MaterialTheme.colorScheme.primary,
-              modifier = Modifier.size(20.dp),
-            )
-            val speedText = "${playbackSpeed.formatSpeed()}x"
-            Text(
-              text = speedText,
-              maxLines = 1,
-              style = MaterialTheme.typography.bodyMedium.withTabularDigits(),
-              modifier = Modifier.stableNumericWidth(speedText),
-            )
-          }
-        } else {
-          Surface(
-            shape = CircleShape,
-            color =
-              if (borderless) {
-                Color.Transparent
-              } else {
-                playerButtonContainerColor()
-              },
-            contentColor =
-              if (configOwned) disabledColor else if (borderless) controlColor else MaterialTheme.colorScheme.onSurface,
-            tonalElevation = 0.dp,
-            shadowElevation = 0.dp,
-            border =
-              if (borderless) {
-                null
-              } else {
-                BorderStroke(
-                  1.dp,
-                  playerButtonBorderColor(),
-                )
-              },
-            modifier =
-              Modifier
-                .height(buttonSize)
-                .clip(CircleShape)
-                .combinedClickable(
-                  enabled = !configOwned,
-                  interactionSource = remember { MutableInteractionSource() },
-                  indication = ripple(bounded = true),
-                  onClick = onCycleSpeed,
-                  onLongClick = onOpenSpeedSheet,
-                  onLongClickLabel = stringResource(R.string.btn_label_speed),
-                ),
-          ) {
-            Row(
-              verticalAlignment = Alignment.CenterVertically,
-              horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.extraSmall),
-              modifier =
-                Modifier.padding(
-                  horizontal = MaterialTheme.spacing.small,
-                  vertical = MaterialTheme.spacing.small,
-                ),
+      val speedAnimModifier =
+        if (AppMotion.playerReducedMotion()) Modifier
+        else Modifier.animateContentSize(AppMotion.IntSizeSpring)
+      AnimatedContent(
+        targetState = isSpeedNonOne,
+        transitionSpec = {
+          (fadeIn(animationSpec = tween(150)) + expandHorizontally(animationSpec = tween(200)))
+            .togetherWith(fadeOut(animationSpec = tween(150)) + shrinkHorizontally(animationSpec = tween(200)))
+            .using(SizeTransform(clip = false))
+        },
+        label = "SpeedButtonTransition",
+      ) { speedNonOne ->
+        if (speedNonOne) {
+          if (enableLiquidGlass) {
+            LiquidPillButton(
+              onClick = onCycleSpeed,
+              onLongClick = onOpenSpeedSheet,
+              onLongClickLabel = stringResource(R.string.btn_label_speed),
+              isInteractive = !configOwned,
+              height = buttonSize,
+              horizontalPadding = MaterialTheme.spacing.small,
+              modifier = speedAnimModifier,
             ) {
               AppSymbolIcon(
                 imageVector = Icons.RoundedFilled.Speed,
@@ -395,32 +349,91 @@ fun RenderPlayerButton(
                 text = speedText,
                 maxLines = 1,
                 style = MaterialTheme.typography.bodyMedium.withTabularDigits(),
-                modifier = Modifier.stableNumericWidth(speedText),
               )
             }
+          } else {
+            Surface(
+              shape = CircleShape,
+              color =
+                if (borderless) {
+                  Color.Transparent
+                } else {
+                  playerButtonContainerColor()
+                },
+              contentColor =
+                if (configOwned) disabledColor else if (borderless) controlColor else MaterialTheme.colorScheme.onSurface,
+              tonalElevation = 0.dp,
+              shadowElevation = 0.dp,
+              border =
+                if (borderless) {
+                  null
+                } else {
+                  BorderStroke(
+                    1.dp,
+                    playerButtonBorderColor(),
+                  )
+                },
+              modifier =
+                speedAnimModifier
+                  .height(buttonSize)
+                  .clip(CircleShape)
+                  .combinedClickable(
+                    enabled = !configOwned,
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = ripple(bounded = true),
+                    onClick = onCycleSpeed,
+                    onLongClick = onOpenSpeedSheet,
+                    onLongClickLabel = stringResource(R.string.btn_label_speed),
+                  ),
+            ) {
+              Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.extraSmall),
+                modifier =
+                  Modifier.padding(
+                    horizontal = MaterialTheme.spacing.small,
+                    vertical = MaterialTheme.spacing.small,
+                  ),
+              ) {
+                AppSymbolIcon(
+                  imageVector = Icons.RoundedFilled.Speed,
+                  contentDescription =
+                    androidx.compose.ui.res
+                      .stringResource(app.video.player.R.string.ui_playback_speed),
+                  tint = if (configOwned) disabledColor else MaterialTheme.colorScheme.primary,
+                  modifier = Modifier.size(20.dp),
+                )
+                val speedText = "${playbackSpeed.formatSpeed()}x"
+                Text(
+                  text = speedText,
+                  maxLines = 1,
+                  style = MaterialTheme.typography.bodyMedium.withTabularDigits(),
+                )
+              }
+            }
           }
-        }
-      } else {
-        if (enableLiquidGlass) {
-          LiquidIconButton(
-            icon = Icons.RoundedFilled.Speed,
-            onClick = onCycleSpeed,
-            onLongClick = onOpenSpeedSheet,
-            title = stringResource(R.string.btn_label_speed),
-            tint = if (configOwned) disabledColor else if (borderless) controlColor else MaterialTheme.colorScheme.onSurface,
-            size = buttonSize,
-          )
         } else {
-          ControlsButton(
-            icon = Icons.RoundedFilled.Speed,
-            onClick = onCycleSpeed,
-            onLongClick = onOpenSpeedSheet,
-            onLongClickLabel = stringResource(R.string.btn_label_speed),
-            title = stringResource(R.string.btn_label_speed),
-            color = if (borderless) controlColor else MaterialTheme.colorScheme.onSurface,
-            enabled = !configOwned,
-            modifier = Modifier.size(buttonSize),
-          )
+          if (enableLiquidGlass) {
+            LiquidIconButton(
+              icon = Icons.RoundedFilled.Speed,
+              onClick = onCycleSpeed,
+              onLongClick = onOpenSpeedSheet,
+              title = stringResource(R.string.btn_label_speed),
+              tint = if (configOwned) disabledColor else if (borderless) controlColor else MaterialTheme.colorScheme.onSurface,
+              size = buttonSize,
+            )
+          } else {
+            ControlsButton(
+              icon = Icons.RoundedFilled.Speed,
+              onClick = onCycleSpeed,
+              onLongClick = onOpenSpeedSheet,
+              onLongClickLabel = stringResource(R.string.btn_label_speed),
+              title = stringResource(R.string.btn_label_speed),
+              color = if (borderless) controlColor else MaterialTheme.colorScheme.onSurface,
+              enabled = !configOwned,
+              modifier = Modifier.size(buttonSize),
+            )
+          }
         }
       }
     }
