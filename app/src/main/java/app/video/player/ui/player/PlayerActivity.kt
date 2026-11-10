@@ -109,8 +109,6 @@ import app.video.player.preferences.VideoSortType
 import app.video.player.ui.browser.playlist.ALL_VIDEOS_PLAYLIST_ID
 import app.video.player.ui.browser.playlist.buildAllVideosPlaylistEntity
 import app.video.player.ui.browser.playlist.isAllVideosPlaylist
-import app.video.player.ui.cast.CastMediaSnapshot
-import app.video.player.ui.cast.CastPlaybackController
 import app.video.player.ui.player.controls.PlayerControls
 import app.video.player.ui.player.controls.components.panels.toColorHexString
 import app.video.player.ui.player.components.VideoAmbientBackground
@@ -433,7 +431,6 @@ class PlayerActivity :
    * Helper for managing Picture-in-Picture mode.
    */
   private lateinit var pipHelper: MPVPipHelper
-  private lateinit var castPlaybackController: CastPlaybackController
   private var externalDisplayManager: ExternalDisplayManager? = null
 
   private var isReady = false // Single flag: true when video loaded and ready
@@ -946,7 +943,6 @@ class PlayerActivity :
       }
     }
     observePlaybackSessionQueue()
-    setupCastPlayback()
 
     // Video mode waits for mpv geometry; every other preference is decidable now. Audio launches
     // always decide now. In the waiting case applyInitialVideoOrientation already ran before
@@ -1648,56 +1644,6 @@ class PlayerActivity :
     )
   }
 
-  private fun setupCastPlayback() {
-    // Use WeakReferences for all ViewModel-capturing lambdas to prevent
-    // CastPlaybackController.instance (static) from keeping PlayerViewModel alive
-    // after onCleared() — fixes 21.5 kB LeakCanary-reported retain chain.
-    val vmRef = java.lang.ref.WeakReference(viewModel)
-    castPlaybackController =
-      CastPlaybackController(
-        activity = this,
-        currentMedia = ::currentCastMediaSnapshot,
-        pauseLocal = { vmRef.get()?.pause() },
-        restoreLocal = { positionMs, play ->
-          if (!isFinishing && !isDestroyed) {
-            vmRef.get()?.seekTo((positionMs / 1000L).toInt().coerceAtLeast(0))
-            if (play) vmRef.get()?.unpause() else vmRef.get()?.pause()
-          }
-        },
-        notifyUser = { msg -> vmRef.get()?.showToast(msg) },
-      )
-    castPlaybackController.start()
-  }
-
-  private fun currentCastMediaSnapshot(): CastMediaSnapshot? {
-    if (!isReady || fileName.isBlank()) return null
-    val source =
-      sequenceOf(
-        currentPlayableUri,
-        runCatching { PlaybackSession.getPropertyString("path") }.getOrNull(),
-        intent?.dataString,
-      ).filterNotNull()
-        .filter { it.isNotBlank() }
-        .map { sourceText ->
-          val parsed = Uri.parse(sourceText)
-          if (parsed.scheme.isNullOrBlank()) Uri.fromFile(File(sourceText)) else parsed
-        }.firstOrNull { uri ->
-          when (uri.scheme?.lowercase()) {
-            "content", "file" -> true
-            "http", "https" -> uri.host !in setOf("127.0.0.1", "localhost", "0.0.0.0")
-            else -> false
-          }
-        } ?: return null
-    return CastMediaSnapshot(
-      source = source,
-      title = getPreferredCurrentTitle().ifBlank { fileName },
-      mimeType = intent?.type ?: runCatching { contentResolver.getType(source) }.getOrNull(),
-      durationMs = ((PlaybackSession.getPropertyDouble("duration") ?: 0.0) * 1000.0).toLong(),
-      positionMs = ((PlaybackSession.getPropertyDouble("time-pos") ?: 0.0) * 1000.0).toLong(),
-      isPlaying = PlaybackSession.getPropertyBoolean("pause") == false,
-    )
-  }
-
   private fun setupAudio() {
     audioPreferences.audioChannels.get().let {
       runCatching {
@@ -1877,7 +1823,6 @@ class PlayerActivity :
       externalDisplayManager = null
       mediaLoadJob?.cancel()
       cancelPlaybackLoadRecovery()
-      if (::castPlaybackController.isInitialized) castPlaybackController.release()
       cancelSystemBarsAutoHide()
       if (playbackWasInitialized && ownsPlaybackSession && !scriptRuntimeRestartPending) saveVideoPlaybackState(fileName, immediate = true)
       if (playbackWasInitialized && ownsPlaybackSession && !keepBackgroundPlaybackAlive) {

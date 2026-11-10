@@ -528,27 +528,6 @@ internal val OPEN_SOURCE_LIBRARIES =
       url = "https://github.com/marlboro-advance/mediainfoAndroid",
     ),
     OpenSourceLibrary(
-      name = "SMBJ",
-      artifact = "com.hierynomus:smbj",
-      descriptionRes = R.string.oss_smbj_description,
-      license = "Apache-2.0",
-      url = "https://github.com/hierynomus/smbj",
-    ),
-    OpenSourceLibrary(
-      name = "Commons Net",
-      artifact = "commons-net:commons-net",
-      descriptionRes = R.string.oss_commons_net_description,
-      license = "Apache-2.0",
-      url = "https://commons.apache.org/proper/commons-net/",
-    ),
-    OpenSourceLibrary(
-      name = "Sardine Android",
-      artifact = "com.github.thegrizzlylabs:sardine-android",
-      descriptionRes = R.string.oss_sardine_android_description,
-      license = "Apache-2.0",
-      url = "https://github.com/thegrizzlylabs/sardine-android",
-    ),
-    OpenSourceLibrary(
       name = "NanoHTTPD",
       artifact = "org.nanohttpd:nanohttpd",
       descriptionRes = R.string.oss_nanohttpd_description,
@@ -668,13 +647,6 @@ internal val OPEN_SOURCE_LIBRARIES =
       url = "https://material.io/develop/android",
     ),
     OpenSourceLibrary(
-      name = "Google Cast",
-      artifact = "com.google.android.gms:play-services-cast-framework",
-      descriptionRes = R.string.oss_google_cast_description,
-      license = "Apache-2.0",
-      url = "https://developers.google.com/cast",
-    ),
-    OpenSourceLibrary(
       name = "Material Symbols",
       artifact = "com.composables:icons-material-symbols",
       descriptionRes = R.string.oss_material_symbols_description,
@@ -708,13 +680,6 @@ internal val OPEN_SOURCE_LIBRARIES =
       descriptionRes = R.string.oss_androidx_biometric_description,
       license = "Apache-2.0",
       url = "https://developer.android.com/jetpack/androidx/releases/biometric",
-    ),
-    OpenSourceLibrary(
-      name = "JSch",
-      artifact = "com.github.mwiede:jsch",
-      descriptionRes = R.string.oss_jsch_description,
-      license = "BSD-3-Clause",
-      url = "https://github.com/mwiede/jsch",
     ),
     OpenSourceLibrary(
       name = "libarchive-android",

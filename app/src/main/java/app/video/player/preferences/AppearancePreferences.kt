@@ -188,8 +188,6 @@ class AppearancePreferences(
       "SCREEN_ROTATION,AUDIO_TRACK,SUBTITLES,PLAYBACK_SPEED,BACKGROUND_PLAYBACK,LOCK_CONTROLS,MORE_OPTIONS",
     )
 
-  private val castButtonMigrationComplete =
-    preferenceStore.getBoolean("cast_button_migration_complete", false)
   private val clipButtonMigrationComplete =
     preferenceStore.getBoolean("clip_button_migration_complete", false)
 
@@ -206,29 +204,10 @@ class AppearancePreferences(
       }
     }
 
-    // Only stored layouts predate the Cast and Clip buttons; the minimal defaults omit them on purpose.
+    // Only stored layouts predate the Clip buttons; the minimal defaults omit them on purpose.
     val landscapeLayoutStored =
       listOf(topLeftControls, topRightControls, bottomRightControls, bottomLeftControls).any { it.isSet() }
     val portraitLayoutStored = portraitBottomControls.isSet()
-
-    if (!castButtonMigrationComplete.get()) {
-      val landscapeButtons =
-        listOf(
-          topLeftControls.get(),
-          topRightControls.get(),
-          bottomRightControls.get(),
-          bottomLeftControls.get(),
-        ).flatMap { it.split(',') }
-          .map { it.trim().uppercase() }
-      if (landscapeLayoutStored && "CAST" !in landscapeButtons) {
-        topRightControls.set("CAST,${topRightControls.get()}")
-      }
-      val portraitButtons = portraitBottomControls.get().split(',').map { it.trim().uppercase() }
-      if (portraitLayoutStored && "CAST" !in portraitButtons) {
-        portraitBottomControls.set("CAST,${portraitBottomControls.get()}")
-      }
-      castButtonMigrationComplete.set(true)
-    }
 
     if (!clipButtonMigrationComplete.get()) {
       val landscapeButtons =

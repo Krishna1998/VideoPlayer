@@ -5,6 +5,11 @@ These notes are written in plain English and focus on what changed for real use.
 ## 3.3.3
 
 - Release version 3.3.3.
+- **Lightweight Architecture Optimizations:**
+  - Removed Telemetry / Analytics SDK (`sh.measure:measure-android`), build plugin, and OkHttp network instrumentation, replacing with zero-overhead no-ops for maximum privacy and performance.
+  - Removed Google Cast Framework (`play-services-cast-framework`), options provider, and casting activities/buttons to eliminate heavy Google Play Services client libraries.
+  - Removed heavy protocol stacks: SMB (`smbj` + `dcerpc`), SFTP (`jsch`), FTP (`commons-net`), WebDAV (`sardine-android`), and unused Guava dependencies, replacing client implementations with lightweight stubs while preserving Room database schemas and HTTP/HLS streaming.
+  - Cleaned up ProGuard rules, manifest declarations, and About screen open source listings for all removed dependencies, significantly reducing APK size by ~15 MB.
 - **Playback Controls & Speed Toggle:**
   - Made playback speed toggle size live and dynamically adjustable when switching between speeds (1.25x, 1.5x, 1.75x, 2x), eliminating width lock without requiring controls to hide and show.
   - Added smooth animated size transitions for the speed toggle pill and button states.

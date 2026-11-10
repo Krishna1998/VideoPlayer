@@ -74,7 +74,6 @@ import app.video.player.preferences.PlayerPreferences
 import app.video.player.preferences.preference.collectAsState
 import app.video.player.ui.liquidglass.LiquidIconButton
 import app.video.player.ui.liquidglass.LiquidPillButton
-import app.video.player.ui.cast.CastPlayerButton
 import app.video.player.ui.icons.Icons
 import app.video.player.ui.player.AudiobookPlayback
 import app.video.player.ui.player.Panels
@@ -875,15 +874,6 @@ fun RenderPlayerButton(
           modifier = Modifier.size(buttonSize),
         )
       }
-    }
-
-    PlayerButton.CAST -> {
-      CastPlayerButton(
-        borderless = borderless,
-        buttonSize = buttonSize,
-        onInvoked = clickEvent,
-        contentColor = if (borderless) controlColor else null,
-      )
     }
 
     PlayerButton.ASPECT_RATIO -> {

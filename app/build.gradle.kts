@@ -1,31 +1,6 @@
-import com.android.build.api.instrumentation.AsmClassVisitorFactory
-import com.android.build.api.instrumentation.ClassContext
-import com.android.build.api.instrumentation.ClassData
-import com.android.build.api.instrumentation.InstrumentationParameters
-import com.android.build.api.instrumentation.InstrumentationScope
 import com.android.build.api.variant.FilterConfiguration
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.objectweb.asm.ClassVisitor
-import org.objectweb.asm.Opcodes
-import org.objectweb.asm.commons.ClassRemapper
-import org.objectweb.asm.commons.Remapper
 import java.util.Properties
-
-// SMBJ-RPC uses a desktop-only exception for malformed replies. Remap the dependency's
-// references before D8/R8 so decoding failures stay catchable IOExceptions on Android.
-// This fixes the missing runtime type instead of suppressing R8's missing-class diagnostic.
-abstract class SmbRpcExceptionCompatibility : AsmClassVisitorFactory<InstrumentationParameters.None> {
-  override fun isInstrumentable(classData: ClassData): Boolean =
-    classData.className.startsWith("com.rapid7.client.dcerpc.")
-
-  override fun createClassVisitor(classContext: ClassContext, nextClassVisitor: ClassVisitor): ClassVisitor =
-    ClassRemapper(nextClassVisitor, object : Remapper(Opcodes.ASM9) {
-      override fun map(internalName: String): String =
-        if (internalName == "java/rmi/UnmarshalException") {
-          "app/video/player/data/network/client/SmbRpcDecodeException"
-        } else internalName
-    })
-}
 
 val localProperties =
   Properties().apply {
@@ -63,26 +38,6 @@ plugins {
   alias(libs.plugins.ksp)
   alias(libs.plugins.room)
   alias(libs.plugins.ktlint)
-  id("sh.measure.android.gradle") version "0.14.0" apply false
-}
-
-// Supply the ingestion key through a local Gradle property or the CI secret.
-val measureApiKey =
-  providers.gradleProperty("measureApiKey").orElse(providers.environmentVariable("MEASURE_API_KEY")).getOrElse("")
-if (measureApiKey.isNotBlank()) {
-  apply(plugin = "sh.measure.android.gradle")
-}
-
-androidComponents {
-  onVariants(selector().all()) { variant ->
-    // Measure 0.14 only rewrites OkHttp through 5.3.2. Attach its public SDK hooks
-    // to our clients instead, preserving OkHttp 5.5 and avoiding duplicate instrumentation.
-    variant.instrumentation.excludes.add("okhttp3/OkHttpClient")
-    variant.instrumentation.transformClassesWith(
-      SmbRpcExceptionCompatibility::class.java,
-      InstrumentationScope.ALL,
-    ) {}
-  }
 }
 
 android {
@@ -91,8 +46,7 @@ android {
   ndkVersion = "27.3.13750724"
 
   defaultConfig {
-    manifestPlaceholders["measureApiKey"] = measureApiKey
-    buildConfigField("boolean", "MEASURE_CONFIGURED", measureApiKey.isNotBlank().toString())
+    buildConfigField("boolean", "MEASURE_CONFIGURED", "false")
     applicationId = "app.video.player"
     minSdk = 26
     targetSdk = 36
@@ -307,7 +261,6 @@ baselineProfile {
 }
 
 dependencies {
-  implementation("sh.measure:measure-android:0.22.0")
   baselineProfile(project(":baselineprofile"))
   androidTestImplementation(libs.androidx.test.runner)
   androidTestImplementation(libs.androidx.test.ext.junit)
@@ -368,24 +321,9 @@ dependencies {
   implementation(libs.fsaf)
   implementation(libs.mediainfo.lib)
   implementation(libs.androidx.profileinstaller)
-  implementation(libs.google.cast.framework)
 
   "standardImplementation"(variantOf(libs.mpvlib.standard) { artifactType("aar") })
 
-  // Network protocol libraries
-  implementation(libs.smbj)
-  implementation(libs.dcerpc) {
-    // Reuse the existing SMBJ/crypto stack and use Android's Guava flavor.
-    exclude(group = "com.hierynomus", module = "smbj")
-    exclude(group = "org.bouncycastle", module = "bcprov-jdk18on")
-    exclude(group = "com.google.guava", module = "guava")
-  }
-  implementation(libs.guava)
-  implementation(libs.commons.net)
-  implementation(libs.jsch)
-  implementation(libs.sardine.android) {
-    exclude(group = "xpp3", module = "xpp3")
-  }
   implementation(libs.libarchive.android)
   implementation(libs.nanohttpd)
   implementation(libs.reorderable)
