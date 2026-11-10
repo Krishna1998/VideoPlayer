@@ -292,6 +292,7 @@ fun VideoPlayerTheme(
   val useSystemFont by preferences.useSystemFont.collectAsState()
   val googleFontFamily by preferences.googleFontFamily.collectAsState()
   val googleFontRevision by preferences.googleFontRevision.collectAsState()
+  val appFontScale by preferences.appFontScale.collectAsState()
   val googleFontsRepository =
     if (loadDownloadedFonts) koinInject<GoogleFontsRepository>() else null
   val darkTheme = isSystemInDarkTheme()
@@ -372,7 +373,6 @@ fun VideoPlayerTheme(
       )
     }
 
-  val appFontScale by appearancePreferences.appFontScale.collectAsState()
   val currentDensity = LocalDensity.current
   val customDensity =
     remember(currentDensity.density, appFontScale) {

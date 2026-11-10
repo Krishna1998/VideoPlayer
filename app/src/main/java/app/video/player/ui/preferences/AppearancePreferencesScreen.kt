@@ -441,7 +441,7 @@ object AppearancePreferencesScreen : Screen {
                                 stringResource(
                                   R.string.pref_appearance_font_size_summary,
                                   (appFontScale * 100).roundToInt(),
-                                ),
+                                )
                               },
                             color = MaterialTheme.colorScheme.outline,
                           )
