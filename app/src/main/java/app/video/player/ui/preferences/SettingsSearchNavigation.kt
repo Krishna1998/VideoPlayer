@@ -71,6 +71,7 @@ private val settingsSearchListAnchors: Map<Screen, List<SettingsSearchListAnchor
         SettingsSearchListAnchor(titleRes = R.string.pref_app_icon_title, itemIndex = 1),
         SettingsSearchListAnchor(titleRes = R.string.pref_appearance_system_font_title, itemIndex = 1),
         SettingsSearchListAnchor(titleRes = R.string.pref_appearance_font_size_title, itemIndex = 1),
+        SettingsSearchListAnchor(titleRes = R.string.pref_anim_speed_title, itemIndex = 1),
         SettingsSearchListAnchor(titleRes = R.string.navbar_glow_title, itemIndex = 9),
         SettingsSearchListAnchor(titleRes = R.string.legacy_navigation_bar_title, itemIndex = 9),
         SettingsSearchListAnchor(titleRes = R.string.progressive_navigation_blur_title, itemIndex = 9),

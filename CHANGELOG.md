@@ -11,6 +11,7 @@ These notes are written in plain English and focus on what changed for real use.
   - Set playback speed change toast notification to automatically hide after 3 seconds.
 - **Appearance & Navigation Enhancements:**
   - Added Font size increase and decrease controls with slider in Appearance settings, supporting real-time app text scaling.
+  - Restored Animation speed setting in Appearance settings with granular step buttons and slider (0.25x to 2.5x).
   - Removed settings and search buttons from top bar when browsing inside any folder across video lists, file tree, and network storage.
 - **Mini-Player & Navigation Streamlining:**
   - Enabled video mini-player in the app by default and removed the legacy background playback dependency requirement and dialog.

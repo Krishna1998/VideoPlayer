@@ -166,6 +166,15 @@ object SearchablePreferences {
       )
       add(
         SearchablePreference(
+          titleRes = R.string.pref_anim_speed_title,
+          summaryRes = R.string.pref_anim_speed_normal,
+          keywords = listOf("animation", "speed", "transition", "motion", "fast", "slow", "appearance"),
+          category = "Appearance",
+          screen = AppearancePreferencesScreen,
+        ),
+      )
+      add(
+        SearchablePreference(
           titleRes = R.string.pref_appearance_unlimited_name_lines_title,
           summaryRes = R.string.pref_appearance_unlimited_name_lines_summary,
           keywords = listOf("name", "full", "truncate", "lines", "display"),

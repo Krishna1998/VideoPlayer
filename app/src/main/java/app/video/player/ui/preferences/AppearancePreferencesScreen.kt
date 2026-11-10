@@ -531,6 +531,83 @@ object AppearancePreferencesScreen : Screen {
                   )
                   }
 
+                  PreferenceDivider()
+
+                  val animSpeed by playerPreferences.animationSpeed.collectAsState()
+                  ExpressivePreferenceItem {
+                    Preference(
+                      modifier = Modifier.settingsSearchTarget(R.string.pref_anim_speed_title),
+                      title = { Text(stringResource(R.string.pref_anim_speed_title)) },
+                      summary = {
+                        Column {
+                          val label =
+                            when {
+                              animSpeed < 0.6f -> stringResource(R.string.pref_anim_speed_very_fast, animSpeed)
+                              animSpeed < 0.9f -> stringResource(R.string.pref_anim_speed_fast, animSpeed)
+                              animSpeed < 1.1f -> stringResource(R.string.pref_anim_speed_normal, animSpeed)
+                              animSpeed < 1.6f -> stringResource(R.string.pref_anim_speed_slow, animSpeed)
+                              else -> stringResource(R.string.pref_anim_speed_very_slow, animSpeed)
+                            }
+                          Text(label, color = MaterialTheme.colorScheme.outline)
+                          Row(
+                            modifier =
+                              Modifier
+                                .fillMaxWidth()
+                                .padding(top = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                          ) {
+                            IconButton(
+                              onClick = {
+                                val newSpeed = ((animSpeed - 0.1f) * 10).roundToInt() / 10f
+                                playerPreferences.animationSpeed.set(newSpeed.coerceIn(0.25f, 2.5f))
+                              },
+                              enabled = animSpeed > 0.25f,
+                            ) {
+                              Icon(
+                                Icons.RoundedFilled.Remove,
+                                contentDescription = stringResource(R.string.generic_decrease),
+                                tint =
+                                  if (animSpeed > 0.25f) {
+                                    MaterialTheme.colorScheme.primary
+                                  } else {
+                                    MaterialTheme.colorScheme.outline
+                                  },
+                              )
+                            }
+                            AppSlider(
+                              value = animSpeed,
+                              onValueChange = { newSpeed ->
+                                val stepped = ((newSpeed * 10).roundToInt() / 10f).coerceIn(0.25f, 2.5f)
+                                playerPreferences.animationSpeed.set(stepped)
+                              },
+                              modifier = Modifier.weight(1f),
+                              valueRange = 0.25f..2.5f,
+                              steps = 21,
+                            )
+                            IconButton(
+                              onClick = {
+                                val newSpeed = ((animSpeed + 0.1f) * 10).roundToInt() / 10f
+                                playerPreferences.animationSpeed.set(newSpeed.coerceIn(0.25f, 2.5f))
+                              },
+                              enabled = animSpeed < 2.5f,
+                            ) {
+                              Icon(
+                                Icons.RoundedFilled.Add,
+                                contentDescription = stringResource(R.string.generic_increase),
+                                tint =
+                                  if (animSpeed < 2.5f) {
+                                    MaterialTheme.colorScheme.primary
+                                  } else {
+                                    MaterialTheme.colorScheme.outline
+                                  },
+                              )
+                            }
+                          }
+                        }
+                      },
+                    )
+                  }
+
                   }
                 }
               }
