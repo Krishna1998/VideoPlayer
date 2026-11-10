@@ -1458,8 +1458,6 @@ fun restartFromBeginning() {
     val localEnd = nextStart?.minus(offset)?.coerceAtMost(track.durationMs) ?: track.durationMs
     AudiobookPlayback.setTimer(null, localEnd)
   }
-  val isPlaylistSwipeActive = MutableStateFlow(false)
-  val playlistSwipeOffset = MutableStateFlow(0f)
   val panelShown = MutableStateFlow(Panels.None)
   private val _videoOpenAnimationState = MutableStateFlow(VideoOpenAnimationState())
   val videoOpenAnimationState: StateFlow<VideoOpenAnimationState> = _videoOpenAnimationState.asStateFlow()

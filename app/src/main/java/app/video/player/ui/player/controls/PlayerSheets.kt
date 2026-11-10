@@ -546,8 +546,6 @@ fun PlayerSheets(
         val playlist by viewModel.playlistItems.collectAsState()
         val isAudioOnly by viewModel.isAudioOnly.collectAsState()
         val playerPreferences = koinInject<app.video.player.preferences.PlayerPreferences>()
-        val isPlaylistSwipeActive by viewModel.isPlaylistSwipeActive.collectAsState()
-        val playlistSwipeOffset by viewModel.playlistSwipeOffset.collectAsState()
 
         val playlistImmutable = remember(playlist) { playlist.toImmutableList() }
 
@@ -566,8 +564,6 @@ fun PlayerSheets(
             totalCount = totalCount,
             isM3UPlaylist = isM3U,
             playerPreferences = playerPreferences,
-            isSwipeActive = isPlaylistSwipeActive,
-            swipeOffset = playlistSwipeOffset,
             isAudioOnly = isAudioOnly,
           )
         }

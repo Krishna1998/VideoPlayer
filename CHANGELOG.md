@@ -9,6 +9,9 @@ These notes are written in plain English and focus on what changed for real use.
   - Made playback speed toggle size live and dynamically adjustable when switching between speeds (1.25x, 1.5x, 1.75x, 2x), eliminating width lock without requiring controls to hide and show.
   - Added smooth animated size transitions for the speed toggle pill and button states.
   - Set playback speed change toast notification to automatically hide after 3 seconds.
+- **Gesture Refinements:**
+  - Completely removed the "Swipe up in center for playlist" gesture, preference option, and associated state flows to prevent accidental playlist triggering during center screen interactions.
+  - Updated the description of "Swipe between inner tabs" to accurately reflect current screens (Network streaming, Playlists, Recently Played) without obsolete Music references.
 - **Appearance & Navigation Enhancements:**
   - Added Font size increase and decrease controls with slider in Appearance settings, supporting real-time app text scaling.
   - Restored Animation speed setting in Appearance settings with granular step buttons and slider (0.25x to 2.5x).

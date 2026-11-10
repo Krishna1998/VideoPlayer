@@ -579,7 +579,7 @@ object SearchablePreferences {
       add(
         SearchablePreference(
           titleRes = R.string.pref_nested_tab_swipes_title,
-          keywords = listOf("swipe", "nested", "inner", "tabs", "navigation", "music", "network", "recents"),
+          keywords = listOf("swipe", "nested", "inner", "tabs", "navigation", "network", "playlists", "recents"),
           category = "Gestures",
           screen = GesturePreferencesScreen,
         ),
@@ -1414,7 +1414,6 @@ object SearchablePreferences {
         SearchEntrySpec(R.string.pref_player_gestures_pinch_to_zoom_subtitles, listOf("pinch", "zoom", "subtitle", "gesture")),
         SearchEntrySpec(R.string.pref_player_gestures_swipe_subtitles_to_seek_dialog, listOf("swipe", "subtitle", "seek", "dialog")),
         SearchEntrySpec(R.string.pref_player_gestures_swipe_subtitles_invert_direction, listOf("swipe", "subtitle", "invert", "direction")),
-        SearchEntrySpec(R.string.pref_player_gestures_enable_center_swipe_up_gesture, listOf("swipe up", "center", "playlist", "gesture")),
       )
       addSearchEntries(
         category = "Gestures",

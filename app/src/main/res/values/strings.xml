@@ -290,7 +290,6 @@
   <string name="pref_player_gestures_swipe_subtitles_invert_direction">Invert swipe subtitles direction</string>
   <string name="pref_player_gestures_swipe_subtitles_invert_direction_summary">Swipe right-to-left to seek forward, left-to-right to seek backward</string>
   <string name="pref_player_gestures_horizontal_swipe_to_seek">Horizontal swipe to seek</string>
-  <string name="pref_player_gestures_enable_center_swipe_up_gesture">Swipe up in center for playlist</string>
   <string name="pref_player_gestures_horizontal_swipe_sensitivity">Horizontal swipe sensitivity</string>
   <string name="pref_player_gestures_horizontal_swipe_sensitivity_summary">Adjust how much distance is covered per swipe</string>
   <string name="pref_player_gestures_hold_for_multiple_speed">Hold for multi - x speed</string>
@@ -317,7 +316,7 @@
   <string name="pref_gesture_use_single_tap_for_center_summary" formatted="false">Tap once inside the center zone (30% wide by default, 30% tall). Other center taps toggle controls.</string>
   <string name="pref_gesture_use_single_tap_for_right_summary">Tap once instead of twice to run the right-side action.</string>
   <string name="pref_gesture_center_vertical_subtitle_position_title">Hold and drag subtitles</string>
-  <string name="pref_gesture_center_vertical_subtitle_position_summary">Hold the center, then drag up or down to move primary subtitles. Hold directly on either subtitle to move that track independently. Normal swipes still open the playlist.</string>
+  <string name="pref_gesture_center_vertical_subtitle_position_summary">Hold the center, then drag up or down to move primary subtitles. Hold directly on either subtitle to move that track independently.</string>
   <string name="pref_gesture_double_tap_custom_info">You can bind custom actions to these gestures in input.conf using the following key codes:\n\nLeft: MBTN_LEFT_DBL\nCenter: MBTN_MID_DBL\nRight: MBTN_RIGHT_DBL</string>
   <string name="pref_gesture_media_title">Media controls</string>
   <string name="pref_gesture_media_previous">Previous</string>
@@ -2241,7 +2240,7 @@
   <string name="pref_haptic_feedback_title">Haptic feedback</string>
   <string name="pref_haptic_feedback_summary">Tactile feedback for selection, dragging, and control adjustments. Respects system settings.</string>
   <string name="pref_nested_tab_swipes_title">Swipe between inner tabs</string>
-  <string name="pref_nested_tab_swipes_summary">Enable left/right swipes inside Music, Network and Recents. Main navigation and item swipe actions are unchanged.</string>
+  <string name="pref_nested_tab_swipes_summary">Enable left/right swipes between inner tabs such as Network, Playlists, and Recently Played. Main navigation and item swipe actions are unchanged.</string>
 
   <!-- Post-Processing Effects -->
   <string name="btn_label_post_processing">Post-Processing</string>

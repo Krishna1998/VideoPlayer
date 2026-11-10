@@ -82,7 +82,6 @@ private enum class GestureOwner {
   SPEED,
   VERTICAL,
   SUBTITLE_VERTICAL,
-  PLAYLIST,
   PINCH,
   HORIZONTAL_SEEK,
   SUBTITLE_SEEK,
@@ -155,7 +154,6 @@ fun GestureHandler(
   val useSingleTapForRight by gesturePreferences.useSingleTapForRight.collectAsState()
   val doubleTapSeekAreaWidth by gesturePreferences.doubleTapSeekAreaWidth.collectAsState()
   val centerVerticalSubtitlePositionGesture by gesturePreferences.centerVerticalSubtitlePositionGesture.collectAsState()
-  val enableCenterSwipeUpGesture by gesturePreferences.enableCenterSwipeUpGesture.collectAsState()
   val enableVideoMiniPlayer by playerPreferences.enableVideoMiniPlayer.collectAsState()
   val pinchToZoomSubtitles by gesturePreferences.pinchToZoomSubtitles.collectAsState()
   val secondarySubPinchZoomEnabled by subtitlesPreferences.secondarySubPinchZoom.collectAsState()
@@ -487,7 +485,6 @@ fun GestureHandler(
           brightnessGesture,
           volumeGesture,
           centerVerticalSubtitlePositionGesture,
-          enableCenterSwipeUpGesture,
           enableVideoMiniPlayer,
           externalPanelShown,
           anyPanelShown,
@@ -498,7 +495,6 @@ fun GestureHandler(
               !brightnessGesture &&
                 !volumeGesture &&
                 !centerVerticalSubtitlePositionGesture &&
-                !enableCenterSwipeUpGesture &&
                 !enableVideoMiniPlayer &&
                 multipleSpeedGesture <= 0f
             ) ||
@@ -660,8 +656,6 @@ fun GestureHandler(
                             suppressHorizontalSeekForPointer = true
                           }
                           speedHoldPending = false
-                          val isCenterTouch =
-                            enableCenterSwipeUpGesture && startPosition.x in (size.width * 0.35f)..(size.width * 0.65f)
                           val isMinimizeTouch = enableVideoMiniPlayer && !externalPanelShown &&
                             !isVerticalGestureDeadZone && startPosition.x in (size.width / 3f)..(size.width * 2f / 3f)
                           if (
@@ -675,24 +669,6 @@ fun GestureHandler(
                           } else if (isMinimizeTouch && isVerticalDrag && deltaY > 20f && claimGesture(GestureOwner.VERTICAL)) {
                             longPressJob.cancel()
                             gestureType = "minimize"
-                          } else if (isCenterTouch && isVerticalDrag) {
-                            longPressJob.cancel()
-                            if (
-                              deltaY < -20f &&
-                              viewModel.hasPlaylistSupport() &&
-                              claimGesture(GestureOwner.PLAYLIST)
-                            ) {
-                              gestureType = "playlist_swipe"
-                              actionHaptics.pickup()
-                              viewModel.isPlaylistSwipeActive.value = true
-                              viewModel.playlistSwipeOffset.value = deltaY
-                              viewModel.sheetShown.update { Sheets.Playlist }
-                              viewModel.hideControls()
-                              viewModel.panelShown.update { Panels.None }
-                              if (externalPanelShown) onDismissExternalPanel()
-                            } else {
-                              return@forEach
-                            }
                           } else {
                             // Cancel long press if drag started
                             longPressJob.cancel()
@@ -758,10 +734,6 @@ fun GestureHandler(
                       when (gestureType) {
                         "minimize" -> {
                           minimizeDistance = deltaY.coerceAtLeast(0f)
-                          change.consume()
-                        }
-                        "playlist_swipe" -> {
-                          viewModel.playlistSwipeOffset.value = deltaY
                           change.consume()
                         }
                         "speed_control" -> {
@@ -946,9 +918,6 @@ fun GestureHandler(
                   longPressJob.cancel()
                   if (gestureType != null) {
                     when (gestureType) {
-                      "playlist_swipe" -> {
-                        viewModel.isPlaylistSwipeActive.value = false
-                      }
                       "vertical",
                       "subtitle_vertical",
                       -> {
@@ -967,7 +936,6 @@ fun GestureHandler(
                     GestureOwner.SPEED,
                     GestureOwner.VERTICAL,
                     GestureOwner.SUBTITLE_VERTICAL,
-                    GestureOwner.PLAYLIST,
                     -> gestureOwner = null
                     else -> Unit
                   }
@@ -1006,9 +974,6 @@ fun GestureHandler(
                 viewModel.playerUpdate.update { PlayerUpdates.None }
               }
 
-              if (gestureType == "playlist_swipe") {
-                viewModel.isPlaylistSwipeActive.value = false
-              }
               if (gestureType == "minimize" && minimizeDistance >= 80.dp.toPx()) {
                 if (viewModel.minimizeToMiniPlayer()) actionHaptics.pickup()
               }
@@ -1031,7 +996,6 @@ fun GestureHandler(
                 GestureOwner.SPEED,
                 GestureOwner.VERTICAL,
                 GestureOwner.SUBTITLE_VERTICAL,
-                GestureOwner.PLAYLIST,
                 -> gestureOwner = null
                 else -> Unit
               }
