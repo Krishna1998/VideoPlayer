@@ -1275,20 +1275,17 @@ fun PlayerControls(
           LaunchedEffect(currentPlayerUpdate, aspectRatio, videoZoom, updateInteracting) {
             if (updateInteracting) return@LaunchedEffect
             if (currentPlayerUpdate is PlayerUpdates.MultipleSpeed ||
-              currentPlayerUpdate is PlayerUpdates.DynamicSpeedControl ||
               currentPlayerUpdate is PlayerUpdates.None
             ) {
               return@LaunchedEffect
             }
             val dismissDelay =
-              if (
-                currentPlayerUpdate is PlayerUpdates.ResumedFrom ||
-                currentPlayerUpdate is PlayerUpdates.ResumeAvailable ||
-                currentPlayerUpdate is PlayerUpdates.StartedAfresh
-              ) {
-                4000L
-              } else {
-                2000L
+              when (currentPlayerUpdate) {
+                is PlayerUpdates.DynamicSpeedControl -> 3000L
+                is PlayerUpdates.ResumedFrom,
+                is PlayerUpdates.ResumeAvailable,
+                is PlayerUpdates.StartedAfresh -> 4000L
+                else -> 2000L
               }
             delay(dismissDelay)
             viewModel.playerUpdate.update { PlayerUpdates.None }
@@ -2229,14 +2226,20 @@ fun PlayerControls(
       decoder = decoder,
       onUpdateDecoder = { PlaybackSession.setPropertyString("hwdec", it.value) },
       speed = playbackSpeed ?: playerPreferences.defaultSpeed.get(),
-      onSpeedChange = { PlaybackSession.setPropertyFloat("speed", it.toFixed(2)) },
+      onSpeedChange = {
+        val target = it.toFixed(2)
+        PlaybackSession.setPropertyFloat("speed", target)
+        viewModel.playerUpdate.value = PlayerUpdates.DynamicSpeedControl(target)
+      },
       onMakeDefaultSpeed = { playerPreferences.defaultSpeed.set(it.toFixed(2)) },
       onAddSpeedPreset = { playerPreferences.speedPresets += it.toFixed(2).toString() },
       onRemoveSpeedPreset = { removeSpeedPreset(playerPreferences, it) },
       onResetSpeedPresets = playerPreferences.speedPresets::delete,
       speedPresets = sortedSpeedPresets,
       onResetDefaultSpeed = {
-        PlaybackSession.setPropertyFloat("speed", playerPreferences.defaultSpeed.deleteAndGet().toFixed(2))
+        val target = playerPreferences.defaultSpeed.deleteAndGet().toFixed(2)
+        PlaybackSession.setPropertyFloat("speed", target)
+        viewModel.playerUpdate.value = PlayerUpdates.DynamicSpeedControl(target)
       },
       onStartSleepTimer = viewModel::startTimer,
       onOpenPanel = onOpenPanel,

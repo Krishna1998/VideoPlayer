@@ -8,6 +8,7 @@ These notes are written in plain English and focus on what changed for real use.
 - **Playback Controls & Speed Toggle:**
   - Made playback speed toggle size live and dynamically adjustable when switching between speeds (1.25x, 1.5x, 1.75x, 2x), eliminating width lock without requiring controls to hide and show.
   - Added smooth animated size transitions for the speed toggle pill and button states.
+  - Set playback speed change toast notification to automatically hide after 3 seconds.
 - **Appearance & Navigation Enhancements:**
   - Added Font size increase and decrease controls with slider in Appearance settings, supporting real-time app text scaling.
   - Removed settings and search buttons from top bar when browsing inside any folder across video lists, file tree, and network storage.
