@@ -88,12 +88,10 @@ android {
       buildConfigField("boolean", "SCOPED_STORAGE_ONLY", "false")
       buildConfigField("boolean", "MPV_SUPPORTS_VULKAN", "true")
       buildConfigField("boolean", "MPV_SUPPORTS_MEDIACODEC_VULKAN", "false")
-      buildConfigField("boolean", "MPV_SUPPORTS_MOTION_INTERPOLATION", "false")
     }
 
     configureEach {
       buildConfigField("boolean", "ENABLE_YTDLP", "false")
-      buildConfigField("boolean", "MPV_SUPPORTS_MOTION_INTERPOLATION", "false")
     }
   }
 

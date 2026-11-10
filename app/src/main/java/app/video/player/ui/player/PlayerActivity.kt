@@ -931,7 +931,6 @@ class PlayerActivity :
     setupVideoAmbientBackground()
     setupPlayerControls()
     setupAudioPlayerViewObserver()
-    setupMotionInterpolationObserver()
     setupMediaSession()
     lifecycleScope.launch {
       thumbnailRepository.cacheRevision.drop(1).collect {
@@ -1584,18 +1583,6 @@ class PlayerActivity :
     PlaybackSession.setPropertyFloat("video-pan-y", mpvPanY)
     viewModel.onAmbientGeometryChanged()
     applySubtitleBlendMode()
-  }
-
-  /** Motion interpolation changes the rate the display should run at, so renegotiate it. */
-  private fun setupMotionInterpolationObserver() {
-    if (!app.video.player.domain.motion.MotionInterpolation.isBuildSupported) return
-    lifecycleScope.launch {
-      repeatOnLifecycle(Lifecycle.State.STARTED) {
-        viewModel.motionInterpolation.state.collect {
-          if (mpvInitialized && !player.isExiting && !isFinishing) player.updateFrameRate()
-        }
-      }
-    }
   }
 
   private fun setupAudioPlayerViewObserver() {
@@ -4813,8 +4800,6 @@ class PlayerActivity :
           playWhenFileLoaded = false
         }
         viewModel.onVideoLoadCompleted()
-        // The renderer and GPU support are only known once a file has started.
-        viewModel.motionInterpolation.refresh()
         handleFileLoaded(loadGeneration)
         scheduleDeferredUserMpvAssetRefresh()
         if (isBackgroundPlaybackEnabled()) {

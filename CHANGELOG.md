@@ -5,6 +5,9 @@ These notes are written in plain English and focus on what changed for real use.
 ## 3.3.3
 
 - Release version 3.3.3.
+- **Motion Interpolation Removal:**
+  - Completely removed GPU motion interpolation (`--motion-interpolation`) and associated controllers, background display listeners, and surface frame-rate overrides.
+  - Removed motion interpolation preferences, settings screens, drawer tiles, quick button actions, and bottom sheets.
 - **Lightweight Architecture Optimizations:**
   - Removed Telemetry / Analytics SDK (`sh.measure:measure-android`), build plugin, and OkHttp network instrumentation, replacing with zero-overhead no-ops for maximum privacy and performance.
   - Removed Google Cast Framework (`play-services-cast-framework`), options provider, and casting activities/buttons to eliminate heavy Google Play Services client libraries.

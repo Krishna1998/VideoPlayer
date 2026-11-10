@@ -47,7 +47,6 @@ import app.video.player.preferences.preference.collectAsState
 import app.video.player.presentation.Screen
 import app.video.player.ui.icons.Icon
 import app.video.player.ui.icons.Icons
-import app.video.player.domain.motion.MotionInterpolation
 import app.video.player.ui.player.Debanding
 import app.video.player.ui.player.HwPlusGuard
 import app.video.player.ui.player.MPVProfile
@@ -321,22 +320,6 @@ object DecoderPreferencesScreen : Screen {
                     color = MaterialTheme.colorScheme.outline,
                   )
                 },
-              )
-            }
-          }
-
-          if (MotionInterpolation.isBuildSupported) {
-            if (!embeddedInPlayer) item {
-              PreferenceSectionHeader(
-                position = PreferenceSectionPosition.Single,
-                title = stringResource(R.string.motion_title),
-              )
-            }
-
-            item {
-              MotionInterpolationPreferences(
-                preferences = preferences,
-                rendererConfigOwned = rendererBackendConfigOwned,
               )
             }
           }

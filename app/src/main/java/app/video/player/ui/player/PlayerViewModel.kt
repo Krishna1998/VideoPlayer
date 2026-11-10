@@ -1698,15 +1698,6 @@ fun restartFromBeginning() {
   private var ppDebounceJob: Job? = null
   @Volatile private var lastCompiledPpSpec: Pair<PostProcessingPreset, PostProcessingParams>? = null
 
-  // ==================== Motion Interpolation (FongMi) ======================
-  val motionInterpolation =
-    app.video.player.ui.player.motion.MotionInterpolationController(
-      context = appContext,
-      preferences = decoderPreferences,
-      scope = viewModelScope,
-      showText = { text -> playerUpdate.value = PlayerUpdates.ShowText(text) },
-    )
-
   // ==================== Custom Buttons ====================
 
   data class CustomButtonState(
@@ -6847,7 +6838,6 @@ fun restartFromBeginning() {
         PlaybackSession.setPropertyString("vd-lavc-fast", "yes")
         PlaybackSession.setPropertyString("demuxer-readahead-secs", "20")
 
-        motionInterpolation.setBatterySaverSuspended(true)
         if (_isAmbientEnabled.value) {
           applyBatterySaverPolicy()
         }
@@ -6869,7 +6859,6 @@ fun restartFromBeginning() {
         savedDeband = null
         savedHdrComputePeak = null
 
-        motionInterpolation.setBatterySaverSuspended(false)
         if (ambientWasOnBattery) {
           restoreFromBatterySaver()
         }

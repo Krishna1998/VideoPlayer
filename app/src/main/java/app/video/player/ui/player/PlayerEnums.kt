@@ -171,7 +171,6 @@ enum class Sheets {
   AudioProperties,
   Scopes,
   PostProcessingConfig,
-  MotionInterpolation,
   BookmarkEditor,
   AudiobookRewind,
   AudiobookSleepTimer,

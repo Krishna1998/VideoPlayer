@@ -365,8 +365,6 @@ fun PlayerControls(
   val isHdrOutputEnabled by viewModel.isHdrScreenOutputEnabled.collectAsState()
   val isAmbientEnabled by viewModel.isAmbientEnabled.collectAsState()
   val isPostProcessingEnabled by viewModel.isPostProcessingEnabled.collectAsState()
-  val motionInterpolationState by viewModel.motionInterpolation.state.collectAsState()
-  val isMotionInterpolationEnabled = motionInterpolationState.config.enabled
   val backgroundPlaybackEnabled by PlaybackSession.videoBackgroundPlaybackEnabled.collectAsState(
     initial = PlaybackSession.isVideoBackgroundPlaybackEnabled(),
   )
@@ -2270,7 +2268,6 @@ fun PlayerControls(
         isHdrOutputEnabled,
         isAmbientEnabled,
         isPostProcessingEnabled,
-        isMotionInterpolationEnabled,
         backgroundPlaybackEnabled,
         isBatterySaver,
         statisticsPage,
@@ -2287,7 +2284,6 @@ fun PlayerControls(
           if (isHdrOutputEnabled) add(PlayerButton.HDR_MODE)
           if (isAmbientEnabled) add(PlayerButton.AMBIENT_MODE)
           if (isPostProcessingEnabled) add(PlayerButton.POST_PROCESSING)
-          if (isMotionInterpolationEnabled) add(PlayerButton.MOTION_INTERPOLATION)
           if (isBatterySaver) add(PlayerButton.BATTERY_SAVER)
           if (backgroundPlaybackEnabled) add(PlayerButton.BACKGROUND_PLAYBACK)
           if (statisticsPage == 6) add(PlayerButton.TIME_NETWORK)
