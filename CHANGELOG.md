@@ -9,6 +9,10 @@ These notes are written in plain English and focus on what changed for real use.
   - Made playback speed toggle size live and dynamically adjustable when switching between speeds (1.25x, 1.5x, 1.75x, 2x), eliminating width lock without requiring controls to hide and show.
   - Added smooth animated size transitions for the speed toggle pill and button states.
   - Set playback speed change toast notification to automatically hide after 3 seconds.
+- **Picture-in-Picture (PiP) Mode Fixes:**
+  - Fixed an issue where transitioning to the next episode while in PiP mode reverted the window or expanded orientation to portrait when the video was played in horizontal (landscape) mode.
+  - Cached and preserved video aspect ratio in `MPVPipHelper` across episode transitions so PiP params are never cleared or reset to portrait defaults while loading subsequent queue media.
+  - Preserved landscape orientation state in PiP mode and ensured full-screen expansion honors the user's horizontal viewing mode across queue advances.
 - **Gesture Refinements:**
   - Completely removed the "Swipe up in center for playlist" gesture, preference option, and associated state flows to prevent accidental playlist triggering during center screen interactions.
   - Updated the description of "Swipe between inner tabs" to accurately reflect current screens (Network streaming, Playlists, Recently Played) without obsolete Music references.

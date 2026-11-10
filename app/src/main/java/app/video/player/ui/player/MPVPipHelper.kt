@@ -56,12 +56,14 @@ class MPVPipHelper(
 
   private val playerPreferences: PlayerPreferences by inject()
   private var pipReceiver: BroadcastReceiver? = null
+  private var lastAspectRatio: Rational? = null
 
   fun onPictureInPictureModeChanged(isInPipMode: Boolean) {
     if (isInPipMode) {
       registerPipReceiver()
     } else {
       unregisterPipReceiver()
+      lastAspectRatio = null
     }
   }
 
@@ -110,11 +112,14 @@ class MPVPipHelper(
     PictureInPictureParams
       .Builder()
       .apply {
-        getVideoAspectRatio()?.let { aspectRatio ->
-          setAspectRatio(aspectRatio)
+        val aspectRatio = getVideoAspectRatio()
+          ?: if (activity.isInPictureInPictureMode) lastAspectRatio else null
+
+        aspectRatio?.let { ratio ->
+          setAspectRatio(ratio)
           // In PiP the view reports PiP-window bounds; keep the full-screen hint for the expand animation.
           if (!activity.isInPictureInPictureMode) {
-            calculateSourceRect(aspectRatio)?.let { sourceRect -> setSourceRectHint(sourceRect) }
+            calculateSourceRect(ratio)?.let { sourceRect -> setSourceRectHint(sourceRect) }
           }
         }
 
@@ -136,28 +141,45 @@ class MPVPipHelper(
   private fun getVideoAspectRatio(): Rational? {
     val playback = PlaybackSession.state.value
     if (
-      activity.isFinishing || activity.isDestroyed || isAudioPlayer() || !isVideoLoaded() ||
-      !playback.surfaceAttached ||
-      playback.phase !in setOf(PlaybackPhase.READY, PlaybackPhase.BACKGROUND)
+      activity.isFinishing || activity.isDestroyed || isAudioPlayer()
     ) return null
+
+    val isReadyOrBackground = playback.phase in setOf(PlaybackPhase.READY, PlaybackPhase.BACKGROUND)
+    val hasSurface = playback.surfaceAttached
+    val isLoaded = isVideoLoaded()
+
+    if (!isReadyOrBackground || !hasSurface || !isLoaded) {
+      return if (activity.isInPictureInPictureMode) lastAspectRatio else null
+    }
 
     // video-out-params/dw and dh are valid mpv properties, but they disappear as soon as the
     // video output is detached. Prefer the already-observed source metadata so PiP layout
     // updates during exit/foreground transitions never poll an unavailable VO property.
-    val width = PlaybackSession.propInt["video-params/w"].value ?: return null
-    val height = PlaybackSession.propInt["video-params/h"].value ?: return null
-    if (width <= 0 || height <= 0) return null
+    val width = PlaybackSession.propInt["video-params/w"].value
+      ?: PlaybackSession.getPropertyInt("video-params/w")
+      ?: PlaybackSession.getPropertyInt("width")
+      ?: return if (activity.isInPictureInPictureMode) lastAspectRatio else null
+    val height = PlaybackSession.propInt["video-params/h"].value
+      ?: PlaybackSession.getPropertyInt("video-params/h")
+      ?: PlaybackSession.getPropertyInt("height")
+      ?: return if (activity.isInPictureInPictureMode) lastAspectRatio else null
+    if (width <= 0 || height <= 0) return if (activity.isInPictureInPictureMode) lastAspectRatio else null
 
     val sourceAspect = PlaybackSession.propDouble["video-params/aspect"].value
       ?.takeIf { it.isFinite() && it > 0.0 }
+      ?: PlaybackSession.getPropertyDouble("video-params/aspect")?.takeIf { it.isFinite() && it > 0.0 }
       ?: (width.toDouble() / height.toDouble())
     val rotation = (PlaybackSession.getPropertyInt("video-params/rotate") ?: 0).mod(360)
     val displayedAspect = if (rotation == 90 || rotation == 270) 1.0 / sourceAspect else sourceAspect
-    if (!displayedAspect.isFinite() || displayedAspect !in 0.5..2.39) return null
+    if (!displayedAspect.isFinite() || displayedAspect !in 0.5..2.39) {
+      return if (activity.isInPictureInPictureMode) lastAspectRatio else null
+    }
 
     // Android accepts integer Rational only; retaining 1/10000 aspect precision avoids
     // passing distorted ratios to PiP for anamorphic or rotated content.
-    return Rational((displayedAspect * 10_000).toInt().coerceAtLeast(1), 10_000)
+    val rational = Rational((displayedAspect * 10_000).toInt().coerceAtLeast(1), 10_000)
+    lastAspectRatio = rational
+    return rational
   }
 
   private fun calculateSourceRect(aspectRatio: Rational): Rect? {

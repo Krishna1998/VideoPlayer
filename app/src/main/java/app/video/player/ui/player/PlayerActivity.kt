@@ -209,6 +209,7 @@ class PlayerActivity :
   private var launchOrientationName: String? = null
   private var launchOrientationDecidedAtNs = 0L
   private var orientationFromPlayback = false
+  private var pipPreservedLandscape = false
   private val consumedTvRemoteKeys = mutableSetOf<Int>()
 
   /**
@@ -5075,6 +5076,9 @@ class PlayerActivity :
       delay(100)
       if (PlaybackSession.isCurrentGeneration(loadGeneration) && mpvInitialized && !player.isExiting && !isFinishing) {
         setOrientation()
+        if (isInPictureInPictureMode) {
+          pipHelper.updatePictureInPictureParams()
+        }
       }
     }
 
@@ -5082,6 +5086,9 @@ class PlayerActivity :
     applyVideoFilterPreferences()
     viewModel.restoreSavedVideoAspect(showUpdate = false)
     binding.root.post(::updateVideoAmbientPlayerBounds)
+    if (isInPictureInPictureMode) {
+      pipHelper.updatePictureInPictureParams()
+    }
 
     if (shouldForceCurrentMediaTitle()) {
       val preferredTitle = getPreferredCurrentTitle()
@@ -6535,10 +6542,14 @@ private suspend fun restorePlaybackPosition(state: PlaybackStateEntity?, loadGen
       pendingPipExitResolution = false
       wasInPipMode = true
       handledPipDismissal = false
+      if (isCurrentOrientationLandscape() || (player.getVideoOutAspect() ?: 0.0) > 1.0) {
+        pipPreservedLandscape = true
+      }
       // Android expands PiP into the requested orientation, so settle on the video's way round now.
       setOrientation()
       ensurePipPlaybackNotification()
     } else if (wasInPipMode) {
+      pipPreservedLandscape = false
       // PiP showed the system bars; hide them before the expand animation draws the player.
       if (!isFinishing) setupSystemUI()
       // Android reports the same PiP exit callback for expansion and close. Resolve it after
@@ -6602,6 +6613,9 @@ private suspend fun restorePlaybackPosition(state: PlaybackStateEntity?, loadGen
     if (viewModel.isAudioOnly.value || isCurrentMediaKnownAudio() || !isReady || isFinishing || isDestroyed) {
       return false
     }
+    if (isCurrentOrientationLandscape() || (player.getVideoOutAspect() ?: 0.0) > 1.0) {
+      pipPreservedLandscape = true
+    }
     binding.root.animate().cancel()
     binding.controls.animate().cancel()
     binding.root.scaleX = 1f
@@ -6610,7 +6624,10 @@ private suspend fun restorePlaybackPosition(state: PlaybackStateEntity?, loadGen
     binding.controls.alpha = 0f
     pipHelper.updatePictureInPictureParams()
     val entered = pipHelper.enterPipMode()
-    if (!entered && !isInPictureInPictureMode) binding.controls.alpha = 1f
+    if (!entered && !isInPictureInPictureMode) {
+      pipPreservedLandscape = false
+      binding.controls.alpha = 1f
+    }
     return entered
   }
 
@@ -6668,6 +6685,13 @@ private suspend fun restorePlaybackPosition(state: PlaybackStateEntity?, loadGen
     if (super.getRequestedOrientation() != target) super.setRequestedOrientation(target)
   }
 
+  private fun isCurrentOrientationLandscape(): Boolean =
+    requestedOrientation in setOf(
+      ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE,
+      ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE,
+      ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE,
+    ) || resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
   /**
    * Applies the orientation for the current media, per [PlayerOrientationPolicy].
    *
@@ -6682,6 +6706,15 @@ private suspend fun restorePlaybackPosition(state: PlaybackStateEntity?, loadGen
     if (isTelevision) {
       requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
       return
+    }
+
+    if (isInPictureInPictureMode) {
+      val isLandscape = pipPreservedLandscape || ((sourceAspect ?: player.getVideoOutAspect()) ?: 0.0) > 1.0
+      if (isLandscape) {
+        val target = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+        if (requestedOrientation != target) requestedOrientation = target
+        return
+      }
     }
 
     val target =
