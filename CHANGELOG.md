@@ -2,9 +2,9 @@
 
 These notes are written in plain English and focus on what changed for real use.
 
-## 4.0.0
+## 5.0.0
 
-- Release version 4.0.0 (v4).
+- Release version 5.0.0 (v5).
 - **Player Controls & Button Customization:**
   - Added "Hide file name" toggle in Player Layout settings to completely hide the video title and file name pill from the player controls during playback for a clean, distraction-free viewing experience.
   - Added "Hide player button backgrounds" toggle in Player Layout settings to completely remove the background circle, container, and border from all player control buttons, leaving sleek borderless controls with subtle icon drop shadows for high legibility over video.
