@@ -2,9 +2,9 @@
 
 These notes are written in plain English and focus on what changed for real use.
 
-## 3.3.3
+## 4.0.0
 
-- Release version 3.3.3.
+- Release version 4.0.0 (v4).
 - **Player Controls & Button Customization:**
   - Added "Hide player button backgrounds" toggle in Player Layout settings to completely remove the background circle, container, and border from all player control buttons, leaving sleek borderless controls with subtle icon drop shadows for high legibility over video.
   - Added "Player button opacity" slider in Player Layout settings (0% to 100%) to customize the overall alpha transparency of player control buttons (icons and labels).
@@ -51,11 +51,6 @@ These notes are written in plain English and focus on what changed for real use.
   - Added quick `PlayerButton.BATTERY_SAVER` toggle button with lightning bolt icon to customizable player controls.
   - Added automatic battery saver trigger when device battery drops to 20% or lower, or when Android system Battery Saver mode is enabled.
   - Added Battery Saver and Auto Battery Saver configuration toggles in Decoder Preferences with full in-settings search indexing and live player settings panel integration.
-- **Motion Interpolation:**
-  - Added GPU motion interpolation feature support with dedicated controller and live playback statistics readout.
-  - Added `MotionInterpolationSheet` for configuring target FPS (Auto, 24, 30, 60, custom), matching display refresh rate, and viewing real-time synthesized frames and GPU compute timings.
-  - Added `PlayerButton.MOTION_INTERPOLATION` quick toggle and configuration button to customizable player controls.
-  - Added `MotionInterpolationPreferences` in Decoder settings with search indexing support.
 - **Build, Dependencies & Diagnostics:**
   - Upgraded mpvlib to 1.1.8.
   - Replaced deprecated file-watcher constructors in `VisibleDirectoryWatcher` with API 29+ `File` constructor and legacy fallback for Android 8/9.
