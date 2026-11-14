@@ -225,6 +225,8 @@ jobs:
     needs: [prepare, build]
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    permissions:
+      contents: write
     env:
       VERSION_TAG: ${{ needs.prepare.outputs.version_tag }}
 
@@ -297,6 +299,7 @@ jobs:
       - name: Create GitHub release
         uses: softprops/action-gh-release@v3
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           tag_name: ${{ needs.prepare.outputs.version_tag }}
           target_commitish: ${{ needs.prepare.outputs.source_sha }}
           name: Video Player ${{ needs.prepare.outputs.version_tag }}
