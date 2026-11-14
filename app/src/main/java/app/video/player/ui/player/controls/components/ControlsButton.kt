@@ -39,6 +39,9 @@ internal val LocalBorderlessPlayerControls = staticCompositionLocalOf { false }
 @Suppress("CompositionLocalAllowlist")
 internal val LocalPlayerButtonsOpacity = staticCompositionLocalOf { PlayerButtonAlpha.DEFAULT_BACKGROUND_LEVEL }
 
+@Suppress("CompositionLocalAllowlist")
+internal val LocalPlayerButtonAlpha = staticCompositionLocalOf { 1.0f }
+
 /** This color with its alpha mapped through the player button background-opacity setting. */
 @Composable
 internal fun Color.asPlayerButtonBackground(): Color =

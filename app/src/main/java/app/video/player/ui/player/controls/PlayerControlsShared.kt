@@ -84,13 +84,14 @@ import app.video.player.ui.player.clip.ClipOverlayView
 import app.video.player.ui.player.Sheets
 import app.video.player.ui.player.VideoAspect
 import app.video.player.ui.player.controls.components.AbLoopIcon
-import app.video.player.ui.player.controls.components.stableNumericWidth
-import app.video.player.ui.player.controls.components.withTabularDigits
 import app.video.player.ui.player.controls.components.ControlsButton
 import app.video.player.ui.player.controls.components.CurrentChapter
+import app.video.player.ui.player.controls.components.LocalBorderlessPlayerControls
+import app.video.player.ui.player.controls.components.formatSpeed
 import app.video.player.ui.player.controls.components.playerButtonBorderColor
 import app.video.player.ui.player.controls.components.playerButtonContainerColor
-import app.video.player.ui.player.controls.components.formatSpeed
+import app.video.player.ui.player.controls.components.stableNumericWidth
+import app.video.player.ui.player.controls.components.withTabularDigits
 import app.video.player.ui.theme.controlColor as defaultControlColor
 import app.video.player.ui.theme.spacing
 import app.video.player.ui.theme.AppMotion
@@ -122,7 +123,7 @@ fun RenderPlayerButton(
   currentZoom: Float,
   aspect: VideoAspect,
   mediaTitle: String?,
-  borderless: Boolean = false,
+  borderless: Boolean = LocalBorderlessPlayerControls.current,
   decoder: app.video.player.ui.player.Decoder,
   playbackSpeed: Float,
   onBackPress: () -> Unit,
@@ -147,7 +148,7 @@ fun RenderPlayerButton(
     val advancedPreferences = koinInject<AdvancedPreferences>()
     val playerPreferences = koinInject<PlayerPreferences>()
     val statisticsPage by advancedPreferences.enabledStatisticsPage.collectAsState()
-    val enableLiquidGlass = liquidGlassActive()
+    val enableLiquidGlass = liquidGlassActive() && !borderless
     when (button) {
     PlayerButton.BACK_ARROW -> {
       ControlsButton(

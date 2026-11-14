@@ -53,6 +53,7 @@ import app.video.player.presentation.components.rememberLiquidGlassBackdrop
 import app.video.player.ui.icons.AppIcon
 import app.video.player.ui.icons.Icon
 import app.video.player.ui.icons.Icons
+import app.video.player.ui.icons.LocalIconShadow
 import app.video.player.ui.liquidglass.AdaptiveControlsContainer
 import app.video.player.ui.liquidglass.LocalKyantPlayerBackdrop
 import app.video.player.ui.player.controls.LandscapeActionGroup
@@ -65,7 +66,9 @@ import app.video.player.ui.player.controls.PlayerButtonTheme
 import app.video.player.ui.player.controls.PlayerControlsContentTheme
 import app.video.player.ui.player.controls.VideoControlsLayoutPreset
 import app.video.player.ui.player.controls.components.AbLoopIcon
+import app.video.player.ui.player.controls.components.LocalBorderlessPlayerControls
 import app.video.player.ui.player.controls.components.LocalForceDarkPlayerButtonsBackground
+import app.video.player.ui.player.controls.components.LocalPlayerButtonAlpha
 import app.video.player.ui.player.controls.components.LocalPlayerButtonsOpacity
 import app.video.player.ui.player.controls.components.SeekbarStylePreview
 import app.video.player.ui.player.controls.resolveBottomControlsLayout
@@ -92,6 +95,8 @@ internal fun PlayerLayoutPreview(
   val appearance = koinInject<AppearancePreferences>()
   val forceDark by appearance.forceDarkPlayerButtonsBackground.collectAsState()
   val opacity by appearance.playerButtonsBackgroundOpacity.collectAsState()
+  val hideBackground by appearance.hidePlayerButtonsBackground.collectAsState()
+  val buttonAlpha by appearance.playerButtonsOpacity.collectAsState()
   val seekbarStyle by appearance.seekbarStyle.collectAsState()
   val glassEnabled by appearance.liquidGlassEnabled.collectAsState()
   val playbackPreference =
@@ -138,6 +143,9 @@ internal fun PlayerLayoutPreview(
               LocalLayoutDirection provides LayoutDirection.Ltr,
               LocalForceDarkPlayerButtonsBackground provides forceDark,
               LocalPlayerButtonsOpacity provides opacity,
+              LocalPlayerButtonAlpha provides buttonAlpha,
+              LocalBorderlessPlayerControls provides hideBackground,
+              LocalIconShadow provides hideBackground,
             ) {
               PlayerButtonTheme {
                 PlayerControlsContentTheme {

@@ -30,6 +30,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
@@ -40,6 +41,7 @@ import app.video.player.ui.icons.AnimatedIcon
 import app.video.player.ui.player.controls.LocalPlayerButtonsClickEvent
 import app.video.player.ui.player.controls.PlayerButtonAlpha
 import app.video.player.ui.player.controls.components.LocalBorderlessPlayerControls
+import app.video.player.ui.player.controls.components.LocalPlayerButtonAlpha
 import app.video.player.ui.player.controls.components.LocalPlayerButtonsOpacity
 import app.video.player.ui.player.controls.components.asPlayerButtonBackground
 import app.video.player.ui.player.controls.components.playerButtonBorderColor
@@ -154,8 +156,10 @@ fun AdaptiveControlsContainer(
   // Above the default level the glass tint thickens toward opaque; below it the whole glass fades.
   val glassLayerAlpha =
     (backgroundLevel / PlayerButtonAlpha.DEFAULT_BACKGROUND_LEVEL).coerceIn(0f, 1f)
+  val buttonAlpha = LocalPlayerButtonAlpha.current.coerceIn(0f, 1f)
   val controlModifier =
     modifier
+      .alpha(buttonAlpha)
       // LiquidButton already clips its glass to the capsule. Clipping again here, over the larger
       // minimum touch target, would cut its drop shadow into a hard-edged halo.
       .tvFocusHighlight(buttonShape, isInteractive && enabled, clipToShape = !renderLiquidGlass)

@@ -12,10 +12,14 @@ package app.video.player.ui.player.controls
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import app.video.player.preferences.AppearancePreferences
+import app.video.player.preferences.preference.collectAsState
 import app.video.player.ui.icons.LocalIconShadow
 import app.video.player.ui.player.controls.components.LocalForceDarkPlayerButtonsBackground
 import app.video.player.ui.player.controls.components.LocalBorderlessPlayerControls
 import app.video.player.ui.theme.LocalDarkAppColorScheme
+import org.koin.compose.koinInject
 
 internal object PlayerButtonAlpha {
   const val CONTAINER = 0.55f
@@ -58,9 +62,12 @@ internal object PlayerButtonAlpha {
 internal fun PlayerButtonTheme(
   content: @Composable () -> Unit,
 ) {
+  val appearancePreferences = koinInject<AppearancePreferences>()
+  val hideBackground by appearancePreferences.hidePlayerButtonsBackground.collectAsState()
+  val borderless = LocalBorderlessPlayerControls.current || hideBackground
   CompositionLocalProvider(
-    LocalBorderlessPlayerControls provides false,
-    LocalIconShadow provides false,
+    LocalBorderlessPlayerControls provides borderless,
+    LocalIconShadow provides borderless,
     content = content,
   )
 }

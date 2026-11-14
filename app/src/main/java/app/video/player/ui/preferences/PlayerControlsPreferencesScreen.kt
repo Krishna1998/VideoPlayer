@@ -293,6 +293,8 @@ object PlayerControlsPreferencesScreen : Screen {
           item {
             val forceDarkPlayerButtonsBackground by appearancePrefs.forceDarkPlayerButtonsBackground.collectAsState()
             val playerButtonsBackgroundOpacity by appearancePrefs.playerButtonsBackgroundOpacity.collectAsState()
+            val hidePlayerButtonsBackground by appearancePrefs.hidePlayerButtonsBackground.collectAsState()
+            val playerButtonsOpacity by appearancePrefs.playerButtonsOpacity.collectAsState()
             val storedPlayerTimeToDisappear by playerPrefs.playerTimeToDisappear.collectAsState()
             val playerTimeToDisappear =
               if (television) storedPlayerTimeToDisappear.coerceAtLeast(4000) else storedPlayerTimeToDisappear
@@ -306,10 +308,59 @@ object PlayerControlsPreferencesScreen : Screen {
             var customTimeValue by remember { mutableStateOf("") }
 
             PreferenceCard {
+              DevicePreference(R.string.pref_player_buttons_overall_opacity) {
+                ExpressivePreferenceItem(standalone = true) {
+                  AppSliderPreference(
+                    modifier = Modifier.settingsSearchTarget(R.string.pref_player_buttons_overall_opacity),
+                    value = playerButtonsOpacity,
+                    onValueChange = { appearancePrefs.playerButtonsOpacity.set(it) },
+                    sliderValue = playerButtonsOpacity,
+                    onSliderValueChange = { appearancePrefs.playerButtonsOpacity.set(it) },
+                    valueRange = 0f..1f,
+                    valueSteps = 19,
+                    title = { Text(stringResource(R.string.pref_player_buttons_overall_opacity)) },
+                    summary = {
+                      Text(
+                        text = "${(playerButtonsOpacity.coerceIn(0f, 1f) * 100).roundToInt()}%",
+                        color = MaterialTheme.colorScheme.outline,
+                      )
+                    },
+                  )
+                }
+
+                PreferenceDivider()
+              }
+
+              DevicePreference(R.string.pref_hide_player_buttons_background_title) {
+                SwitchPreference(
+                  groupIndex = 0,
+                  groupSize = 1,
+                  modifier =
+                    Modifier.settingsSearchTarget(
+                      R.string.pref_hide_player_buttons_background_title,
+                    ),
+                  value = hidePlayerButtonsBackground,
+                  onValueChange = { appearancePrefs.hidePlayerButtonsBackground.set(it) },
+                  title = {
+                    Text(
+                      text = stringResource(R.string.pref_hide_player_buttons_background_title),
+                    )
+                  },
+                  summary = {
+                    Text(
+                      text = stringResource(R.string.pref_hide_player_buttons_background_summary),
+                    )
+                  },
+                )
+
+                PreferenceDivider()
+              }
+
               DevicePreference(R.string.pref_player_buttons_opacity) {
                 ExpressivePreferenceItem(standalone = true) {
                   AppSliderPreference(
                     modifier = Modifier.settingsSearchTarget(R.string.pref_player_buttons_opacity),
+                    enabled = !hidePlayerButtonsBackground,
                     value = playerButtonsBackgroundOpacity,
                     onValueChange = { appearancePrefs.playerButtonsBackgroundOpacity.set(it) },
                     sliderValue = playerButtonsBackgroundOpacity,
@@ -336,6 +387,7 @@ object PlayerControlsPreferencesScreen : Screen {
                     Modifier.settingsSearchTarget(
                       R.string.pref_appearance_force_dark_player_buttons_background_title,
                     ),
+                  enabled = !hidePlayerButtonsBackground,
                   value = forceDarkPlayerButtonsBackground,
                   onValueChange = { appearancePrefs.forceDarkPlayerButtonsBackground.set(it) },
                   title = {

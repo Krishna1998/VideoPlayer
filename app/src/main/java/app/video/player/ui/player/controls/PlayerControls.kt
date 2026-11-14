@@ -161,7 +161,10 @@ import app.video.player.ui.player.buildControlsExitV
 import app.video.player.ui.player.controls.components.AnimatedPlayPauseIcon
 import app.video.player.ui.player.controls.components.BrightnessSlider
 import app.video.player.ui.player.controls.components.ControlsButton
+import app.video.player.ui.icons.LocalIconShadow
+import app.video.player.ui.player.controls.components.LocalBorderlessPlayerControls
 import app.video.player.ui.player.controls.components.LocalForceDarkPlayerButtonsBackground
+import app.video.player.ui.player.controls.components.LocalPlayerButtonAlpha
 import app.video.player.ui.player.controls.components.LocalPlayerButtonsOpacity
 import app.video.player.ui.player.controls.components.asPlayerButtonBackground
 import app.video.player.ui.player.controls.components.MediaScopesOverlay
@@ -249,6 +252,8 @@ fun PlayerControls(
   val portraitSeekbarPlacement by appearancePreferences.portraitSeekbarPlacement.collectAsState()
   val landscapeSeekbarPlacement by appearancePreferences.landscapeSeekbarPlacement.collectAsState()
   val playerButtonsBackgroundOpacity by appearancePreferences.playerButtonsBackgroundOpacity.collectAsState()
+  val hidePlayerButtonsBackground by appearancePreferences.hidePlayerButtonsBackground.collectAsState()
+  val playerButtonsOpacity by appearancePreferences.playerButtonsOpacity.collectAsState()
   val playerPreferences = koinInject<PlayerPreferences>()
   val gesturePreferences = koinInject<GesturePreferences>()
   val reduceMotion by playerPreferences.reduceMotion.collectAsState()
@@ -630,6 +635,10 @@ fun PlayerControls(
       LocalPlayerHdrOutputEnabled provides isHdrOutputEnabled,
       LocalPlayerLiquidGlassActive provides enableLiquidGlass,
       LocalForceDarkPlayerButtonsBackground provides forceDarkButtonBackground,
+      LocalPlayerButtonsOpacity provides playerButtonsBackgroundOpacity.coerceIn(0f, 1f),
+      LocalPlayerButtonAlpha provides playerButtonsOpacity.coerceIn(0f, 1f),
+      LocalBorderlessPlayerControls provides hidePlayerButtonsBackground,
+      LocalIconShadow provides hidePlayerButtonsBackground,
     ) {
       PlayerControlsContentTheme {
         Box(
@@ -831,6 +840,9 @@ fun PlayerControls(
     LocalPlayerLiquidGlassActive provides enableLiquidGlass,
     LocalForceDarkPlayerButtonsBackground provides forceDarkButtonBackground,
     LocalPlayerButtonsOpacity provides playerButtonsBackgroundOpacity.coerceIn(0f, 1f),
+    LocalPlayerButtonAlpha provides playerButtonsOpacity.coerceIn(0f, 1f),
+    LocalBorderlessPlayerControls provides hidePlayerButtonsBackground,
+    LocalIconShadow provides hidePlayerButtonsBackground,
   ) {
     PlayerControlsContentTheme {
       Box(

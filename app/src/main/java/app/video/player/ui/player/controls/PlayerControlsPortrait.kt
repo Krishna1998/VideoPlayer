@@ -31,6 +31,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -47,6 +48,7 @@ import app.video.player.ui.player.Sheets
 import app.video.player.ui.player.VideoAspect
 import app.video.player.ui.player.controls.components.ControlsButton
 import app.video.player.ui.player.controls.components.ControlsGroup
+import app.video.player.ui.player.controls.components.LocalBorderlessPlayerControls
 import app.video.player.ui.player.controls.components.playerButtonBorderColor
 import app.video.player.ui.player.controls.components.playerButtonContainerColor
 import app.video.player.ui.player.controls.components.playerButtonContentColor
@@ -125,14 +127,14 @@ fun TopPlayerControlsPortrait(
 
               Surface(
                 shape = CircleShape,
-                color = playerButtonContainerColor(),
+                color = if (LocalBorderlessPlayerControls.current) Color.Transparent else playerButtonContainerColor(),
                 contentColor = playerButtonContentColor(),
                 onClick = {
                   clickEvent()
                   onOpenSheet(Sheets.Playlist)
                 },
                 enabled = playlistModeEnabled,
-                border = BorderStroke(1.dp, playerButtonBorderColor()),
+                border = if (LocalBorderlessPlayerControls.current) null else BorderStroke(1.dp, playerButtonBorderColor()),
                 modifier = Modifier.heightIn(min = titleHeight),
               ) {
                 Row(

@@ -35,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -45,6 +46,7 @@ import app.video.player.ui.liquidglass.LiquidPillButton
 import app.video.player.ui.player.PlayerViewModel
 import app.video.player.ui.player.Sheets
 import app.video.player.ui.player.controls.components.ControlsButton
+import app.video.player.ui.player.controls.components.LocalBorderlessPlayerControls
 import app.video.player.ui.player.controls.components.playerButtonBorderColor
 import app.video.player.ui.player.controls.components.playerButtonContainerColor
 import app.video.player.ui.player.controls.components.playerButtonContentColor
@@ -126,11 +128,11 @@ fun TopLeftPlayerControlsLandscape(
             ) {
               Surface(
                 shape = CircleShape,
-                color = playerButtonContainerColor(),
+                color = if (LocalBorderlessPlayerControls.current) Color.Transparent else playerButtonContainerColor(),
                 contentColor = playerButtonContentColor(),
                 tonalElevation = 0.dp,
                 shadowElevation = 0.dp,
-                border = BorderStroke(1.dp, playerButtonBorderColor()),
+                border = if (LocalBorderlessPlayerControls.current) null else BorderStroke(1.dp, playerButtonBorderColor()),
               ) {
                 Row(
                   verticalAlignment = Alignment.CenterVertically,

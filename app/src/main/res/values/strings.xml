@@ -1658,6 +1658,9 @@
   <string name="pref_layout_seekbar_above">Seekbar above</string>
   <string name="pref_layout_seekbar_below">Seekbar below</string>
   <string name="pref_player_buttons_opacity">Player button background opacity</string>
+  <string name="pref_player_buttons_overall_opacity">Player button opacity</string>
+  <string name="pref_hide_player_buttons_background_title">Hide player button backgrounds</string>
+  <string name="pref_hide_player_buttons_background_summary">Remove background circle and border from player control buttons</string>
   <string name="ui_time_network_clock">Time + Network clock</string>
   <string name="ui_show_media_info_in_chooser">Show Media Info in chooser</string>
   <string name="ui_show_media_info_in_system">Show Media Info in system \"Open with\" / sharing menus to analyze files from other apps.</string>
