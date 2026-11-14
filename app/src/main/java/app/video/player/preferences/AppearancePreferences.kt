@@ -109,6 +109,7 @@ class AppearancePreferences(
   val forceDarkPlayerButtonsBackground = preferenceStore.getBoolean("force_dark_player_buttons_background", false)
   val hidePlayerButtonsBackground = preferenceStore.getBoolean("hide_player_buttons_background", false)
   val playerButtonsOpacity = preferenceStore.getFloat("player_buttons_opacity", 1.0f)
+  val seekbarOpacity = preferenceStore.getFloat("seekbar_opacity", 1.0f)
   val showUnplayedOldVideoLabel = preferenceStore.getBoolean("show_unplayed_old_video_label", true)
   val unplayedOldVideoDays = preferenceStore.getInt("unplayed_old_video_days", 7)
   val seekbarStyle = preferenceStore.getEnum("seekbar_style", SeekbarStyle.Thick)

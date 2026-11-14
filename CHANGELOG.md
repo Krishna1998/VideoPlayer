@@ -8,8 +8,9 @@ These notes are written in plain English and focus on what changed for real use.
 - **Player Controls & Button Customization:**
   - Added "Hide player button backgrounds" toggle in Player Layout settings to completely remove the background circle, container, and border from all player control buttons, leaving sleek borderless controls with subtle icon drop shadows for high legibility over video.
   - Added "Player button opacity" slider in Player Layout settings (0% to 100%) to customize the overall alpha transparency of player control buttons (icons and labels).
+  - Added "Seekbar opacity" slider in Player Layout settings (0% to 100%) alongside player button opacity to adjust the transparency of the seekbar track, thumb, and timers.
   - Automatically disabled background opacity and dark background toggles when player button backgrounds are hidden.
-  - Integrated real-time preview updates for button opacity and borderless background modes in the Player Layout Preview scene.
+  - Integrated real-time preview updates for button opacity, seekbar opacity, and borderless background modes in the Player Layout Preview and Seekbar Style Preview scenes.
 - **Motion Interpolation Removal:**
   - Completely removed GPU motion interpolation (`--motion-interpolation`) and associated controllers, background display listeners, and surface frame-rate overrides.
   - Removed motion interpolation preferences, settings screens, drawer tiles, quick button actions, and bottom sheets.

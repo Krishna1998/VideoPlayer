@@ -1990,6 +1990,7 @@ fun PlayerControls(
             val invertDuration by playerPreferences.invertDuration.collectAsState()
             val remaining  by PlaybackSession.propFloat["playtime-remaining"].collectAsStateWithLifecycle()
             val seekbarStyle by appearancePreferences.seekbarStyle.collectAsState()
+            val seekbarOpacity by appearancePreferences.seekbarOpacity.collectAsState()
             val useWavySeekbar by playerPreferences.useWavySeekbar.collectAsState()
             val displayedSeekbarPosition = precisePosition
             // Memoize the immutable copies so they are not reallocated on every position
@@ -2056,6 +2057,7 @@ fun PlayerControls(
               loopEnd = abLoopB?.toFloat(),
               bufferDuration = stableDemuxerCacheTime.takeIf { showBufferedRange && it > 0f },
               isPortrait = isPortrait,
+              modifier = Modifier.alpha(seekbarOpacity.coerceIn(0f, 1f)),
             )
           }
 

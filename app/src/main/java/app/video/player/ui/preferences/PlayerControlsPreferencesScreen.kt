@@ -41,6 +41,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.AnnotatedString
@@ -239,6 +240,7 @@ object PlayerControlsPreferencesScreen : Screen {
 
             item {
               val seekbarStyle by appearancePrefs.seekbarStyle.collectAsState()
+              val seekbarOpacity by appearancePrefs.seekbarOpacity.collectAsState()
               val useWavySeekbar by playerPrefs.useWavySeekbar.collectAsState()
 
               Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -254,7 +256,7 @@ object PlayerControlsPreferencesScreen : Screen {
                   SeekbarStyleLivePreview(
                     style = seekbarStyle,
                     useWavySeekbar = useWavySeekbar,
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().alpha(seekbarOpacity.coerceIn(0f, 1f)),
                   )
                 }
                 PreferenceCard {
@@ -295,6 +297,7 @@ object PlayerControlsPreferencesScreen : Screen {
             val playerButtonsBackgroundOpacity by appearancePrefs.playerButtonsBackgroundOpacity.collectAsState()
             val hidePlayerButtonsBackground by appearancePrefs.hidePlayerButtonsBackground.collectAsState()
             val playerButtonsOpacity by appearancePrefs.playerButtonsOpacity.collectAsState()
+            val seekbarOpacity by appearancePrefs.seekbarOpacity.collectAsState()
             val storedPlayerTimeToDisappear by playerPrefs.playerTimeToDisappear.collectAsState()
             val playerTimeToDisappear =
               if (television) storedPlayerTimeToDisappear.coerceAtLeast(4000) else storedPlayerTimeToDisappear
@@ -322,6 +325,29 @@ object PlayerControlsPreferencesScreen : Screen {
                     summary = {
                       Text(
                         text = "${(playerButtonsOpacity.coerceIn(0f, 1f) * 100).roundToInt()}%",
+                        color = MaterialTheme.colorScheme.outline,
+                      )
+                    },
+                  )
+                }
+
+                PreferenceDivider()
+              }
+
+              DevicePreference(R.string.pref_seekbar_opacity) {
+                ExpressivePreferenceItem(standalone = true) {
+                  AppSliderPreference(
+                    modifier = Modifier.settingsSearchTarget(R.string.pref_seekbar_opacity),
+                    value = seekbarOpacity,
+                    onValueChange = { appearancePrefs.seekbarOpacity.set(it) },
+                    sliderValue = seekbarOpacity,
+                    onSliderValueChange = { appearancePrefs.seekbarOpacity.set(it) },
+                    valueRange = 0f..1f,
+                    valueSteps = 19,
+                    title = { Text(stringResource(R.string.pref_seekbar_opacity)) },
+                    summary = {
+                      Text(
+                        text = "${(seekbarOpacity.coerceIn(0f, 1f) * 100).roundToInt()}%",
                         color = MaterialTheme.colorScheme.outline,
                       )
                     },

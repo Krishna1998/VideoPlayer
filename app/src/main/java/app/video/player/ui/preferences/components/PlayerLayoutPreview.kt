@@ -25,6 +25,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
@@ -97,6 +98,7 @@ internal fun PlayerLayoutPreview(
   val opacity by appearance.playerButtonsBackgroundOpacity.collectAsState()
   val hideBackground by appearance.hidePlayerButtonsBackground.collectAsState()
   val buttonAlpha by appearance.playerButtonsOpacity.collectAsState()
+  val seekbarOpacity by appearance.seekbarOpacity.collectAsState()
   val seekbarStyle by appearance.seekbarStyle.collectAsState()
   val glassEnabled by appearance.liquidGlassEnabled.collectAsState()
   val playbackPreference =
@@ -151,7 +153,7 @@ internal fun PlayerLayoutPreview(
                 PlayerControlsContentTheme {
                   PreviewScene(
                     region, topRightButtons, bottomRightButtons, bottomLeftButtons, portraitBottomButtons,
-                    preset, playbackControlsPlacement, playlist, glassEnabled, seekbarStyle, wavy, sceneWidth,
+                    preset, playbackControlsPlacement, playlist, glassEnabled, seekbarStyle, seekbarOpacity, wavy, sceneWidth,
                   )
                 }
               }
@@ -184,6 +186,7 @@ private fun PreviewScene(
   playlist: Boolean,
   glassEnabled: Boolean,
   seekbarStyle: SeekbarStyle,
+  seekbarOpacity: Float = 1.0f,
   wavy: Boolean,
   sceneWidth: Dp,
 ) {
@@ -248,7 +251,11 @@ private fun PreviewScene(
       ) {
         layout.bottomToTop.asReversed().forEach { slot ->
           when (slot) {
-            BottomSlot.Seekbar -> Box(Modifier.padding(horizontal = if (region.isPortrait) 0.dp else spacing.large)) {
+            BottomSlot.Seekbar -> Box(
+              Modifier
+                .padding(horizontal = if (region.isPortrait) 0.dp else spacing.large)
+                .alpha(seekbarOpacity.coerceIn(0f, 1f))
+            ) {
               SeekbarStylePreview(seekbarStyle, useWavySeekbar = wavy)
             }
             BottomSlot.Playback -> {
