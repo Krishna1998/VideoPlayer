@@ -1350,6 +1350,7 @@ object SearchablePreferences {
         anchorItemIndex = 7,
         SearchEntrySpec(R.string.pref_player_buttons_overall_opacity, listOf("opacity", "button", "buttons", "alpha", "transparency", "controls")),
         SearchEntrySpec(R.string.pref_seekbar_opacity, listOf("opacity", "seekbar", "progress", "slider", "alpha", "transparency")),
+        SearchEntrySpec(R.string.pref_hide_video_title_title, listOf("title", "filename", "file name", "hide", "video title", "name")),
         SearchEntrySpec(R.string.pref_hide_player_buttons_background_title, listOf("hide", "background", "borderless", "button", "buttons", "circle", "container", "transparent")),
         SearchEntrySpec(R.string.pref_player_buttons_opacity, listOf("opacity", "transparency", "transparent", "alpha", "background", "buttons", "player")),
         SearchEntrySpec(R.string.ui_time_network_clock, listOf("clock", "time", "network", "format", "12 hour", "24 hour")),

@@ -67,6 +67,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import app.video.player.R
 import app.video.player.preferences.AdvancedPreferences
+import app.video.player.preferences.AppearancePreferences
 import app.video.player.preferences.MpvConfigControlledFeatures
 import app.video.player.preferences.PlayerButton
 import app.video.player.preferences.PlayerClockFormat
@@ -160,6 +161,9 @@ fun RenderPlayerButton(
     }
 
     PlayerButton.VIDEO_TITLE -> {
+      val appearancePreferences = koinInject<AppearancePreferences>()
+      val hideVideoTitle by appearancePreferences.hideVideoTitle.collectAsState()
+      if (hideVideoTitle) return@PlayerButtonContentTheme
       val playlistModeEnabled = viewModel.hasPlaylistSupport()
       val titleHeight = playerTitleHeight(buttonSize, MaterialTheme.typography.bodyMedium.lineHeight)
 

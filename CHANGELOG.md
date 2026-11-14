@@ -6,6 +6,7 @@ These notes are written in plain English and focus on what changed for real use.
 
 - Release version 4.0.0 (v4).
 - **Player Controls & Button Customization:**
+  - Added "Hide file name" toggle in Player Layout settings to completely hide the video title and file name pill from the player controls during playback for a clean, distraction-free viewing experience.
   - Added "Hide player button backgrounds" toggle in Player Layout settings to completely remove the background circle, container, and border from all player control buttons, leaving sleek borderless controls with subtle icon drop shadows for high legibility over video.
   - Added "Player button opacity" slider in Player Layout settings (0% to 100%) to customize the overall alpha transparency of player control buttons (icons and labels).
   - Added "Seekbar opacity" slider in Player Layout settings (0% to 100%) alongside player button opacity to adjust the transparency of the seekbar track, thumb, and timers.

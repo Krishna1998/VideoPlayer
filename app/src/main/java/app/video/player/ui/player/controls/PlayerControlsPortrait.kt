@@ -62,6 +62,7 @@ fun TopPlayerControlsPortrait(
   onBackPress: () -> Unit,
   onOpenSheet: (Sheets) -> Unit,
   viewModel: PlayerViewModel,
+  hideTitle: Boolean = false,
 ) {
   PlayerButtonTheme {
     val playlistModeEnabled = viewModel.hasPlaylistSupport()
@@ -85,61 +86,23 @@ fun TopPlayerControlsPortrait(
             modifier = Modifier.size(48.dp),
           )
 
-          Column(
-            modifier = Modifier.padding(start = 4.dp),
-          ) {
-            val enableLiquidGlass = liquidGlassActive()
+          if (!hideTitle) {
+            Column(
+              modifier = Modifier.padding(start = 4.dp),
+            ) {
+              val enableLiquidGlass = liquidGlassActive()
 
-            if (enableLiquidGlass) {
-              LiquidPillButton(
-                onClick = {
-                  if (playlistModeEnabled) {
-                    clickEvent()
-                    onOpenSheet(Sheets.Playlist)
-                  }
-                },
-                isInteractive = playlistModeEnabled,
-                height = titleHeight,
-                horizontalPadding = 14.dp,
-              ) {
-                Text(
-                  mediaTitle ?: "",
-                  maxLines = 1,
-                  overflow = TextOverflow.Ellipsis,
-                  style = MaterialTheme.typography.titleMedium,
-                  modifier = Modifier.weight(1f, fill = false).playerTitleMarquee(),
-                )
-                viewModel.getPlaylistInfo()?.let { playlistInfo ->
-                  Text(
-                    " • $playlistInfo",
-                    maxLines = 1,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = LocalContentColor.current.copy(alpha = 0.7f),
-                  )
-                }
-              }
-            } else {
-              val titleInteractionSource =
-                remember {
-                  androidx.compose.foundation.interaction
-                    .MutableInteractionSource()
-                }
-
-              Surface(
-                shape = CircleShape,
-                color = if (LocalBorderlessPlayerControls.current) Color.Transparent else playerButtonContainerColor(),
-                contentColor = playerButtonContentColor(),
-                onClick = {
-                  clickEvent()
-                  onOpenSheet(Sheets.Playlist)
-                },
-                enabled = playlistModeEnabled,
-                border = if (LocalBorderlessPlayerControls.current) null else BorderStroke(1.dp, playerButtonBorderColor()),
-                modifier = Modifier.heightIn(min = titleHeight),
-              ) {
-                Row(
-                  verticalAlignment = Alignment.CenterVertically,
-                  modifier = Modifier.heightIn(min = titleHeight).padding(horizontal = 14.dp, vertical = 4.dp),
+              if (enableLiquidGlass) {
+                LiquidPillButton(
+                  onClick = {
+                    if (playlistModeEnabled) {
+                      clickEvent()
+                      onOpenSheet(Sheets.Playlist)
+                    }
+                  },
+                  isInteractive = playlistModeEnabled,
+                  height = titleHeight,
+                  horizontalPadding = 14.dp,
                 ) {
                   Text(
                     mediaTitle ?: "",
@@ -155,6 +118,46 @@ fun TopPlayerControlsPortrait(
                       style = MaterialTheme.typography.bodySmall,
                       color = LocalContentColor.current.copy(alpha = 0.7f),
                     )
+                  }
+                }
+              } else {
+                val titleInteractionSource =
+                  remember {
+                    androidx.compose.foundation.interaction
+                      .MutableInteractionSource()
+                  }
+
+                Surface(
+                  shape = CircleShape,
+                  color = if (LocalBorderlessPlayerControls.current) Color.Transparent else playerButtonContainerColor(),
+                  contentColor = playerButtonContentColor(),
+                  onClick = {
+                    clickEvent()
+                    onOpenSheet(Sheets.Playlist)
+                  },
+                  enabled = playlistModeEnabled,
+                  border = if (LocalBorderlessPlayerControls.current) null else BorderStroke(1.dp, playerButtonBorderColor()),
+                  modifier = Modifier.heightIn(min = titleHeight),
+                ) {
+                  Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.heightIn(min = titleHeight).padding(horizontal = 14.dp, vertical = 4.dp),
+                  ) {
+                    Text(
+                      mediaTitle ?: "",
+                      maxLines = 1,
+                      overflow = TextOverflow.Ellipsis,
+                      style = MaterialTheme.typography.titleMedium,
+                      modifier = Modifier.weight(1f, fill = false).playerTitleMarquee(),
+                    )
+                    viewModel.getPlaylistInfo()?.let { playlistInfo ->
+                      Text(
+                        " • $playlistInfo",
+                        maxLines = 1,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = LocalContentColor.current.copy(alpha = 0.7f),
+                      )
+                    }
                   }
                 }
               }

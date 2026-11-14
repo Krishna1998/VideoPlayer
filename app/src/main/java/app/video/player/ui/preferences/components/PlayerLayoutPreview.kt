@@ -99,6 +99,7 @@ internal fun PlayerLayoutPreview(
   val hideBackground by appearance.hidePlayerButtonsBackground.collectAsState()
   val buttonAlpha by appearance.playerButtonsOpacity.collectAsState()
   val seekbarOpacity by appearance.seekbarOpacity.collectAsState()
+  val hideTitle by appearance.hideVideoTitle.collectAsState()
   val seekbarStyle by appearance.seekbarStyle.collectAsState()
   val glassEnabled by appearance.liquidGlassEnabled.collectAsState()
   val playbackPreference =
@@ -153,7 +154,7 @@ internal fun PlayerLayoutPreview(
                 PlayerControlsContentTheme {
                   PreviewScene(
                     region, topRightButtons, bottomRightButtons, bottomLeftButtons, portraitBottomButtons,
-                    preset, playbackControlsPlacement, playlist, glassEnabled, seekbarStyle, seekbarOpacity, wavy, sceneWidth,
+                    preset, playbackControlsPlacement, playlist, glassEnabled, seekbarStyle, seekbarOpacity, hideTitle, wavy, sceneWidth,
                   )
                 }
               }
@@ -187,6 +188,7 @@ private fun PreviewScene(
   glassEnabled: Boolean,
   seekbarStyle: SeekbarStyle,
   seekbarOpacity: Float = 1.0f,
+  hideTitle: Boolean = false,
   wavy: Boolean,
   sceneWidth: Dp,
 ) {
@@ -222,10 +224,12 @@ private fun PreviewScene(
           horizontalArrangement = Arrangement.spacedBy(spacing.small),
         ) {
           PreviewIcon(Icons.RoundedFilled.ArrowBack, 48.dp)
-          Text(
-            stringResource(R.string.ui_video_title), color = Color.White,
-            maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f),
-          )
+          if (!hideTitle) {
+            Text(
+              stringResource(R.string.ui_video_title), color = Color.White,
+              maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f),
+            )
+          }
         }
         if (!region.isPortrait) {
           LandscapeActionGroup(

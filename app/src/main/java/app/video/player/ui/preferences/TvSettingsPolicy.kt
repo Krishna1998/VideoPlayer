@@ -45,6 +45,7 @@ internal object TvSettingsPolicy {
     R.string.pref_player_buttons_opacity,
     R.string.pref_player_buttons_overall_opacity,
     R.string.pref_seekbar_opacity,
+    R.string.pref_hide_video_title_title,
     R.string.pref_hide_player_buttons_background_title,
     R.string.pref_appearance_force_dark_player_buttons_background_title,
     R.string.pref_app_icon_title,

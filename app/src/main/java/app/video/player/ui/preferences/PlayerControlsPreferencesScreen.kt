@@ -296,6 +296,7 @@ object PlayerControlsPreferencesScreen : Screen {
             val forceDarkPlayerButtonsBackground by appearancePrefs.forceDarkPlayerButtonsBackground.collectAsState()
             val playerButtonsBackgroundOpacity by appearancePrefs.playerButtonsBackgroundOpacity.collectAsState()
             val hidePlayerButtonsBackground by appearancePrefs.hidePlayerButtonsBackground.collectAsState()
+            val hideVideoTitle by appearancePrefs.hideVideoTitle.collectAsState()
             val playerButtonsOpacity by appearancePrefs.playerButtonsOpacity.collectAsState()
             val seekbarOpacity by appearancePrefs.seekbarOpacity.collectAsState()
             val storedPlayerTimeToDisappear by playerPrefs.playerTimeToDisappear.collectAsState()
@@ -353,6 +354,31 @@ object PlayerControlsPreferencesScreen : Screen {
                     },
                   )
                 }
+
+                PreferenceDivider()
+              }
+
+              DevicePreference(R.string.pref_hide_video_title_title) {
+                SwitchPreference(
+                  groupIndex = 0,
+                  groupSize = 1,
+                  modifier =
+                    Modifier.settingsSearchTarget(
+                      R.string.pref_hide_video_title_title,
+                    ),
+                  value = hideVideoTitle,
+                  onValueChange = { appearancePrefs.hideVideoTitle.set(it) },
+                  title = {
+                    Text(
+                      text = stringResource(R.string.pref_hide_video_title_title),
+                    )
+                  },
+                  summary = {
+                    Text(
+                      text = stringResource(R.string.pref_hide_video_title_summary),
+                    )
+                  },
+                )
 
                 PreferenceDivider()
               }

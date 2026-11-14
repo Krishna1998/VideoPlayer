@@ -253,6 +253,7 @@ fun PlayerControls(
   val landscapeSeekbarPlacement by appearancePreferences.landscapeSeekbarPlacement.collectAsState()
   val playerButtonsBackgroundOpacity by appearancePreferences.playerButtonsBackgroundOpacity.collectAsState()
   val hidePlayerButtonsBackground by appearancePreferences.hidePlayerButtonsBackground.collectAsState()
+  val hideVideoTitle by appearancePreferences.hideVideoTitle.collectAsState()
   val playerButtonsOpacity by appearancePreferences.playerButtonsOpacity.collectAsState()
   val playerPreferences = koinInject<PlayerPreferences>()
   val gesturePreferences = koinInject<GesturePreferences>()
@@ -2101,6 +2102,7 @@ fun PlayerControls(
                 onBackPress = onBackPress,
                 onOpenSheet = onOpenSheet,
                 viewModel = viewModel,
+                hideTitle = hideVideoTitle,
               )
             } else {
               TopLeftPlayerControlsLandscape(
@@ -2108,6 +2110,7 @@ fun PlayerControls(
                 onBackPress = onBackPress,
                 onOpenSheet = onOpenSheet,
                 viewModel = viewModel,
+                hideTitle = hideVideoTitle,
               )
             }
           }
